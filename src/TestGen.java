@@ -1,19 +1,20 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 public class TestGen {
     public static String chatGPT(String message) {
-    	String url="https://api.openai.com/v1/chat/completions";
-		String apiKey="sk-e63IzFtX0i3Ll6mnwsjHQEK06j24Fw--GT1vE29W1cT3BlbkFJWvFftkDoDy-3bIS6hKrGeNXXiUafaCQRU8Mm2zkGYA";
-		String model="gpt-4o-mini";
-	    try {
+        String url = "https://api.openai.com/v1/chat/completions";
+        String apiKey = "sk-e63IzFtX0i3Ll6mnwsjHQEK06j24Fw--GT1vE29W1cT3BlbkFJWvFftkDoDy-3bIS6hKrGeNXXiUafaCQRU8Mm2zkGYA";
+        String model = "gpt-4o-mini";
+        try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("POST");
@@ -52,7 +53,7 @@ public class TestGen {
             Gson gson = new Gson();
             JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
             
-         // Navigate to the content field
+            // Navigate to the content field
             String content = jsonObject
                     .getAsJsonArray("choices")
                     .get(0)
@@ -67,7 +68,30 @@ public class TestGen {
         }
     }
 
+    public static String readPromptFromFile(String filePath) {
+        StringBuilder prompt = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                prompt.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return prompt.toString().trim(); // Trim to remove any trailing newlines
+    }
+
     public static void main(String[] args) {
-        System.out.println(chatGPT("Write executable test case for java method to add three numbers"));
+        // Specify the path to the file containing the prompt
+        String filePath = "prompt.txt"; // Update with your file's path
+        String prompt = readPromptFromFile(filePath);
+
+        if (prompt != null) {
+            System.out.println("Prompt: " + prompt);
+            System.out.println(chatGPT(prompt));
+        } else {
+            System.out.println("Failed to read prompt from file.");
+        }
     }
 }
