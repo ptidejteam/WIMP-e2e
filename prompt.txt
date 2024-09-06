@@ -1,0 +1,74 @@
+Your task is to develop test cases based on the given use case specifications. The focus is on the scenario where there is a normal heart rate, and no move action is required. Here are the steps to guide you in developing the test cases:
+
+### Use Case: Normal heartrate, No Move action is required
+
+#### **Precondition:**
+- BuddyApp is running
+- FitbitApp is running
+- Connections have been initialized
+
+#### **Basic Flow:**
+1. **WIMP requests heartrate data from Fitbit.**
+   - **Test Case:** Verify that WIMP can successfully request heart rate data from Fitbit when both BuddyApp and FitbitApp are running and connections are initialized.
+
+2. **WIMP waits until it receives heartrate data.**
+   - **Test Case:** Validate that WIMP waits to receive the heart rate data without timing out or throwing an error.
+
+3. **FitbitApp checks the type of requested data.**
+   - **Test Case:** Confirm that the FitbitApp properly checks and identifies that the requested data is for heart rate.
+
+4. **FitbitApp validates that the requested data is heart rate data.**
+   - **Test Case:** Ensure FitbitApp correctly validates the request data type as heart rate.
+
+5. **FitbitApp activates the heart monitor sensor.**
+   - **Test Case:** Test that FitbitApp successfully activates the heart monitor sensor upon validation of the request.
+
+6. **FitbitApp senses heartrate data.**
+   - **Test Case:** Verify that FitbitApp accurately senses and gathers heart rate data.
+
+7. **FitbitApp sends heartrate data to WIMP.**
+   - **Test Case:** Validate that FitbitApp sends the correct heart rate data to WIMP.
+
+8. **WIMP receives heart rate data from Fitbit.**
+   - **Test Case:** Ensure WIMP correctly receives the heart rate data sent by FitbitApp.
+
+9. **WIMP validates that heart rate is between 60 and 100 bpm.**
+   - **Test Case:** Verify that WIMP correctly validates that the received heart rate is within the specified range (60 to 100 bpm).
+
+10. **WIMP sends SPEAK command to Buddy with "Normal" message.**
+    - **Test Case:** Confirm WIMP sends the correct SPEAK command to Buddy when heart rate is within the normal range.
+
+11. **WIMP waits until it receives feedback from Buddy.**
+    - **Test Case:** Validate that WIMP waits appropriately for feedback from Buddy without timing out.
+
+12. **Buddy's setMood is set to NEUTRAL.**
+    - **Test Case:** Ensure Buddy's mood is set to NEUTRAL upon receipt of the SPEAK command with "Normal" message.
+
+13. **Buddy speaks "Normal".**
+    - **Test Case:** Verify that Buddy correctly speaks the "Normal" message.
+
+14. **BuddyApp sends feedback to WIMP.**
+    - **Test Case:** Confirm that BuddyApp sends the feedback to WIMP after Buddy speaks.
+
+15. **WIMP receives feedback from Buddy.**
+    - **Test Case:** Ensure WIMP receives the feedback from Buddy and processes it correctly.
+
+#### **Postcondition:**
+Buddy has spoken "Normal" and sent “SPEAK Action Completed” message to WIMP
+
+#### **Bounded Alternative Flow:**
+4. IF no heart rate data is received by WIMP, THEN
+   - **Test Case:** Verify that if WIMP does not receive heart rate data, it sends the SPEAK command to Buddy with the "No heart rate data" message and performs the abort sequence.
+ 
+      **Postcondition:** Buddy has spoken "No Action" and sent "Speak Action Completed" back to WIMP
+
+#### **Specific Alternative Flow:**
+9. IF heart rate data is between 50 and 60 bpm, THEN
+   - **Test Case:** Ensure that if the heart rate data is between 50 and 60 bpm, WIMP sends the SPEAK command to Buddy with the "No special attention" message and performs the abort sequence.
+
+      **Postcondition:** Buddy has spoken "No Special attention" and sent "Speak Action Completed" to WIMP
+
+9. IF heart rate data is below 50 OR above 100 bpm, THEN
+   - **Test Case:** Confirm that if the heart rate data is below 50 or above 100 bpm, WIMP sends the SPEAK command to Buddy with the "Special attention Needed" message, activates enableWheels, rotates Buddy 90 degrees clockwise, and Buddy speaks "Special Attention is needed" before aborting.
+
+      **Postcondition:** Buddy has spoken "Special attention is needed" and sent "WHEEL_MOVE_FINISHED" to WIMP

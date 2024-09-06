@@ -1,0 +1,84 @@
+Here are the test cases developed based on the provided use case specifications, focusing specifically on the scenario where heart rate is normal and no move action is required.
+
+### Test Case Payload for Use Case: Normal Heart Rate, No Move Action Required
+
+#### **Precondition:**
+- BuddyApp is running.
+- FitbitApp is running.
+- Connections have been initialized.
+
+#### **Basic Flow:**
+
+1. **The WIMP REQUESTS heart rate data from Fitbit.**
+   - **Test Case 1.1:** Verify that WIMP successfully requests heart rate data from Fitbit when the necessary preconditions are met.
+
+2. **The WIMP WAITS until it receives heart rate data.**
+   - **Test Case 2.1:** Validate that WIMP waits for the heart rate data without timing out.
+
+3. **The FitbitApp CHECKS the type of requested data.**
+   - **Test Case 3.1:** Confirm that FitbitApp correctly identifies that the requested data is for heart rate.
+
+4. **FitbitApp VALIDATES THAT the requested data is heart rate data.**
+   - **Test Case 4.1:** Ensure FitbitApp properly validates the data request type as heart rate.
+
+5. **The FitbitApp ACTIVATES the heart monitor SENSOR.**
+   - **Test Case 5.1:** Check that FitbitApp successfully activates the heart monitor sensor.
+
+6. **The FitbitApp SENSES heart rate data.**
+   - **Test Case 6.1:** Verify that FitbitApp accurately senses and collects heart rate data.
+
+7. **The FitbitApp SENDS heart rate data TO WIMP.**
+   - **Test Case 7.1:** Confirm that FitbitApp sends the collected heart rate data (normal range, e.g., 70 bpm) to WIMP correctly.
+
+8. **The WIMP RECEIVES heart rate data FROM Fitbit.**
+   - **Test Case 8.1:** Ensure WIMP receives the heart rate data without errors.
+
+9. **The WIMP VALIDATES THAT heart rate is between 50 and 100 bpm.**
+   - **Test Case 9.1:** Verify that WIMP properly validates that the received heart rate is between 50 and 100 bpm.
+
+10. **The WIMP SENDS SPEAK command to Buddy with "No Special attention Needed".**
+    - **Test Case 10.1:** Confirm that WIMP sends the correct SPEAK command to Buddy indicating "No Special attention Needed".
+
+11. **The Buddy SPEAKS the message "No Special attention Needed".**
+    - **Test Case 11.1:** Validate that Buddy articulates "No Special attention Needed" properly.
+
+12. **The Buddy's face setMood to HAPPY.**
+    - **Test Case 12.1:** Confirm that Buddy's face changes to display a HAPPY mood.
+
+13. **The BuddyApp SENDS execution feedback status to WIMP.**
+    - **Test Case 13.1:** Ensure BuddyApp sends the execution feedback status to WIMP.
+
+14. **The WIMP RECEIVES execution feedback from Buddy.**
+    - **Test Case 14.1:** Validate that WIMP correctly receives and processes the execution feedback from Buddy.
+
+#### **Postcondition:**
+Buddy has spoken "No Special attention Needed" and sent “Speak Action Completed” status message to WIMP.
+
+#### **Bounded Alternative Flow:**
+
+1. **IF no heart rate data is received by WIMP**
+    - **Test Case 1.1:** Verify WIMP sends SPEAK command to Buddy with "No heart rate data" message if heart rate data is not received.
+    - **Test Case 1.2:** Ensure the process aborts after sending the "No heart rate data" message.
+
+**Postcondition:**
+Buddy has spoken "No heart rate data" and sent "Speak Action Completed" back to WIMP.
+
+#### **Specific Alternative Flow - RFS 9:**
+
+1. **IF heart rate data is above 100 bpm**
+    - **Test Case 1.1:** Verify that WIMP does not send any MOVE command to Buddy if heart rate data exceeds 100 bpm.
+    - **Test Case 1.2:** Ensure Buddy remains stationary and does not perform any actions.
+
+**Postcondition:**
+Buddy remains stationary and there is no additional action taken.
+
+#### **Specific Alternative Flow - RFS 12:**
+
+1. **IF wheels cannot be activated**
+    - **Test Case 1.1:** Ensure Buddy speaks "Wheels are not enabled" message if wheels cannot be activated.
+    - **Test Case 1.2:** Verify the process aborts after sending the message.
+
+**Postcondition:**
+Buddy has spoken "Wheels are not enabled" and sent "NOK" to WIMP.
+
+This set of test cases comprehensively covers the scenario of handling a normal heart rate without requiring a move action, ensuring various aspects of the interaction between WIMP, Buddy, and FitbitApp are validated.

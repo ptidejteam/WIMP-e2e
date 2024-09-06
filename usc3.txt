@@ -1,0 +1,65 @@
+Your task is to create a payload that simulates an abnormal heart rate (tachycardia) scenario where a move action is required. Use the provided use case below to craft a detailed payload that covers preconditions, basic flow, postconditions, bounded alternative flow, and specific alternative flows.
+
+---
+
+## Abnormal Heart Rate (Tachycardia) Payload Creation
+
+### Use Case Description
+- **Use Case**: Abnormal heartrate (tachycardia), Move action is required
+
+### Preconditions
+- BuddyApp is running
+- FitbitApp is running
+- Connections have been initialized
+
+### Basic Flow
+1. The WIMP requests heartrate data from Fitbit.
+2. The WIMP waits until it receives heartrate data.
+3. The FitbitApp checks the type of requested data.
+4. FitbitApp validates that the requested data is heartrate data.
+5. The FitbitApp activates heart monitor sensor.
+6. The FitbitApp senses heartrate data.
+7. The FitbitApp sends heartrate data to WIMP.
+8. The WIMP receives heartrate data from Fitbit.
+9. The WIMP validates that heartrate is above 100.
+10. The WIMP sends MOVE command to Buddy with distance above 2.0 m and speed less than 0.3 m/s.
+11. The WIMP waits until it receives feedback from Buddy.
+12. The Buddy activates both wheels by setting enableWheels to TRUE.
+13. The Buddy moves the given distance and speaks "attention is required" when finished moving.
+14. The Buddy's face mood is set to SCARED.
+15. The BuddyApp sends execution feedback status to WIMP.
+16. The WIMP receives execution feedback from Buddy.
+
+### Postcondition
+- Buddy's face mood has changed, spoken "attention is required," and sent "WHEEL_MOVE_FINISHED" status message to WIMP.
+
+### Bounded Alternative Flow (RFS 4-8)
+1. IF no heartrate data is received by WIMP THEN
+2. WIMP sends SPEAK command to Buddy with "No heartrate data" message.
+3. ABORT.
+4. ENDIF.
+
+### Postcondition
+- Buddy has spoken "No heartrate data" and sent "Speak Action Completed" back to WIMP.
+
+### Specific Alternative Flow (RFS 9)
+1. IF heartrate data is not above 100 OR less than 50 bpm THEN:
+2. WIMP sends SPEAK command to Buddy with "No Special attention Needed" message.
+3. Buddy's face mood is set to HAPPY.
+4. The Buddy activates both wheels by setting enableWheels to TRUE.
+5. Buddy rotates 180 degrees clockwise.
+6. Buddy speaks "No Special Attention Needed."
+7. ABORT.
+8. ENDIF.
+
+### Postcondition
+- Buddy's face mood has changed, rotated 180 degrees, and spoke "No Special Attention Needed." Buddy sent "WHEEL_MOVE_FINISHED" execution status to WIMP.
+
+### Specific Alternative Flow (RFS 12)
+1. IF wheels cannot be activated THEN:
+2. Buddy speaks "Wheels are not enabled" message.
+3. ABORT.
+4. ENDIF.
+
+### Postcondition
+- Buddy has spoken "Wheels are not enabled" and sent "NOK" to WIMP.

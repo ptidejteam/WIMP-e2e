@@ -12,11 +12,28 @@
             <version>2.10.1</version>
         </dependency>
         <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-open-ai</artifactId>
-            <version>0.33.0</version>
+            <groupId>io.github.vishalmysore</groupId>
+            <artifactId>tools4ai</artifactId>
+            <version>0.9.6</version>
         </dependency>
-	</dependencies>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+
+    </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -28,6 +45,14 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>9</source>
+                <target>9</target>
+            </configuration>
+        </plugin>
     </plugins>
 
   </build>
