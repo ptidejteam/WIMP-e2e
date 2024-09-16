@@ -1,0 +1,27 @@
+
+h	java:S112„"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Ÿúü2
+i
+java:S1192e"GDefine a constant instead of duplicating this literal "rotate" 4 times.(Î™Úıÿÿÿÿ8¦úü2
+v
+java:S1192Y"TDefine a constant instead of duplicating this literal "Executed Payload:::" 4 times.(œË †ÿÿÿÿÿ8¦úü2
+h
+java:S1192p"FDefine a constant instead of duplicating this literal "speak" 4 times.(«—Àÿÿÿÿÿ8¦úü2
+s	java:S117¾"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›Ü»Õûÿÿÿÿ8¦úü2
+v	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(şï¾Ì8íüü2
+v	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( —è„8íüü2
+o	java:S116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(áœÈ¸úÿÿÿÿ8íüü2
+o	java:S116"TRename this field "TAGSTATUS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’–…Q8îüü2
+C
+java:S1170"!Make this final field static too.(áœÈ¸úÿÿÿÿ8óüü2
+=
+java:S1170"!Make this final field static too.(’–…Q8óüü2
+
+java:S1130"{Remove the declaration of thrown exception 'java.net.UnknownHostException', as it cannot be thrown from constructor's body.(¥—Éşÿÿÿÿ8„ıü2
+]	java:S125*"<This block of commented-out lines of code should be removed.(î½÷òüÿÿÿÿ8‹ıü2
+]	java:S125?"<This block of commented-out lines of code should be removed.(¤­şÿÿÿÿ8ıü2
+]	java:S125^"<This block of commented-out lines of code should be removed.(‰—ö‘ûÿÿÿÿ8•ıü2
+J
+java:S1125_"(Remove the unnecessary boolean literals.(ƒš¼Ùüÿÿÿÿ8•ıü2
+[	java:S106¹"9Replace this use of System.out or System.err by a logger.(ïëèÖıÿÿÿÿ8œıü2
+I
+java:S1168ã"+Return an empty collection instead of null.(¥¹ï8 ıü2

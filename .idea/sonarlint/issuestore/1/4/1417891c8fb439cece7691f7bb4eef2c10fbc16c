@@ -1,0 +1,19 @@
+
+T
+java:S2589A"7Remove this expression which always evaluates to "true"(ÒâªÄ8ƒĞ·Õ2
+v	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(şï¾Ì8„Ğ·Õ2
+{	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(şëÏşÿÿÿÿ8„Ğ·Õ2
+d
+java:S1854"BRemove this useless assignment to local variable "logPreferences".(Ï­¡Şüÿÿÿÿ8¸”¸Õ2
+U
+java:S1481"3Remove this unused "logPreferences" local variable.(Ï­¡Şüÿÿÿÿ8º”¸Õ2
+X	java:S125"<This block of commented-out lines of code should be removed.(Ğ¢ ñ8’Ğ·Õ2
+X	java:S125("<This block of commented-out lines of code should be removed.(íü¶ş8’Ğ·Õ2
+X	java:S125+"<This block of commented-out lines of code should be removed.(­—ş‹8º”¸Õ2
+]	java:S125>"<This block of commented-out lines of code should be removed.(†‡Úšùÿÿÿÿ8–Ğ·Õ2
+I
+java:S1128",Remove this unused import 'java.util.Queue'.(Äá™ô8‘Ë«Ÿ2
+P
+java:S1068".Remove this unused "PREFS_NAME" private field.(¼ÇÕüÿÿÿÿ8™Ğ·Õ2
+M
+java:S1068"+Remove this unused "LOG_KEY" private field.(Û¾Şùÿÿÿÿ8™Ğ·Õ2
