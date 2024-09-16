@@ -1,0 +1,267 @@
+
+@startuml
+skinparam linetype ortho
+
+package "authservice" {
+  
+  
+}
+
+package "serviceregistry" {
+  
+  
+}
+
+package "payload" {
+
+  
+}
+package "executetest" {
+  
+  
+}
+
+package "UIClient" {
+
+  
+}
+authservice -down-> serviceregistry: registers
+payload -down-> serviceregistry: registers
+executetest -up-> serviceregistry: registers
+UIClient -right-> serviceregistry: interacts
+
+
+@enduml
+
+@startuml
+skinparam linetype ortho
+note as N1
+  This package handles user authentication, 
+  including account creation 
+  and JWT token generation.
+end note
+package "authservice" {
+  
+}
+
+note as N2
+  This package manages service registration, 
+  proxy creation, and 
+  rate limiting enforcement.
+end note
+package "serviceregistry" {
+  
+}
+
+note as N3
+  This package handles the reception, parsing, 
+  and storage of payloads 
+  sent via various protocols.
+end note
+package "payload" {
+  
+}
+
+note as N4
+  This package manages test results, 
+  including adding, updating, 
+  and retrieving results.
+end note
+package "executetest" {
+  
+}
+
+note as N5
+  This package represents the 
+  interactive user client 
+  that interacts 
+  with other services.
+end note
+package "UIClient" {
+  
+}
+
+authservice -down-> serviceregistry: registers
+payload -down-> serviceregistry: registers
+executetest -up-> serviceregistry: registers
+UIClient -right-> serviceregistry: interacts
+
+N1 .. authservice
+N2 .. serviceregistry
+N3 .. payload
+N4 .. executetest
+N5 .. UIClient
+@enduml
+
+
+@startuml
+skinparam linetype ortho
+package "authservice" {
+  note as N1
+  This package handles user authentication, 
+  including account creation 
+  and JWT token generation.
+  end note
+
+  class AuthService {
+    - db: MongoClient
+    + createUser(userName: String, 
+    userEmail: String, userPassword: 
+    String, userAge: int): boolean
+    + loginUser(userEmail: String, 
+    userPassword: String): String
+  }
+
+  class User {
+    - userName: String
+    - userEmail: String
+    - userPassword: String
+  }
+
+  class TokenService {
+    + generateJWTToken(userEmail: String): String
+  }
+
+  class BcryptService {
+    + hashPassword(password: String): String
+    + comparePassword(password: String, 
+    hashedPassword: String): boolean
+  }
+
+  AuthService "1" -- "0..*" User: manages
+  AuthService "1" -- "1" TokenService: uses
+  AuthService "1" -- "1" BcryptService: uses
+
+  N1 .. AuthService
+}
+@enduml
+
+
+@startuml
+skinparam linetype ortho
+package "payload" {
+note as N3
+  This package handles the reception, 
+  analysis, and storage of payloads 
+  sent via various protocols.
+  end note
+
+  class PayloadService {
+    - db: MongoClient
+    - wsPort: int
+    - usedConnection: Connection
+    + getHistory(): List<PayloadHistory>
+    + analysePayload(jsonContent: String): boolean
+    + savePayload(payloadHistory: 
+    PayloadHistory): boolean
+    + establishSender(protocol: String, 
+    method: String): boolean
+    + execPayload(jsonFile: JSON): boolean
+  }
+
+  class PayloadHistory {
+    - userName: String  
+    - date: String 
+    - uniqueID: String 
+    - receivedOn: Date 
+    - payload: String 
+    - payloadStatus: String 
+    - payloadOutcome: String 
+    - triggeringEvent: String 
+  }
+
+  interface Connection {
+    + disconnect(): void
+  }
+
+  class WebSocketConnexion extends Connection {
+    + WebSocketConnexion(wsPort: int)
+    + disconnect(): void
+  }
+
+  class CoAPConnexion extends Connection {
+    + CoAPConnexion(wsPort: int)
+    + disconnect(): void
+  }
+
+  class HTTPConnexion extends Connection {
+    + HTTPConnexion(wsPort: int)
+    + disconnect(): void
+  }
+
+  class MQTTConnexion extends Connection {
+    + MQTTConnexion(wsPort: int)
+    + disconnect(): void
+  }
+
+  PayloadService "1" -- "0..*" PayloadHistory: manages
+  PayloadService "1" -- "1" Connection: uses
+
+  N3 .. PayloadService
+}
+@enduml
+
+
+@startuml
+skinparam linetype ortho
+package "executetest" {
+  ' Package 4
+  note as N4
+  This package manages test results, 
+  including adding, updating, 
+  and retrieving results.
+  end note
+
+  class TestResultService {
+    - db: MongoClient
+    - wsPort: int
+    - usedReceiver: Receiver
+    + addTestResult(testResult: TestResult): boolean
+    + getTestResults(date: Date): List<TestResult>
+    + getAllTestResults(): List<TestResult>
+    + updatePreviousJSON(previousJSON: String): boolean
+    + establishReceiver(protocol: String, 
+    method: String): boolean
+    + addExpectations(expectations: List<String>, 
+    protocol: String, method: String): boolean
+  }
+
+  class TestResult {
+    + command: String
+    + endPoint: String
+    + status: String
+    + message: String
+    + date: Date
+  }
+
+  interface Receiver {
+    + disconnect(): void
+    + addExpectation(expectation: String): void
+  }
+
+  class WebSocketReceiver extends Receiver {
+    + WebSocketReceiver(wsPort: int)
+    + disconnect(): void
+  }
+
+  class CoAPReceiver extends Receiver {
+    + CoAPReceiver(wsPort: int)
+    + disconnect(): void
+  }
+
+  class HTTPReceiver extends Receiver {
+    + HTTPReceiver(wsPort: int)
+    + disconnect(): void
+  }
+
+  class MQTTReceiver extends Receiver {
+    + MQTTReceiver(wsPort: int)
+    + disconnect(): void
+  }
+
+  TestResultService "1" -- "0..*" TestResult: manages
+  TestResultService "1" -- "1" Receiver: uses
+
+  N4 .. TestResultService
+}
+@enduml

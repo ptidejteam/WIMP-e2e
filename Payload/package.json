@@ -1,0 +1,29 @@
+{
+  "name": "payload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "coap": "^1.4.0",
+    "core-js": "^3.8.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "material-design-icons-iconfont": "^6.7.0",
+    "mongodb": "^6.7.0",
+    "mqtt": "^5.7.3",
+    "mysql": "^2.18.1",
+    "node-coap-client": "^2.1.0",
+    "nodemon": "^3.1.2",
+    "websocket": "^1.0.35",
+    "ws": "^8.17.0",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

@@ -1,0 +1,21 @@
+@startuml
+actor User
+participant "User Interface" as UI
+participant "PayloadService" as PS
+participant "ServiceRegistry" as SR
+participant "WIMP" as WIMP
+
+User -> UI: Upload a Payload
+UI -> SR: Transmit Payload
+SR -> PS: Validate Payload (jsonContent)
+PS -> PS: analysePayload(jsonContent)
+PS -> PS: isIDUnique(id)
+PS -> PS: confirmPayloadAction(operation)
+PS -> PS: confirmActionData(inputs, operation)
+PS -> WIMP: createConnection(target.protocol, target.method)
+PS -> WIMP: Send Payload for Validation
+WIMP -> PS: Return Validation Result
+PS -> SR: Send Validation Result
+SR -> UI: Transmit Validation Result
+UI -> User: Display Validation Result
+@enduml

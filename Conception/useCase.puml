@@ -1,0 +1,45 @@
+@startuml
+actor User
+actor Administrator
+
+rectangle "AuthService" {
+  usecase "Sign Up" as UC1
+  usecase "Log In" as UC2
+}
+
+rectangle "PayloadService" {
+  usecase "Upload a Payload" as UC3
+  usecase "Validate Payload" as UC4
+  usecase "Send Payload" as UC5
+  usecase "Save Payload" as UC6
+  usecase "Get Payload History" as UC7
+}
+
+rectangle "ExecuteTestService" {
+  usecase "Add Test Result" as UC9
+  usecase "Get Test Results" as UC10
+  usecase "Get All Test Results" as UC11
+}
+
+rectangle "ServiceRegistry" {
+  usecase "Create Proxies" as UC15
+  usecase "Manage Services" as UC16
+  usecase "Rate Limiting" as UC17
+}
+
+User -up-> UC1
+User -up-> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+
+User --> UC9
+User --> UC10
+User --> UC11
+
+Administrator --> UC16
+UC15 <-- Administrator
+UC17 <-- Administrator
+@enduml

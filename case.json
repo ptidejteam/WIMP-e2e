@@ -1,0 +1,60 @@
+{
+	"TC_ID": "TC001",
+	"name": "move buddy successfully",
+	"steps": [
+	  {
+		"operation": "getData",
+		"target": {
+		  "protocol": "HTTP",
+		  "method": "POST",
+		  "name": "Fitbit"
+		},
+		"inputs": {
+		  "datatype": "bpm"
+		},
+		"expectations": {
+		  "msg": "Receive Fitbit Data"
+		}
+	  },
+	  {
+		"operation": "determineBuddy",
+		"target": null,
+		"inputs": {
+		  "data": 130
+		},
+		"expectations": {
+		  "msg": "robot must move"
+		}
+	  },
+	  {
+		"operation": "Enable_Wheels",
+		"target": {
+		  "protocol": "Websocket",
+		  "method": "send",
+		  "name": "Buddy"
+		},
+		"inputs": {
+		  "left": 1,
+		  "right": 1
+		},
+		"expectations": {
+		  "msg": "WHEEL_MOVE_FINISHED"
+		}
+	  },
+	  {
+		"operation": "move",
+		"target": {
+		  "protocol": "Websocket",
+		  "method": "send",
+		  "name": "Buddy"
+		},
+		"inputs": {
+		  "distance": 1,
+		  "speed": 0.5
+		},
+		"expectations": {
+		  "msg": "WHEEL_MOVE_FINISHED"
+		}
+	  }
+	]
+  }
