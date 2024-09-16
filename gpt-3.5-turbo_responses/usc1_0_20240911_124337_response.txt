@@ -1,0 +1,268 @@
+{
+"TC_ID":"TC001",
+"name": "Normal heartrate detected, send 'Normal' message to Buddy",
+"steps": [
+	{
+  	"operation": "Request heartrate data from Fitbit",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "Receive heartrate data"
+  	}
+	},
+	{
+  	"operation": "Validate heartrate data is within range (60-100)",
+  	"target": "",
+  	"inputs": {
+    	"data": 80
+  	},
+  	"expectations": {
+    	"msg": "Data validation successful"
+  	}
+	},
+	{
+  	"operation": "Send 'Normal' message to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"message": "Normal"
+  	},
+  	"expectations": {
+    	"msg": "Buddy speaks 'Normal'"
+  	}
+	},
+	{
+  	"operation": "Check Buddy's mood after speaking 'Normal'",
+  	"target": {
+    	"protocol": "UI",
+    	"method": "setMood",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"mood": "NEUTRAL"
+  	},
+  	"expectations": {
+    	"msg": "Buddy's mood set to NEUTRAL"
+  	}
+	},
+	{
+  	"operation": "Receive feedback from Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "receive",
+    	"name": "WIMP"
+  	},
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "Receive 'SPEAK Action Completed'"
+  	}
+	}
+  ]
+},
+{
+"TC_ID":"TC002",
+"name": "No heartrate data received, send 'No heartrate data' message to Buddy",
+"steps": [
+	{
+  	"operation": "Request heartrate data from Fitbit",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "No heartrate data received"
+   }
+	},
+	{
+  	"operation": "Send 'No heartrate data' message to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    "method": "send",
+    "name": "WIMP"
+  	},
+    "inputs": {
+      "message": "No heartrate data"
+    },
+    "expectations": {
+      "msg": "Buddy speaks 'No heartrate data'"
+    }
+  },
+  {
+    "operation": "Receive feedback from Buddy",
+    "target": {
+      "protocol": "Websocket",
+      "method": "receive",
+      "name": "WIMP"
+    },
+    "inputs": {},
+    "expectations": {
+      "msg": "Receive 'Speak Action Completed'"
+    }
+  }
+]
+},
+{
+"TC_ID":"TC003",
+"name": "Low heartrate detected, send 'No special attention' message to Buddy",
+"steps": [
+	{
+  	"operation": "Request heartrate data from Fitbit",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "Receive heartrate data"
+   }
+	},
+	{
+  	"operation": "Validate heartrate data is between 50 and 60 bpm",
+  	"target": "",
+  	"inputs": {
+    	"data": 55
+  	},
+  	"expectations": {
+    	"msg": "Data validation successful"
+   }
+  },
+  {
+    "operation": "Send 'No special attention' message to Buddy",
+    "target": {
+      "protocol": "Websocket",
+      "method": "send",
+      "name": "WIMP"
+    },
+    "inputs": {
+      "message": "No special attention"
+    },
+    "expectations": {
+      "msg": "Buddy speaks 'No special attention'"
+    }
+  },
+  {
+    "operation": "Receive feedback from Buddy",
+    "target": {
+      "protocol": "Websocket",
+      "method": "receive",
+      "name": "WIMP"
+    },
+    "inputs": {},
+    "expectations": {
+      "msg": "Receive 'Speak Action Completed'"
+    }
+  }
+]
+},
+{
+"TC_ID":"TC004",
+"name": "Very low or high heartrate detected, send 'Special attention needed' message to Buddy",
+"steps": [
+	{
+  	"operation": "Request heartrate data from Fitbit",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "Receive heartrate data"
+   }
+  },
+  {
+    "operation": "Validate heartrate data is below 50 or above 100 bpm",
+    "target": "",
+    "inputs": {
+      "data": 45 // or 105
+    },
+    "expectations": {
+      "msg": "Data validation successful"
+    }
+  },
+  {
+    "operation": "Send 'Special attention needed' message to Buddy",
+    "target": {
+      "protocol": "Websocket",
+      "method": "send",
+      "name": "WIMP"
+    },
+    "inputs": {
+      "message": "Special attention needed"
+    },
+    "expectations": {
+      "msg": "Buddy speaks 'Special attention needed'"
+    }
+  },
+  {
+    "operation": "Activate enableWheels on Buddy",
+    "target": {
+      "protocol": "USB",
+      "method": "EnableWheels",
+      "name": "Buddy"
+    },
+    "inputs": {
+      "Left": 1,
+      "Right": 1
+    },
+    "expectations": {
+      "msg": "'WHEEL_MOVE_FINISHED' received"
+    }
+  },
+  {
+    "operation": "Receive feedback from Buddy",
+    "target": {
+      "protocol": "Websocket",
+      "method": "receive",
+      "name": "WIMP"
+    },
+    "inputs": {},
+    "expectations": {
+      "msg": "Receive 'WHEEL_MOVE_FINISHED'"
+    }
+  }
+]
+},
+{
+"TC_ID":"TC005",
+"name": "No feedback received from Buddy, display warning message",
+"steps": [
+	{
+  	"operation": "Wait for feedback from Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "receive",
+    	"name": "WIMP"
+   },
+   "inputs": {},
+   "expectations": {
+     "msg": "No feedback received"
+   }
+ },
+ {
+   "operation": "Display warning message",
+   "target": {
+     "protocol": "UI",
+     "method": "display",
+     "name": "WIMP"
+   },
+   "inputs": {
+     "message": "No feedback from Buddy"
+   },
+   "expectations": {
+     "msg": "Warning message displayed"
+   }
+ }
+]
+}
+Time Spent = 146411ms

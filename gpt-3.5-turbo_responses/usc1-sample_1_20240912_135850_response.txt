@@ -1,0 +1,113 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "fitbit sends valid heart rate data, buddy moves successfully",
+  "steps": [
+    {
+      "operation": "Receive heart rate data from Fitbit",
+      "target": {
+        "protocol": "Database",
+        "method": "Query",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Validate heart rate is between 60 and 100 bpm"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set EnableWheels to 1 for Left and Right Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "no heart rate data received, buddy rotates successfully",
+  "steps": [
+    {
+      "operation": "Receive no heart rate data from Fitbit",
+      "target": {
+        "protocol": "Database",
+        "method": "Query",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": null
+      },
+      "expectations": {
+        "msg": "Properly handle no heart rate data scenario"
+      }
+    },
+    {
+      "operation": "Send ROTATE command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "EnableWheels not set to 1, warning message displayed",
+  "steps": [
+    {
+      "operation": "Receive instruction to move without enabling wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "EnableWheels": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled warning message displayed"
+      }
+    }
+  ]
+}
+```
+Time Spent = 110655ms

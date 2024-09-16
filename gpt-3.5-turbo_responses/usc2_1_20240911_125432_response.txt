@@ -1,0 +1,222 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Abnormal heartrate detected - move action required",
+  "steps": [
+    {
+      "operation": "Request heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully request heartrate data"
+      }
+    },
+    {
+      "operation": "Receive and validate heartrate data",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Valid heartrate data received"
+      }
+    },
+    {
+      "operation": "Check if heartrate is below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Validated heartrate is below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy with proper distance and speed",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent with correct parameters"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy after MOVE action",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    },
+    {
+      "operation": "Validate Buddy's action after MOVE command",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy moved as expected and spoke 'Special attention Needed'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No heartrate data received - speak action required",
+  "steps": [
+    {
+      "operation": "Not receive heartrate data from Fitbit",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "No heartrate data received"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy with 'No heartrate data' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'No heartrate data' message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heartrate not abnormal - move not required",
+  "steps": [
+    {
+      "operation": "Receive heartrate data from Fitbit above 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Received heartrate data above 50 bpm"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy with 'No Special attention Needed' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'No Special attention Needed' message"
+      }
+    },
+    {
+      "operation": "Check Buddy's face mood set to HAPPY",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy's face mood set to HAPPY"
+      }
+    },
+    {
+      "operation": "Buddy rotates 90 degrees clockwise",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy rotated 90 degrees clockwise"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "No feedback received from Buddy",
+  "steps": [
+    {
+      "operation": "Not receive feedback from Buddy",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "No feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Check warning message displayed",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Wheels cannot be activated",
+  "steps": [
+    {
+      "operation": "Attempt to activate wheels but fail",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'Wheels are not enabled'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "Move not completed",
+  "steps": [
+    {
+      "operation": "Attempt to complete MOVE action but fail",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'Move not completed'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC007",
+  "name": "No execution feedback received from Buddy",
+  "steps": [
+    {
+      "operation": "Not receive execution feedback from Buddy",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "No execution feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Check warning message displayed",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC008",
+  "name": "Abnormal heartrate detected, distance not within limits for MOVE action",
+  "steps": [
+    {
+      "operation": "Receive heartrate data from Fitbit below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Received heartrate data below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy with distance more than 2.0 m or speed more than 0.5 m/s",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent with invalid parameters"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy after invalid MOVE action",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Received feedback from Buddy indicating error"
+      }
+    }
+  ]
+}
+```
+Time Spent = 115623ms

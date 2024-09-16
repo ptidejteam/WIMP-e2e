@@ -1,0 +1,81 @@
+1. **TC_ID:** TC001
+   - **Name:** Receive normal heartrate data successfully
+   - **Steps:**
+     1. **Operation:** WIMP requests heartrate data from Fitbit
+        - **Target:** FitbitApp
+        - **Inputs:** Data type: Heartrate
+        - **Expectations:** Receive heartrate data
+     2. **Operation:** FitbitApp validates heartrate data
+        - **Inputs:** Heartrate: 80 bpm
+        - **Expectations:** Validate heartrate data
+     3. **Operation:** WIMP validates heartrate is between 60 and 100 bpm
+        - **Inputs:** Heartrate: 80 bpm
+        - **Expectations:** Heartrate validation successful
+     4. **Operation:** WIMP sends SPEAK command to Buddy with "Normal" message
+        - **Target:** BuddyApp
+        - **Inputs:** Message: "Normal"
+        - **Expectations:** Buddy speaks "Normal" and sends feedback
+     5. **Operation:** WIMP receives SPEAK feedback from Buddy
+        - **Expectations:** Receive "SPEAK Action Completed" from Buddy
+   - **Postcondition:** Buddy has spoken "Normal", mood set to NEUTRAL
+
+2. **TC_ID:** TC002
+   - **Name:** Receive no heartrate data from Fitbit
+   - **Steps:**
+     1. **Operation:** WIMP does not receive heartrate data from Fitbit
+        - **Expectations:** No heartrate data received
+     2. **Operation:** WIMP sends SPEAK command to Buddy with "No heartrate data" message
+        - **Inputs:** Message: "No heartrate data"
+        - **Expectations:** Buddy speaks "No heartrate data"
+   - **Postcondition:** Buddy has spoken "No heartrate data", "SPEAK Action Completed" sent to WIMP
+
+3. **TC_ID:** TC003
+   - **Name:** Heartrate data is between 50 and 60 bpm
+   - **Steps:**
+     1. **Operation:** WIMP validates heartrate is 55 bpm
+        - **Inputs:** Heartrate: 55 bpm
+        - **Expectations:** Heartrate validation successful
+     2. **Operation:** WIMP sends SPEAK command to Buddy with "No special attention" message
+        - **Inputs:** Message: "No special attention"
+        - **Expectations:** Buddy speaks "No special attention"
+   - **Postcondition:** Buddy has spoken "No special attention", "SPEAK Action Completed" sent to WIMP
+
+4. **TC_ID:** TC004
+   - **Name:** Heartrate data is below 50 bpm
+   - **Steps:**
+     1. **Operation:** WIMP validates heartrate is 45 bpm
+        - **Inputs:** Heartrate: 45 bpm
+        - **Expectations:** Heartrate validation successful
+     2. **Operation:** WIMP sends SPEAK command to Buddy with "Special attention Needed" message
+        - **Inputs:** Message: "Special attention Needed"
+        - **Expectations:** Buddy speaks "Special attention Needed"
+     3. **Operation:** Buddy activates enableWheels
+     4. **Operation:** Buddy rotates 90 degrees clockwise
+   - **Postcondition:** Buddy has spoken "Special attention Needed", "WHEEL_MOVE_FINISHED" sent to WIMP
+
+5. **TC_ID:** TC005
+   - **Name:** WIMP receives no feedback from Buddy
+   - **Steps:**
+     1. **Operation:** WIMP waits for feedback from Buddy
+        - **Expectations:** No feedback received
+     2. **Operation:** WIMP displays warning message
+   - **Postcondition:** Warning message displayed, no action observed on Buddy
+
+6. **TC_ID:** TC006
+   - **Name:** Validate rotation of Buddy successfully
+   - **Steps:**
+     1. **Operation:** WIMP sends SPEAK command to Buddy with "Normal" message
+     2. **Operation:** Buddy rotates 90 degrees clockwise
+     3. **Operation:** Validate Buddy's rotation angle is 90 degrees
+        - **Expectations:** Rotation angle validated as 90 degrees
+   - **Postcondition:** Buddy has rotated 90 degrees clockwise, "WHEEL_MOVE_FINISHED" sent to WIMP
+
+7. **TC_ID:** TC007
+   - **Name:** Simulation of moving Buddy forward successfully
+   - **Steps:**
+     1. **Operation:** Enable WHEELS for Buddy
+     2. **Operation:** Move Buddy straight at speed 0.5 m/s for a distance of 2 meters
+     3. **Operation:** Validate Buddy moves forward for 2 meters
+        - **Expectations:** Distance moved is 2 meters
+   - **Postcondition:** Buddy has moved forward 2 meters, "WHEEL_MOVE_FINISHED" sent to WIMP
+Time Spent = 121284ms

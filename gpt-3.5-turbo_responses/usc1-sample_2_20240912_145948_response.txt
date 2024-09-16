@@ -1,0 +1,144 @@
+### Test Case Structure:
+
+```json
+{
+  "TC_ID":"TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+
+### Test Cases:
+
+1. **Valid Heart Rate Data Flow**
+   - **TC_ID**: TC001
+     - **Name**: Receive Fitbit Data, Move Buddy Successfully
+     - **Step 1 (Get Fitbit data)**:
+       - **Target**: FitbitApp
+       - **Inputs**: datatype: heart_rate
+       - **Expectations**: Receive Fitbit Data
+     - **Step 2 (Validate heart rate data)**:
+       - **Target**: WIMP
+       - **Inputs**: data: 80 bpm
+       - **Expectations**: Heart rate is valid
+     - **Step 3 (Send Speak command to Buddy)**:
+       - **Target**: BuddyApp
+       - **Inputs**: command: SPEAK, message: "Normal"
+       - **Expectations**: Buddy speaks 'Normal'
+     - **Step 4 (Set Buddy's mood to NEUTRAL)**:
+       - **Target**: Buddy
+       - **Inputs**: mood: NEUTRAL, speed: 0.5
+       - **Expectations**: Buddy's mood set to NEUTRAL
+     - **Step 5 (Send Move command to Buddy)**:
+       - **Target**: BuddyApp
+       - **Inputs**: command: MOVE, distance: 1, speed: 0.5
+       - **Expectations**: Buddy moves with specified distance and speed
+     - **Step 6 (Receive Move execution feedback from Buddy)**:
+       - **Target**: WIMP
+       - **Inputs**: action: MOVE
+       - **Expectations**: WIMP receives MOVE execution feedback
+
+2. **No Heart Rate Data Flow**
+   - **TC_ID**: TC002
+     - **Name**: Receive No Fitbit Data, Rotate Buddy
+     - **Step 1 (Get no Fitbit data)**:
+       - **Target**: FitbitApp
+       - **Inputs**: datatype: heart_rate
+       - **Expectations**: No Fitbit Data
+     - **Step 2 (Send Rotate command to Buddy)**:
+       - **Target**: BuddyApp
+       - **Inputs**: command: ROTATE, angle: 90, speed: 0.5
+       - **Expectations**: Buddy rotates with specified angle and speed
+     - **Step 3 (Receive Rotate execution feedback from Buddy)**:
+       - **Target**: WIMP
+       - **Inputs**: action: ROTATE
+       - **Expectations**: WIMP receives WHEEL_MOVE_FINISHED feedback
+     - **Postcondition**: Buddy's mood set to NEUTRAL, Buddy has spoken "No heart rate data" and sent "Speak Action Completed" to WIMP
+
+3. **Wheels Not Enabled Flow**
+   - **TC_ID**: TC003
+     - **Name**: Wheels Not Enabled Warning
+     - **Step 1 (Check EnableWheels status)**:
+       - **Target**: WIMP
+       - **Inputs**: EnableWheels: 0
+       - **Expectations**: Displays "Wheels not enabled" warning message
+     - **Postcondition**: WIMP displays "Wheels not enabled" warning message
+```
+Time Spent = 127116ms

@@ -1,0 +1,463 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Heart rate above 100, Move action is required successfully",
+  "steps": [
+    {
+      "operation": "Receive heart rate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data"
+      }
+    },
+    {
+      "operation": "Check heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "heart_rate": 120
+      },
+      "expectations": {
+        "msg": "Heart rate is above 100"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 2.0,
+        "speed": 0.2
+      },
+      "expectations": {
+        "msg": "Buddy moves and speaks 'attention is required'"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive execution feedback from Buddy that 'WHEEL_MOVE_FINISHED'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No heart rate data received error handling",
+  "steps": [
+    {
+      "operation": "No heart rate data received case",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Send SPEAK command to Buddy with 'No heart rate data' message"
+      }
+    },
+    {
+      "operation": "Check Buddy response",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy speaks 'No heart rate data' and sends 'Speak Action Completed' status message to WIMP"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heart rate not above 100 or less than 50 bpm alternative flow",
+  "steps": [
+    {
+      "operation": "Receive heart rate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data"
+      }
+    },
+    {
+      "operation": "Check heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "heart_rate": 40
+      },
+      "expectations": {
+        "msg": "Send SPEAK command to Buddy with 'No Special attention Needed' message"
+      }
+    },
+    {
+      "operation": "Check Buddy action",
+      "target": "Buddy",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy speaks 'No Special Attention Needed', sets mood to HAPPY, rotates 180 degrees and sends 'WHEEL_MOVE_FINISHED' status to WIMP"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "No feedback received from Buddy alternative flow",
+  "steps": [
+    {
+      "operation": "Check for Buddy feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Display warning message if no feedback is received from Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Wheels activation failure alternative flow",
+  "steps": [
+    {
+      "operation": "Activate wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Wheels are not enabled' and sends 'NOK' status to WIMP"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "No execution feedback received from Buddy alternative flow",
+  "steps": [
+    {
+      "operation": "Check for Buddy execution feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Display warning message if no execution feedback received from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC007",
+  "name": "Mood change and speaking action",
+  "steps": [
+    {
+      "operation": "Change Buddy's mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "SCARED"
+      },
+      "expectations": {
+        "msg": "Buddy's face mood changes to SCARED"
+      }
+    },
+    {
+      "operation": "Speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "attention is required",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'attention is required'"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC008",
+  "name": "Mood set to HAPPY when heart rate is not above 100 or below 50",
+  "steps": [
+    {
+      "operation": "Change Buddy's mood to HAPPY",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's face mood changes to HAPPY"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC009",
+  "name": "Rotate 180 degrees when heart rate is not above 100 or below 50",
+  "steps": [
+    {
+      "operation": "Rotate Buddy 180 degrees",
+      "target": {
+        "method": "rotateBuddy",
+        "name": "USB"
+      },
+      "inputs": {
+        "speed": 60,
+        "angle": 180
+      },
+      "expectations": {
+        "msg": "Buddy rotates 180 degrees clockwise"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC010",
+  "name": "Display warning message when no feedback is received from Buddy",
+  "steps": [
+    {
+      "operation": "Check for Buddy feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Display warning message if no feedback is received from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC011",
+  "name": "Display warning message when wheels cannot be activated",
+  "steps": [
+    {
+      "operation": "Activate wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Wheels are not enabled' and sends 'NOK' status to WIMP"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC012",
+  "name": "Check mood change to SCARED",
+  "steps": [
+    {
+      "operation": "Check for mood change",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "SCARED"
+      },
+      "expectations": {
+        "msg": "Buddy's mood has changed to SCARED"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC013",
+  "name": "Mood change to HAPPY in specific alternative flow",
+  "steps": [
+    {
+      "operation": "Change Buddy's mood to HAPPY",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's face mood changes to HAPPY"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC014",
+  "name": "Warning message displayed when no execution feedback is received from Buddy",
+  "steps": [
+    {
+      "operation": "Check for Buddy execution feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Display warning message if no execution feedback received from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC015",
+  "name": "Check for SCARED mood after activation and movement",
+  "steps": [
+    {
+      "operation": "Check Buddy's mood",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "SCARED"
+      },
+      "expectations": {
+        "msg": "Buddy's mood remained SCARED after activation and movement"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC016",
+  "name": "Execution feedback received from Buddy",
+  "steps": [
+    {
+      "operation": "Check for Buddy execution feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive execution feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC017",
+  "name": "Buddy activating wheels successfully",
+  "steps": [
+    {
+      "operation": "Enable wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Buddy enabled wheels successfully"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC018",
+  "name": "Speak command executed successfully with face expression",
+  "steps": [
+    {
+      "operation": "Speak command execution",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Speech"
+      },
+      "inputs": {
+        "text": "No Special attention Needed",
+        "expression": "SPEAK_HAPPY"
+      },
+      "expectations": {
+        "msg": "Text spoken by Buddy with a HAPPY expression"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC019",
+  "name": "Move action completed successfully",
+  "steps": [
+    {
+      "operation": "Move Buddy",
+      "target": {
+        "method": "moveBuddy",
+        "name": "USB"
+      },
+      "inputs": {
+        "speed": 0.2,
+        "distance": 2.0
+      },
+      "expectations": {
+        "msg": "Buddy moved the given distance successfully"
+      }
+    }
+  ]
+}
+}
+```
+Time Spent = 172702ms

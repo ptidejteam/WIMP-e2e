@@ -1,0 +1,170 @@
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Normal flow: Abnormal heart rate detected and move command executed",
+    "steps": [
+      {
+        "operation": "Get heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit API"
+        },
+        "inputs": {
+          "datatype": "heart rate"
+        },
+        "expectations": {
+          "response": "Heart rate data received",
+          "data": "45 bpm",
+          "status": "success"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": "",
+        "inputs": {
+          "data": 45
+        },
+        "expectations": {
+          "msg": "Heart rate is below 50 bpm, action required"
+        }
+      },
+      {
+        "operation": "Send Move command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy Communication Interface"
+        },
+        "inputs": {
+          "command": "MOVE",
+          "params": {
+            "distance": 1.5,
+            "speed": 0.5
+          }
+        },
+        "expectations": {
+          "response": "Command sent"
+        }
+      },
+      {
+        "operation": "Receive feedback from Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "receive",
+          "name": "Buddy Communication Interface"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Buddy's 'Special attention Needed' speech heard",
+          "status": "WHEEL_MOVE_FINISHED"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "Bounded Alternative Flow: No heart rate data received",
+    "steps": [
+      {
+        "operation": "Attempt to get heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit API"
+        },
+        "inputs": {
+          "datatype": "heart rate"
+        },
+        "expectations": {
+          "response": "No data received",
+          "status": "failure"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy with error message",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy Communication Interface"
+        },
+        "inputs": {
+          "command": "SPEAK",
+          "params": {
+            "text": "No heart rate data",
+            "expression": "SPEAK_NEUTRAL"
+          }
+        },
+        "expectations": {
+          "response": "Speech action completed",
+          "status": "Speak Action Completed"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "Specific Alternative Flow: Heart rate in normal range",
+    "steps": [
+      {
+        "operation": "Get heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit API"
+        },
+        "inputs": {
+          "datatype": "heart rate"
+        },
+        "expectations": {
+          "response": "Heart rate data received",
+          "data": "60 bpm",
+          "status": "success"
+        }
+      },
+      {
+        "operation": "Validate normal heart rate",
+        "target": "",
+        "inputs": {
+          "data": 60
+        },
+        "expectations": {
+          "msg": "Heart rate in normal range, no special action required"
+        }
+      },
+      {
+        "operation": "Send SPEAK and Rotate command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy Communication Interface"
+        },
+        "inputs": {
+          "commands": [
+            {
+              "command": "SPEAK",
+              "params": {
+                "text": "No Special attention Needed",
+                "expression": "SPEAK_HAPPY"
+              }
+            },
+            {
+              "command": "ROTATE",
+              "params": {
+                "speed": -90,
+                "angle": 90
+              }
+            }
+          ]
+        },
+        "expectations": {
+          "response": "Rotate action completed",
+          "status": "WHEEL_MOVE_FINISHED"
+        }
+      }
+    ]
+  }
+]
+```
+Time Spent = 121391ms

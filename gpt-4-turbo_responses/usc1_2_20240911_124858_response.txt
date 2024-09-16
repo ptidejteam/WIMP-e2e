@@ -1,0 +1,74 @@
+Given the detailed use case scenario provided, here are comprehensive test cases structured to test each flow and the corresponding postconditions effectively:
+
+### Test Case 1: Testing Normal Heart Rate Flow
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Basic flow with normal heart rate data received and spoken by Buddy",
+  "steps": [
+    {"operation": "BuddyApp and FitbitApp are running, Connections initialized", "inputs": {}, "expectations": {"msg": "Apps running and connected"}},
+    {"operation": "WIMP requests heartrate data", "target": {"protocol": "HTTP", "method": "GET", "name": "Fitbit"}, "inputs": {}, "expectations": {"msg": "Request sent"}},
+    {"operation": "FitbitApp activates sensor and sends heartrate data", "target": {"protocol": "HTTP", "method": "POST", "name": "WIMP"}, "inputs": {"heartrate": 75}, "expectations": {"msg": "Heartrate data received"}},
+    {"operation": "WIMP validates heartrate normal and sends SPEAK command", "target": {"protocol": "Websocket", "method": "send", "name": "Buddy"}, "inputs": {"heartrate": 75}, "expectations": {"msg": "SPEAK command with 'Normal' sent"}},
+    {"operation": "Buddy speaks", "target": {"protocol": "Audio Output", "method": "play", "name": "Buddy"}, "inputs": {"text": "Normal"}, "expectations": {"msg": "Buddy speaks 'Normal'"}}
+  ]
+}
+```
+
+### Test Case 2: Testing No Heart Rate Data Received
+```json
+{
+  "TC_ID": "TC002",
+  "name": "Bounded alternative flow when no heart rate data is received",
+  "steps": [
+    {"operation": "BuddyApp and FitbitApp are running, Connections initialized", "inputs": {}, "expectations": {"msg": "Apps running and connected"}},
+    {"operation": "WIMP requests heartrate data", "target": {"protocol": "HTTP", "method": "GET", "name": "Fitbit"}, "inputs": {}, "expectations": {"msg": "Request sent"}},
+    {"operation": "No heart rate data received", "target": {"protocol": "HTTP", "method": "POST", "name": "WIMP"}, "inputs": {}, "expectations": {"msg": "No data received"}},
+    {"operation": "WIMP sends SPEAK command with 'No heart rate data'", "target": {"protocol": "Websocket", "method": "send", "name": "Buddy"}, "inputs": {}, "expectations": {"msg": "SPEAK command with 'No heart rate data' sent"}},
+    {"operation": "Buddy speaks", "target": {"protocol": "Audio Output", "method": "play", "name": "Buddy"}, "inputs": {"text": "No heart rate data"}, "expectations": {"msg": "Buddy speaks 'No heart rate data'"}}
+  ]
+}
+```
+
+### Test Case 3: Testing Low Heart Rate Data (Special Case)
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Specific alternative flow for heart rate between 50 and 60 bpm",
+  "steps": [
+    {"operation": "Heart rate data received", "target": {"protocol": "HTTP", "method": "POST", "name": "WIMP"}, "inputs": {"heartrate": 55}, "expectations": {"msg": "Heartrate 55 bpm received"}},
+    {"operation": "WIMP sends SPEAK command with 'No special attention'", "target": {"protocol": "Websocket", "method": "send", "name": "Buddy"}, "inputs": {}, "expectations": {"msg": "SPEAK command with 'No special attention' sent"}},
+    {"operation": "Buddy speaks", "target": {"protocol": "Audio Output", "method": "play", "name": "Buddy"}, "inputs": {"text": "No special attention"}, "expectations": {"msg": "Buddy speaks 'No special attention'"}}
+  ]
+}
+```
+
+### Test Case 4: Abnormal High or Low Heart Rate
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Specific alternative flow for heart rate below 50 or above 100 bpm",
+  "steps": [
+    {"operation": "Heart rate data received", "target": {"protocol": "HTTP", "method": "POST", "name": "WIMP"}, "inputs": {"heartrate": 120}, "expectations": {"msg": "Heartrate 120 bpm received"}},
+    {"operation": "WIMP sends SPEAK command with 'Special attention Needed'", "target": {"protocol": "Websocket", "method": "send", "name": "Buddy"}, "inputs": {}, "expectations": {"msg": "SPEAK command sent"}},
+    {"operation": "Buddy moves and speaks", "target": {"protocol": "USB", "method": "send", "name": "Buddy"}, "inputs": {"speed": -100, "angle": 90}, "expectations": {"msg": "Buddy moves and speaks 'Special attention is needed'"}}
+  ]
+}
+```
+
+### Test Case 5: No Feedback Received from Buddy
+```json
+{
+  "TC_ID": "TC005",
+  "name": "No feedback received from Buddy after command execution",
+  "steps": [
+    {"operation": "Heart rate data processed and SPEAK command sent", "target": {"protocol": "Websocket", "method": "send", "name": "Buddy"}, "inputs": {"heartrate": 70}, "expectations": {"msg": "SPEAK command sent"}},
+    {"operation": "No feedback received", "target": {"protocol": "Websocket", "method": "receive", "name": "Buddy"}, "inputs": {}, "expectations": {"msg": "No feedback received"}},
+    {"operation": "WIMP displays warning message", "target": {"protocol": "UI", "method": "display", "name": "WIMP"}, "inputs": {}, "expectations": {"msg": "Warning message displayed"}}
+  ]
+}
+```
+
+These test cases cover all specified normal, bounded alternative, and specific alternative flows, ensuring that Buddy's responses and WIMP's actions are as expected under various scenarios.
+
+Time Spent = 106397ms

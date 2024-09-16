@@ -1,0 +1,98 @@
+{
+"TC_ID":"TC001",
+"name": "Abnormal heart rate triggers Buddy to move less than 2 meters",
+"steps": [
+	{
+  	"operation": "Request heart rate data from Fitbit",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "Receive heart rate data above 100 bpm"
+  	}
+	},
+	{
+  	"operation": "Validate heart rate data",
+  	"target": "FitbitApp",
+  	"inputs": {
+    	"data type": "heart rate"
+  	},
+  	"expectations": {
+    	"msg": "Data validated as heart rate"
+  	}
+	},
+	{
+  	"operation": "Activate heart monitor sensor",
+  	"target": "FitbitApp",
+  	"inputs": {},
+  	"expectations": {
+    	"msg": "Sensor activated"
+  	}
+	},
+	{
+  	"operation": "Receive heart rate data from Fitbit",
+  	"target": "WIMP",
+  	"inputs": {
+    	"heart rate": 120
+  	},
+  	"expectations": {
+    	"msg": "Heart rate above 100 received"
+  	}
+	},
+	{
+  	"operation": "Send move command to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"distance": 1,
+    	"speed": 0.2
+  	},
+  	"expectations": {
+    	"msg": "Buddy moves less than 2 meters"
+  	}
+	},
+	{
+  	"operation": "Enable Wheels",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"left": 1,
+    	"right": 1
+  	},
+  	"expectations": {
+    	"msg": "WHEEL_MOVE_FINISHED"
+  	}
+	},
+	{
+  	"operation": "Receive feedback from Buddy",
+  	"target": "WIMP",
+  	"inputs": {
+    	"feedback": "WHEEL_MOVE_FINISHED"
+  	},
+  	"expectations": {
+    	"msg": "Feedback received"
+  	}
+	},
+	{
+  	"operation": "Check Buddy's mood and speech",
+  	"target": "Buddy",
+  	"inputs": {
+    	"mood": "SCARED",
+    	"speak": "Attention is required"
+  	},
+  	"expectations": {
+    	"msg": "Buddy's mood set to SCARED and speech 'Attention is required'"
+  	}
+	}
+  ]
+}
+Time Spent = 99684ms

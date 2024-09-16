@@ -1,0 +1,129 @@
+Here is a comprehensive set of test cases for the provided use case scenario, structured to include various flows and outcomes:
+
+```json
+[
+    {
+        "TC_ID": "TC001",
+        "name": "Successfully Handle High Heart Rate and Move Action",
+        "steps": [
+            {
+                "operation": "Request heart rate data from Fitbit",
+                "target": "",
+                "inputs": { "datatype": "bpm" },
+                "expectations": { "msg": "Heart rate data received" }
+            },
+            {
+                "operation": "Check heart rate is above 100 bpm",
+                "target": "",
+                "inputs": { "data": 110 },
+                "expectations": { "msg": "Heart rate is abnormal, higher than 100 bpm" }
+            },
+            {
+                "operation": "Send MOVE command to Buddy",
+                "target": "",
+                "inputs": { "distance": 2.5, "speed": 0.25 },
+                "expectations": { "msg": "MOVE command sent successfully" }
+            },
+            {
+                "operation": "Buddy moves and speaks after finishing",
+                "target": "",
+                "inputs": {},
+                "expectations": { "msg": "Buddy has moved and spoken 'attention is required'" }
+            },
+            {
+                "operation": "Buddy's face mood to SCARED",
+                "target": "",
+                "inputs": { "expression": "SCARED" },
+                "expectations": { "msg": "Buddy's face is set to SCARED" }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC002",
+        "name": "Handling No Heart Rate Data Received",
+        "steps": [
+            {
+                "operation": "Wait for Fitbit Data",
+                "target": "",
+                "inputs": {},
+                "expectations": { "msg": "No heart rate data received" }
+            },
+            {
+                "operation": "Send SPEAK command to Buddy 'No heart rate data'",
+                "target": "",
+                "inputs": { "text": "No heart rate data" },
+                "expectations": { "msg": "SPEAK command issued, Buddy informed about missing data" }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC003",
+        "name": "Handling Normal Heart Rate",
+        "steps": [
+            {
+                "operation": "Heart rate normal - 70 bpm",
+                "target": "",
+                "inputs": { "data": 70 },
+                "expectations": { "msg": "No special attention needed" }
+            },
+            {
+                "operation": "Send SPEAK command to Buddy with 'No Special Attention Needed'",
+                "target": "",
+                "inputs": { "text": "No Special Attention Needed" },
+                "expectations": { "msg": "SPEAK command sent successfully, no movement required" }
+            },
+            {
+                "operation": "Set Buddy's mood to HAPPY",
+                "target": "",
+                "inputs": { "expression": "HAPPY" },
+                "expectations": { "msg": "Buddy's mood set to HAPPY successfully" }
+            },
+            {
+                "operation": "Buddy rotates 180 degrees",
+                "target": "",
+                "inputs": { "angle": 180, "speed": 50 },
+                "expectations": { "msg": "Buddy rotated successfully" }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC004",
+        "name": "No Feedback from Buddy after MOVE Command",
+        "steps": [
+            {
+                "operation": "Send MOVE command",
+                "target": "",
+                "inputs": { "distance": 2, "speed": 0.2 },
+                "expectations": { "msg": "MOVE command sent" }
+            },
+            {
+                "operation": "Wait for Buddy Feedback",
+                "target": "",
+                "inputs": {},
+                "expectations": {"msg": "No feedback received, display warning message"}
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC005",
+        "name": "Fail to Enable Buddy's Wheels",
+        "steps": [
+            {
+                "operation": "Attempt to enable wheels",
+                "target": "",
+                "inputs": { "left": 1, "right": 1 },
+                "expectations": { "msg": "Wheels not enabled, NOK received" }
+            },
+            {
+                "operation": "Buddy speaks error message",
+                "target": "",
+                "inputs": { "text": "Wheels are not enabled" },
+                "expectations": { "msg": "Buddy communicated error" }
+            }
+        ]
+    }
+]
+```
+
+These test cases cover the basic flow, bounded alternative flow, and specific alternative flows defined in the scenario, thus ensuring thorough validation of each critical interaction and behavior. Each test case also aligns with the expected postconditions specified in the scenario.
+Time Spent = 81547ms

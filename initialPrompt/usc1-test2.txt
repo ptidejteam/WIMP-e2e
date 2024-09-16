@@ -1,0 +1,118 @@
+"
+You are a skilled Developer tasked with generating payloads based on a specific use case scenario. Your objective is to meticulously follow the given specifications and outline all possible payloads that align with the use case scenario provided.
+
+Here is how you should structure your response:
+
+---
+
+## Use Case: Normal heartrate, No Move action is required
+### Precondition
+- BuddyApp is running
+- FitbitApp is running
+- Connections have been initialized
+
+### Basic Flow
+1. The WIMP REQUESTS heartrate data from Fitbit
+2. The WIMP WAITS until it receives heartrate data
+3. The FitbitApp CHECKS the type of requested data
+4. FitbitApp VALIDATES THAT the requested data is heartrate data
+5. The FitbitApp ACTIVATES heart monitor SENSOR
+6. The FitbitApp SENSES heartrate data
+7. The FitbitApp SENDS heartrate data TO WIMP
+8. The WIMP RECEIVES heartrate data FROM Fitbit
+9. The WIMP VALIDATES THAT heartrate is between 60 and 100 bpm
+10. The WIMP SENDS SPEAK command to Buddy with "Normal" message
+11. The WIMP WAITS until it receives feedback from Buddy
+12. Buddy's setMood is set to NEUTRAL
+13. Buddy SPEAKS "Normal"
+14. The BuddyApp SENDS feedback to WIMP
+15. The WIMP RECEIVES feedback from Buddy
+
+### Postcondition
+- Buddy has spoken "Normal" and sent "SPEAK Action Completed" message to WIMP
+
+### Bounded Alternative Flow
+- If no heartrate data is received by WIMP THEN
+  - WIMP SENDS SPEAK Command to Buddy with "No heartrate data" message
+  - ABORT
+
+### Specific Alternative Flow: heartrate between 50 and 60 bpm
+- IF heartrate data is between 50 and 60 bpm THEN
+  - WIMP SENDS SPEAK command to Buddy with "No special attention" message
+  - ABORT
+
+### Specific Alternative Flow: heartrate below 50 or above 100 bpm
+- IF heartrate data is Below 50 OR above 100 bpm THEN
+  - WIMP SENDS SPEAK command to Buddy with "Special attention Needed" message
+  - Buddy ACTIVATES enableWheels
+  - Buddy ROTATES 90 degrees clockwise
+  - Buddy SPEAKS "Special Attention is needed"
+  - ABORT
+
+### Postcondition
+- Buddy has spoken "Special attention is needed" and sent "WHEEL_MOVE_FINISHED" TO WIMP
+
+---
+
+Please provide the possible payloads based on the use case scenario outlined above. Ensure your payloads are structured like the sample format below:
+{
+"TC_ID":"TC001",
+  "name": "move buddy successfully",
+  "steps": [
+	{
+  	"operation": "Get fitbit data",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {
+    	"datatype": "bpm"
+  	},
+  	"expectations": {
+    	"msg": "Receive Fitbit Data"
+  	}
+	},
+	{
+  	"operation": "Determine buddy action",
+  	"target": "",
+  	"inputs": {
+    	"data": 130
+  	},
+  	"expectations": {
+    	"msg": "robot must move"
+  	}
+	},
+	{
+  	"operation": "Enable_Wheels",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"left": 1,
+    	"right": 1
+  	},
+  	"expectations": {
+    	"msg": "WHEEL_MOVE_FINISHED"
+  	}
+	},
+	{
+  	"operation": "call move functions",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"distance": 1,
+    	"speed": 3
+  	},
+  	"expectations": {
+    	"msg": "WHEEL_MOVE_FINISHED"
+  	}
+	}
+  ]
+}
+"

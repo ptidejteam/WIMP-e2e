@@ -1,0 +1,378 @@
+Below are the comprehensive test cases addressing all specified flows and postconditions for the provided use case scenario:
+
+### Test Cases:
+
+#### Test Case 1: Receive Fitbit Data, Move Buddy Successfully
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "",
+      "inputs": {
+        "data": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "protocol": "HTTP",
+        "method": "PUT",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to HAPPY",
+      "target": {
+        "protocol": "HTTP",
+        "method": "PUT",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to HAPPY"
+      }
+    }
+  ],
+  "postconditions": [
+    {
+      "description": "WIMP receives WHEEL_MOVE_FINISHED notification status",
+      "status": "completed"
+    },
+    {
+      "description": "Buddy's mood is set to HAPPY",
+      "status": "set"
+    }
+  ]
+}
+```
+
+#### Test Case 2: No Heart Rate Data from Fitbit
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heart Rate Data from Fitbit",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive no data"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "rotation_speed": 45
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Buddy sets EnableWheels",
+      "target": "",
+      "inputs": {
+        "Left": 1,
+        "Right": 1
+      },
+      "expectations": {
+        "msg": "EnableWheels set to 1 for both wheels"
+      }
+    },
+    {
+      "operation": "Receive ROTATE execution feedback from Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "protocol": "HTTP",
+        "method": "PUT",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "No heart rate data"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No heart rate data'"
+      }
+    }
+  ],
+  "postconditions": [
+    {
+      "description": "Mood is set to NEUTRAL",
+      "status": "set"
+    },
+    {
+      "description": "Buddy sends 'Speak Action Completed' back to WIMP",
+      "status": "completed"
+    }
+  ]
+}
+```
+
+#### Test Case 3: Wheels not Enabled
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Wheels not Enabled",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "",
+      "inputs": {
+        "data": 85
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Set EnableWheels to 0",
+      "target": "",
+      "inputs": {
+        "Left": 0,
+        "Right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy should not move"
+      }
+    },
+    {
+      "operation": "Check Wheels status and show warning",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "WIMP displays 'Wheels not enabled' warning message"
+      }
+    }
+  ],
+  "postconditions": [
+    {
+      "description": "WIMP displays 'Wheels not enabled' warning message",
+      "status": "displayed"
+    }
+  ]
+}
+```
+
+#### Test Case 4: Heart Rate Out of Valid Range (Greater than 100 bpm)
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heart Rate Out of Valid Range (Greater than 100 bpm)",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "",
+      "inputs": {
+        "data": 105
+      },
+      "expectations": {
+        "msg": "Heart rate is out of valid range"
+      }
+    }
+  ],
+  "postconditions": [
+    {
+      "description": "Heart rate validation fails",
+      "status": "failed"
+    }
+  ]
+}
+```
+
+#### Test Case 5: Heart Rate Out of Valid Range (Less than 60 bpm)
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Heart Rate Out of Valid Range (Less than 60 bpm)",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "",
+      "inputs": {
+        "data": 55
+      },
+      "expectations": {
+        "msg": "Heart rate is out of valid range"
+      }
+    }
+  ],
+  "postconditions": [
+    {
+      "description": "Heart rate validation fails",
+      "status": "failed"
+    }
+  ]
+}
+```
+
+These test cases comprehensively cover the provided use case scenario, including normal flows, bounded alternative flows, and specific alternative flows. Each test case includes preconditions, detailed steps, and postconditions to ensure the testing process is thorough and reflects the requirements.
+Time Spent = 55659ms

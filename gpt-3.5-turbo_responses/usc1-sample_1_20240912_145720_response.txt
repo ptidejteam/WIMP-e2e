@@ -1,0 +1,637 @@
+```json
+{
+  "TC_ID":"TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID":"TC002",
+  "name": "Receive No Heart Rate Data, Rotate Buddy",
+  "steps": [
+    {
+      "operation": "Check for Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "CheckData"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "No heart rate data from Fitbit"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": 90,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID":"TC003",
+  "name": "Enable Wheels Not Set, Display Warning Message",
+  "steps": [
+    {
+      "operation": "Attempt to Move Buddy without enabling wheels",
+      "target": {
+        "protocol": "WIMP",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Displays 'Wheels not enabled' warning message"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC004",
+  "name": "Receive Invalid Heart Rate Data, Move Buddy in Reverse",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 40
+      },
+      "expectations": {
+        "msg": "Heart rate is invalid"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy (Reverse)",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": -1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves in reverse with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC005",
+  "name": "Enable Wheels, Rotate Buddy Right",
+  "steps": [
+    {
+      "operation": "Enable left and right wheels on Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ENABLE_WHEELS",
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Enable left and right wheels on Buddy"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy (Right)",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": -90,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy rotates right with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC006",
+  "name": "Set Buddy's Mood to Angry, Speak Angry Message",
+  "steps": [
+    {
+      "operation": "Set Buddy's mood to ANGRY",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "ANGRY",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to ANGRY"
+      }
+    },
+    {
+      "operation": "Speak Angry message through Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "I'm angry"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'I'm angry'"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC007",
+  "name": "Move Buddy at Maximum Speed and Distance",
+  "steps": [
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 10,
+        "speed": 0.7
+      },
+      "expectations": {
+        "msg": "Buddy moves with maximum specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC008",
+  "name": "Receive No Fitbit Data, Rotate Buddy Left",
+  "steps": [
+    {
+      "operation": "Check for Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "CheckData"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "No heart rate data from Fitbit"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy (Left)",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": 90,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy rotates left with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC009",
+  "name": "Receive High Heart Rate Data, Move Buddy in Panic Mode",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 120
+      },
+      "expectations": {
+        "msg": "Heart rate is high"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy in panic mode",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 2,
+        "speed": 0.7
+      },
+      "expectations": {
+        "msg": "Buddy moves faster in panic mode with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC010",
+  "name": "Set Buddy's Mood to Sad, Speak Sad Message",
+  "steps": [
+    {
+      "operation": "Set Buddy's mood to SAD",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "SAD",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to SAD"
+      }
+    },
+    {
+      "operation": "Speak Sad message through Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "I'm feeling low"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'I'm feeling low'"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC011",
+  "name": "Receive Negative Speed Data, Rotate Buddy with Minimum Speed",
+  "steps": [
+    {
+      "operation": "Send Rotate command to Buddy with negative speed",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": -90,
+        "speed": -30
+      },
+      "expectations": {
+        "msg": "Buddy rotates with minimum negative speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC012",
+  "name": "Enable Wheels and Rotate Buddy, Wheels Not Disabled After Rotation",
+  "steps": [
+    {
+      "operation": "Enable left and right wheels on Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ENABLE_WHEELS",
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Enable left and right wheels on Buddy"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": 90,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Verify wheels are still enabled after rotation",
+      "target": "Buddy",
+      "inputs": {},
+      "expectations": {
+        "msg": "Wheels are still enabled on Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC013",
+  "name": "Send Invalid Command to Buddy",
+  "steps": [
+    {
+      "operation": "Attempt to Send Invalid Command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "INVALID_COMMAND",
+        "message": "Do something"
+      },
+      "expectations": {
+        "msg": "Buddy does not execute invalid command"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID":"TC014",
+  "name": "Send Longer Distance Command to Buddy, Receive Move Finished Status",
+  "steps": [
+    {
+      "operation": "Send Move command to Buddy with longer distance",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 5,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with longer specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution finished status from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveStatus"
+      },
+      "inputs": {
+        "status": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "WIMP receives 'WHEEL_MOVE_FINISHED' status from Buddy"
+      }
+    }
+  ]
+}
+```
+Time Spent = 146889ms

@@ -1,0 +1,209 @@
+### Test Case 1: Normal Flow with Valid Heart Rate
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal operation with valid heart rate",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "FitbitApp"
+      },
+      "inputs": {
+        "datatype": "heartRate",
+        "value": 85
+      },
+      "expectations": {
+        "msg": "Receive Valid Heart Rate Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "heartRate": 85
+      },
+      "expectations": {
+        "msg": "Heart Rate is within normal range"
+      }
+    },
+    {
+      "operation": "Send SPEAK command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 2.0,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: Bounded Alternative Flow (No Heart Rate Data)
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "Handle No Heart Rate Data",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "FitbitApp"
+      },
+      "inputs": {
+        "datatype": "heartRate",
+        "value": null
+      },
+      "expectations": {
+        "msg": "Receive No Heart Rate Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action based on no input",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Should send ROTATE command"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90 degrees at 50 deg/s"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: Specific Alternative Flow (Wheels Not Enabled)
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Handle Wheels Not Enabled Error",
+  "steps": [
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Attempt to move Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.3
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED not possible"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 4: Edge Case - Heart Rate Boundary Values
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heart Rate at Boundary Values",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "FitbitApp"
+      },
+      "inputs": {
+        "datatype": "heartRate",
+        "value": 60
+      },
+      "expectations": {
+        "msg": "Receive Low Boundary Heart Rate Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate at boundary",
+      "target": "",
+      "inputs": {
+        "heartRate": 60
+      },
+      "expectations": {
+        "msg": "Heart Rate is at low boundary"
+      }
+    },
+    {
+      "operation": "Send MOVE command at boundary",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1.5,
+        "speed": 0.2
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+}
+``` 
+
+These test cases cover the required main flow, alternative flows, and edge conditions for the described use case scenario, ensuring thorough validation and interaction verifications.
+Time Spent = 102138ms

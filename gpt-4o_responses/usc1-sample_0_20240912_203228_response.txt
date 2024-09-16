@@ -1,0 +1,264 @@
+Sure, let's produce detailed test cases based on the given use case specification. These test cases will be designed to evaluate various scenarios and capture all possible outcomes as mentioned in the use case specification.
+
+### Test Case 1: Normal Heart Rate Data Flow
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal Heart Rate Data Flow",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send speak command",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set mood",
+      "target": "",
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send speak feedback",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "feedback": "Speak Action Completed"
+      },
+      "expectations": {
+        "msg": "Speak feedback sent to WIMP"
+      }
+    },
+    {
+      "operation": "Send move command",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 10,
+        "speed": 5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Enable wheels",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Receive move feedback",
+      "target": {
+        "protocol": "MQTT",
+        "method": "RECEIVE",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Move execution feedback received"
+      }
+    },
+    {
+      "operation": "Set mood",
+      "target": "",
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to HAPPY"
+      }
+    },
+    {
+      "operation": "Receive wheel move finished notification",
+      "target": {
+        "protocol": "MQTT",
+        "method": "RECEIVE",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Wheel move finished notification received"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: No Heart Rate Data Received
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heart Rate Data Received",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": "bpm"
+      },
+      "expectations": {
+        "msg": "No data received"
+      }
+    },
+    {
+      "operation": "Send rotate command",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": 90,
+        "rotationSpeed": 3
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Enable wheels",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Receive rotate feedback",
+      "target": {
+        "protocol": "MQTT",
+        "method": "RECEIVE",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Rotate execution feedback received"
+      }
+    },
+    {
+      "operation": "Set mood",
+      "target": "",
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: Wheels Not Enabled
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Wheels Not Enabled",
+  "steps": [
+    {
+      "operation": "Check wheels enabled status",
+      "target": "",
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Display warning",
+      "target": {
+        "protocol": "MQTT",
+        "method": "PUBLISH",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Wheels not enabled"
+      },
+      "expectations": {
+        "msg": "Buddy displays warning message"
+      }
+    },
+    {
+      "operation": "Set mood",
+      "target": "",
+      "inputs": {
+        "mood": "TIRED"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to TIRED"
+      }
+    }
+  ]
+}
+```
+
+These test cases cover the normal scenarios, alternative flows, and specific exception scenarios for the given use case specification.
+Time Spent = 23548ms

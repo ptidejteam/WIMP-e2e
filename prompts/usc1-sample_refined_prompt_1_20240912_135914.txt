@@ -1,0 +1,170 @@
+You are a skilled Developer tasked with generating test cases based on a specific use case scenario, ensuring comprehensive coverage and high-quality responses. Your objective is to meticulously follow the given specifications and outline all possible test cases that align with the use case scenario provided, ensuring coverage for normal, bounded alternative, specific alternative flows, and edge cases.
+
+### Instructions:
+1. Ensure your test cases cover all specified normal, bounded alternative, and specific alternative flows.
+2. Address postconditions in detail.
+3. Include test cases for edge cases and other possibilities.
+
+### Use Case: Fitbit Sends Data, Buddy Moves
+
+**1. Precondition:**
+- BuddyApp is running
+- FitbitApp is running
+- Connections have been initialized
+
+**2. Basic Flow:**
+1. The WIMP receives heart rate data from Fitbit.
+2. The WIMP validates that the heart rate is between 60 and 100 bpm.
+3. The WIMP sends a SPEAK command to Buddy with a "Normal" message.
+4. Buddy's mood is set to NEUTRAL.
+5. Buddy speaks "Normal."
+6. Buddy sends SPEAK feedback to WIMP.
+7. The WIMP sends a MOVE command to Buddy with distance and speed parameters.
+8. Buddy sets EnableWheels to 1 for both Left and Right Wheels.
+9. Buddy moves with specified distance and speed.
+10. Buddy sends MOVE execution feedback to WIMP.
+11. WIMP receives MOVE execution feedback from Buddy.
+12. Buddy's mood is set to HAPPY.
+
+**Postcondition:**
+- WIMP receives “WHEEL_MOVE_FINISHED” notification status.
+- Buddy's mood is set to HAPPY.
+
+**3. Bounded Alternative Flow:**
+- Refers to steps 1-7
+1. If WIMP receives no heart rate data from Fitbit THEN
+2. WIMP sends ROTATE command to Buddy with angle and rotation speed.
+3. Buddy sets EnableWheels to 1 for both left and right wheels.
+4. Buddy moves with specified distance and speed.
+5. Buddy sends ROTATE execution feedback to WIMP.
+6. WIMP receives "WHEEL_MOVE_FINISHED" feedback from Buddy.
+7. Buddy's mood is set to NEUTRAL.
+
+**Postcondition:**
+- Mood is set to NEUTRAL.
+- Buddy has spoken "No heart rate data" and sent "Speak Action Completed" back to WIMP.
+
+**4. Specific Alternative Flow:**
+- Refers to step 8
+1. If EnableWheels is not set to 1 THEN
+2. WIMP displays "Wheels not enabled" warning message.
+3. ENDIF
+
+**Postcondition:**
+- WIMP displays "Wheels not enabled" warning message.
+
+### Inputs for Buddy Actions:
+
+1. **Rotate**
+    - `void USB.rotateBuddy(Speed, Angle, RspCallback)`
+    - Purpose: Rotate the robot at a given angle and speed.
+    - Params:
+       - Speed (float): Speed of the rotation (deg/s), between -100°/s and 100°/s.
+       - Angle [optional] (float): Rotation angle (degree), between –360° and 360°.
+       - RspCallback (IUsbCommadRsp):
+           - "OK" when started.
+           - "WHEEL_MOVE_FINISHED" when the move is finished.
+           - "NOK" when fail.
+
+2. **Move:**
+    - `void USB.moveBuddy(Speed, Distance, RspCallback)`
+    - Purpose: Move the robot straight at a defined speed and distance.
+    - Params:
+       - Speed (float): Speed of the robot (m/s), between 0.05m/s to 0.7m/s.
+       - Distance [optional] (float): Distance to reach (meter).
+       - RspCallback (IUsbCommadRsp):
+           - "OK" when launched.
+           - "WHEEL_MOVE_FINISHED" when the move is finished.
+           - "NOK" when fail.
+    - Condition: You have to enable wheels before using rotate and move functions.
+
+3. **Enable Wheels:**
+    - `EnableWheels`
+       - Left (int): Enable left wheel (0: Off, 1: On).
+       - Right (int): Enable right wheel (0: Off, 1: On).
+       - RspCallback (IUsbCommadRsp):
+           - "OK" when launched.
+           - "NOK" when fail.
+
+4. **Speak:**
+    - `void Speech.startSpeaking(iText, iExpression, iCallback)`
+    - Purpose: Speak the provided text with specified facial expression.
+    - Params:
+       - iText (string): Text to speak.
+       - IExpression (LabialExpression): SPEAK_ANGRY, NO FACE, SPEAK HAPPY, SPEAK NEUTRAL.
+
+5. **Mood:**
+    - `void UI.setMood(iExpression, iSpeed, IUIFaceAnimationCallback iCallback)`
+    - Purpose: Set Buddy's facial expression and LEDs.
+    - Params:
+       - iExpression (FacialExpression): NONE, NEUTRAL, GRUMPY, HAPPY, ANGRY, LISTENING, LOVE, SAD, SCARED, SICK, SURPRISED, THINKING, TIRED.
+       - iSpeed [optional] (double): Speed of expression change (0.0 to 1.0).
+       - iCallback [optional]: Called at the end of the instruction in case of success/failure.
+
+### Test Case Format:
+Ensure your test cases follow this exact structure:
+```json
+{
+  "TC_ID": "TC001",
+  "name": "move buddy successfully",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action",
+      "target": "",
+      "inputs": {
+        "data": 130
+      },
+      "expectations": {
+        "msg": "robot must move"
+      }
+    },
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "call move functions",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 3
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+}
+```
+
+### Enhanced Prompt:
+Please provide the possible test cases based on the use case scenario outlined above. Ensure your test cases are structured like the sample format provided, cover all specified normal, bounded alternative, and specific alternative flows, address postconditions in detail, and include edge cases and other possibilities.

@@ -1,90 +1,220 @@
-Your task is to develop test cases based on the given use case specifications. The focus is on the scenario where there is a normal heart rate, and no move action is required. Here are the steps to guide you in developing the test cases:
-### Test Case Payload for Use Case: Abnormal heart rate (bradycardia), Move action is required
+You are a skilled Developer tasked with generating test cases based on a specific use case scenario.
 
-#### **Precondition:**
-- BuddyApp is running
-- FitbitApp is running
-- Connections have been initialized
+Your objective is to meticulously follow the given specifications and outline all possible test cases that align with the use case scenario provided.
+ Here is how you should structure your response:
 
-#### **Basic Flow:**
+---
+2. Use Case :Abnormal heartrate (bradycardia), Move action is required
+2.1 Precondition
+BuddyApp is running
+FitbitApp is running
+Connections have been initialized
+2.2 Basic Flow
+1.The WIMP REQUESTS heartrate data from Fitbit
+2.The WIMP WAITS until it receives heartrate data
+3.The FitbitApp CHECKS the type of requested data
+4.FitbitApp VALIDATES THAT the requested data is heartrate data
+5.The FitbitApp ACTIVATES heartmonitor SENSOR
+6.The FitbitApps SENSES heartrate data
+7.The FitbitApps SENDS heartrate data TO WIMP
+8.The WIMP RECEIVES heartrate data FROM fitbit
+9.The WIMP VALIDATES THAT heartrate is below 50
+10.The WIMP SENDS MOVE command to Buddy with distance less than 2.0 m and speed than 0.5 m/s
+11.The WIMP WAITS until it receives feeback from Buddy
+12. The Buddy ACTIVATES both wheels by setting enableWheels to TRUE.
+13. The Buddy MOVES the given distance and SPEAKS "Special attention Needed" when finished moving.
+14. The Buddy's face is setMood to SURPRISED
+15.The BuddyApp SENDS execution feedback status to WIMP
+16.The WIMP RECEIVES execution feedback from Buddy
+Postcondition
+Buddy has spoken "Special attention Needed" and sent  “WHEEL_MOVE_FINISHED” status message to WIMP
+2.3 Bounded Alternative Flow
+RFS 4-8
+1.IF no heartrate data is received by WIMP THEN
+2.WIMP SENDS SPEAK Command to Buddy with "No heartrate data" message
+3.ABORT
+4.ENDIF
+Postcondition
+Buddy has spoken"No heartrate data" and sent "Speak Action Completed" back to WIMP
+2.4 Specific Alternative Flow
+RFS 9
+1.IF heartrate data is not below  50 or not great than 100 bpm THEN
+2.WIMP SENDS SPEAK command to Buddy with "No Special attention Needed" message
+3. Buddy's face setMood is set to HAPPY
+4.The Buddy ACTIVATES both wheels by setting enableWheels to TRUE.
+5.Buddy ROTATES 90 degrees clockwise
+6.ABORT
+7.ENDIF
+Postcondition
+Buddy has rotated 90 degree and spoke "No Special attention Needed". Buddy sent "WHEEL_MOVE_FINISHED" execution status TO WIMP.
+2.5 Specific Alternative Flow
+RFS 11
+1.IF WIMP receives no feedback from Buddy  THEN
+2. WIMP displays warning message.
+3.ABORT
+4.ENDIF
+Postcondition
+WIMP displays warning message. No action is observed.
+2.6 Specific Alternative Flow
+RFS 12
+1.IF wheels can not be activated THEN
+2.Buddy SPEAKS "Wheels are not enabled" message
+3.ABORT
+4.ENDIF
+Postcondition
+Buddy has spoken "Wheels are not enabled" and  sent "NOK" TO WIMP.
+2.7 Specific Alternative Flow
+RFS 13
+1.IF MOVE can not be completed THEN
+2.Buddy SPEAKS "Move not completed" message
+3.ABORT
+4.ENDIF
+Postcondition
+Buddy sends "MOVE_NOT_COMPLETED" to WIMP.
+2.8 Specific Alternative Flow
+RFS 16
+1.IF WIMP receives no execution feedback from Buddy  THEN
+2. WIMP displays warning message.
+3.ABORT
+4.ENDIF
+Postcondition
+No action is observed. WIMP displays warning message.
 
-1. **The WIMP REQUESTS heart rate data from Fitbit.**
-   - **Test Case:** Verify that WIMP successfully requests heart rate data from Fitbit when the necessary preconditions are met.
+---
+** More informations **
+Inputs for Buddy action
 
-2. **The WIMP WAITS until it receives heart rate data.**
-   - **Test Case:** Validate that WIMP waits for the heart rate data without timing out.
+1) Rotate
+ - void USB.rotateBuddy(Speed, Angle, RspCallback)
+ - Purpose: rotate the robot at a given angle and speed
+ - Params:
+    - Speed (float): give the speed of the rotation of the robot in     deg/s around its vertical axis, between -100°/s and 100°/s (min. absolute speed : 30°/s)
+         Speed >0: counter-clockwise, Speed <0: clockwise
 
-3. **The FitbitApp CHECKS the type of requested data.**
-   - **Test Case:** Confirm that FitbitApp correctly identifies that the requested data is for heart rate.
+    - Angle[optional] (float): give the angle of the rotation of the wheel in degree,
 
-4. **FitbitApp VALIDATES THAT the requested data is heart rate data.**
-   - **Test Case:** Ensure FitbitApp properly validates the data request type as heart rate.
+        between –360° and 360°
+        If absent, Buddy will rotate indefinitely at the given speed
+        RspCallback (IUsbCommadRsp): return
+               “OK” when started
+               “WHEEL_MOVE_FINISHED” when the move is finished
+               "NOK” when fail
 
-5. **The FitbitApp ACTIVATES the heart monitor SENSOR.**
-   - **Test Case:** Check that FitbitApp successfully activates the heart monitor sensor.
+2) move:
+void USB.moveBuddy(Speed, Distance, RspCallback)
+  - Purpose: Move the robot straight at a defined speed and distance
+  - Params:
+        -> Speed (float): give the speed of the robot in m/s, (+): Forward, (-): Backward, between 0.05m/s to 0.7m/s
+        -> Distance[optional] (float): give the distance to reach in meter.
+       If absent, Buddy will move indefinitely at the given speed
+       RspCallback (IUsbCommadRsp): return
 
-6. **The FitbitApp SENSES heart rate data.**
-   - **Test Case:** Verify that FitbitApp accurately senses and collects heart rate data.
+                  - “OK” when launch
+                  - “WHEEL_MOVE_FINISHED” when the move is finished
+                  - "NOK” when fail
 
-7. **The FitbitApp SENDS heart rate data TO WIMP.**
-   - **Test Case:** Confirm that FitbitApp sends the collected heart rate data to WIMP correctly.
+Condition: You have to ENABLE WHEELS before using rotate and move functions.
 
-8. **The WIMP RECEIVES heart rate data FROM Fitbit.**
-   - **Test Case:** Ensure WIMP receives the heart rate data without errors.
+3) Enable Wheels:
+EnableWheels
+  -Left (int): enable left wheel (0: Off, 1: On)
+  -Right (int): enable right wheel (0: Off, 1: On)
+  -RspCallback (IUsbCommadRsp): return
+     -“OK” when launch
+     -"NOK” when fail
 
-9. **The WIMP VALIDATES THAT heart rate is below 50.**
-   - **Test Case:** Verify that WIMP properly validates that the received heart rate is below 50 bpm.
+4) speak
+    void Speech.startSpeaking(iText, iExpression, iCallback)
+    Purpose: Says provided text and make a special mouth movement
+    Params:
+        iText (string): Text to speak
+        IExpression (LabialExpression):
+            SPEAK_ANGRY
+            NO FACE
+            SPEAK HAPPY
+            SPEAK NEUTRAL
 
-10. **The WIMP SENDS MOVE command to Buddy with distance less than 2.0 m and speed less than 0.5 m/s.**
-    - **Test Case:** Confirm that WIMP sends the correct MOVE command to Buddy when heart rate is below 50 bpm.
+5)Mood
+void UI.setMood(iExpression, iSpeed, IUIFaceAnimationCallback iCallback )
+Purpose: Give Buddy different facial expressions and set the LEDs
+ Params:
+   iExpression (FacialExpression):
+     - NONE
+     - NEUTRAL
+     - GRUMPY
+     - HAPPY
+     - ANGRY
+     - LISTENING
+     - LOVE
+     - SAD
+     - SCARED
+     - SICK
+     - SURPRISED
+     - THINKING
+     - TIRED
+iSpeed[optional] (double): Can take value from 0.0 to 1.0 (0% to 100%). The faster the speed is, the faster the facial expression is.
 
-11. **The WIMP WAITS until it receives feedback from Buddy.**
-    - **Test Case:** Validate that WIMP waits for feedback from Buddy without timing out.
-
-12. **The Buddy ACTIVATES both wheels by setting enableWheels to TRUE.**
-    - **Test Case:** Ensure Buddy activates both wheels by setting enableWheels to TRUE as per the MOVE command.
-
-13. **The Buddy MOVES the given distance and SPEAKS "Special attention Needed" when finished moving.**
-    - **Test Case:** Verify that Buddy moves the specified distance and speaks "Special attention Needed" upon completing the move.
-
-14. **The Buddy's face setMood to SURPRISED.**
-    - **Test Case:** Confirm that Buddy's face changes to display a SURPRISED mood.
-
-15. **The BuddyApp SENDS execution feedback status to WIMP.**
-    - **Test Case:** Ensure BuddyApp sends the execution feedback status to WIMP.
-
-16. **The WIMP RECEIVES execution feedback from Buddy.**
-    - **Test Case:** Validate that WIMP correctly receives and processes the execution feedback from Buddy.
-
-#### **Postcondition:**
-Buddy has spoken "Special attention Needed" and sent “WHEEL_MOVE_FINISHED” status message to WIMP.
-
-#### **Bounded Alternative Flow:**
-
-1. **IF no heart rate data is received by WIMP**
-    - **Test Case:** Verify WIMP sends SPEAK command to Buddy with "No heart rate data" message if heart rate data is not received.
-    - **Test Case:** Ensure the process aborts after sending the "No heart rate data" message.
-
-**Postcondition:**
-Buddy has spoken "No heart rate data" and sent "Speak Action Completed" back to WIMP.
-
-#### **Specific Alternative Flow - RFS 9:**
-
-1. **IF heart rate data is not below 50 or not greater than 100 bpm**
-    - **Test Case:** Confirm WIMP sends SPEAK command to Buddy with "No Special attention Needed" message if heart rate data is not below 50 or not greater than 100 bpm.
-    - **Test Case:** Validate that Buddy's face is set to HAPPY.
-    - **Test Case:** Ensure Buddy activates both wheels by setting enableWheels to TRUE.
-    - **Test Case:** Verify Buddy rotates 90 degrees clockwise.
-    - **Test Case:** Confirm the process aborts after these actions.
-
-**Postcondition:**
-Buddy has rotated 90 degrees and spoken "No Special attention Needed". Buddy sent "WHEEL_MOVE_FINISHED" execution status TO WIMP.
-
-#### **Specific Alternative Flow - RFS 12:**
-
-1. **IF wheels cannot be activated**
-    - **Test Case:** Ensure Buddy speaks "Wheels are not enabled" message if wheels cannot be activated.
-    - **Test Case:** Verify the process aborts after sending the message.
-
-**Postcondition:**
-Buddy has spoken "Wheels are not enabled" and sent "NOK" TO WIMP.
+iCallback[optional] : Called at the end of the instruction in case of success/failure
+----
+Please provide the possible test cases based on the use case scenario outlined above. Ensure your test cases are structured like the sample format below:
+{
+"TC_ID":"TC001",
+  "name": "move buddy successfully",
+  "steps": [
+	{
+  	"operation": "Get fitbit data",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {
+    	"datatype": "bpm"
+  	},
+  	"expectations": {
+    	"msg": "Receive Fitbit Data"
+  	}
+	},
+	{
+  	"operation": "Determine buddy action",
+  	"target": "",
+  	"inputs": {
+    	"data": 130
+  	},
+  	"expectations": {
+    	"msg": "robot must move"
+  	}
+	},
+	{
+  	"operation": "Enable_Wheels",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"left": 1,
+    	"right": 1
+  	},
+  	"expectations": {
+    	"msg": "WHEEL_MOVE_FINISHED"
+  	}
+	},
+	{
+  	"operation": "call move functions",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"distance": 1,
+    	"speed": 3
+  	},
+  	"expectations": {
+    	"msg": "WHEEL_MOVE_FINISHED"
+  	}
+	}
+  ]
+}
+** Note ** :  Ensure that the test cases cover all specified normal, bounded alternative, specific alternative flows,  postconditions in detail and the other possibiliies of tests.

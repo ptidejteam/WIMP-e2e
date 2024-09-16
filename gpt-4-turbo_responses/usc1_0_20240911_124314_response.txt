@@ -1,0 +1,238 @@
+Here are the test cases based on the defined use case scenario:
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal heart rate processing",
+  "steps": [
+    {
+      "operation": "Request heartrate data",
+      "target": {
+        "protocol": "API Request",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Heartrate data requested"
+      }
+    },
+    {
+      "operation": "Receives heart rate data",
+      "target": {
+        "protocol": "API Response",
+        "method": "POST",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Heartrate data received and valid"
+      }
+    },
+    {
+      "operation": "Check heartrate normal condition",
+      "target": "",
+      "inputs": {
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Heartrate within normal range, no movement needed"
+      }
+    },
+    {
+      "operation": "Buddy speaks 'Normal'",
+      "target": {
+        "protocol": "Function Call",
+        "method": "startSpeaking",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Normal",
+        "IExpression": "SPEAK NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy has spoken 'Normal'"
+      }
+    }
+  ]
+},
+{
+  "TC_ID": "TC002",
+  "name": "No heartrate data received",
+  "steps": [
+    {
+      "operation": "Request heartrate data",
+      "target": {
+        "protocol": "API Request",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Heartrate data requested"
+      }
+    },
+    {
+      "operation": "No heartrate data received",
+      "target": {
+        "protocol": "Timeout",
+        "method": "No Response",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "No heartrate data from Fitbit, timeout occurred"
+      }
+    },
+    {
+      "operation": "Buddy speaks 'No heartrate data'",
+      "target": {
+        "protocol": "Function Call",
+        "method": "startSpeaking",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "No heartrate data",
+        "IExpression": "SPEAK NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy has spoken 'No heartrate data'"
+      }
+    }
+  ]
+},
+{
+  "TC_ID": "TC003",
+  "name": "Heart rate below normal range",
+  "steps": [
+    {
+      "operation": "Receives low heart rate data",
+      "target": {
+        "protocol": "API Response",
+        "method": "POST",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 55
+      },
+      "expectations": {
+        "msg": "Heartrate data received and valid but low"
+      }
+    },
+    {
+      "operation": "Buddy speaks 'No special attention'",
+      "target": {
+        "protocol": "Function Call",
+        "method": "startSpeaking",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "No special attention",
+        "IExpression": "SPEAK NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy has spoken 'No special attention'"
+      }
+    }
+  ]
+},
+{
+  "TC_ID": "TC004",
+  "name": "Heart rate requires special attention",
+  "steps": [
+    {
+      "operation": "Enable wheels",
+      "target": {
+        "protocol": "Function Call",
+        "method": "EnableWheels",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Left": 1,
+        "Right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy rotates 90 degrees clockwise",
+      "target": {
+        "protocol": "Function Call",
+        "method": "rotateBuddy",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": -100,
+        "Angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotation completed"
+      }
+    },
+    {
+      "operation": "Buddy speaks 'Special attention is needed'",
+      "target": {
+        "protocol": "Function Call",
+        "method": "startSpeaking",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Special Attention is needed",
+        "IExpression": "SPEAK NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy has spoken 'Special attention is needed'"
+      }
+    }
+  ]
+},
+{
+  "TC_ID": "TC005",
+  "name": "No feedback from Buddy after command issued",
+  "steps": [
+    {
+      "operation": "Issue command to Buddy",
+      "target": {
+        "protocol": "Function Call",
+        "method": "startSpeaking",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Normal",
+        "IExpression": "SPEAK NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Command issued to Buddy"
+      }
+    },
+    {
+      "operation": "No response from Buddy",
+      "target": {
+        "protocol": "Timeout",
+        "method": "No Response",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "No feedback received from Buddy, timeout occurred"
+      }
+    },
+    {
+      "operation": "WIMP displays warning message",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Displayed warning message"
+      }
+    }
+  ]
+}
+```
+
+These test cases comprehensively cover normal, bounded alternative, and specific alternative flows as described in the use case scenario. Each test ensures that all preconditions, operations, inputs, and expected outputs are clearly specified and aligned with the requirements.
+Time Spent = 123716ms

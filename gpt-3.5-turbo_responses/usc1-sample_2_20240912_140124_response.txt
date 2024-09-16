@@ -1,0 +1,298 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "heart rate within normal range",
+  "steps": [
+    {
+      "operation": "Get heart rate data from Fitbit",
+      "target": {
+        "protocol": "API",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data from Fitbit"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "heart_rate": 80
+      },
+      "expectations": {
+        "msg": "Heart rate validated successfully"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 3
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Verify Buddy's mood set to HAPPY",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy's mood should be HAPPY"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "no heart rate data received",
+  "steps": [
+    {
+      "operation": "Get heart rate data from Fitbit",
+      "target": {
+        "protocol": "API",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive no heart rate data from Fitbit"
+      }
+    },
+    {
+      "operation": "Send ROTATE command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "speed": 2
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Verify Buddy's mood set to NEUTRAL",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy's mood should be NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Wheels not enabled",
+  "steps": [
+    {
+      "operation": "Send MOVE command to Buddy without enabling wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 3
+      },
+      "expectations": {
+        "msg": "Display 'Wheels not enabled' warning message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "edge case - heart rate below lower bound",
+  "steps": [
+    {
+      "operation": "Get heart rate data from Fitbit",
+      "target": {
+        "protocol": "API",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data below lower bound (e.g., 59 bpm)"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "heart_rate": 59
+      },
+      "expectations": {
+        "msg": "Validate heart rate and take appropriate action"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "edge case - heart rate above upper bound",
+  "steps": [
+    {
+      "operation": "Get heart rate data from Fitbit",
+      "target": {
+        "protocol": "API",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data above upper bound (e.g., 101 bpm)"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "heart_rate": 101
+      },
+      "expectations": {
+        "msg": "Validate heart rate and take appropriate action"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "boundary case - heart rate at lower bound",
+  "steps": [
+    {
+      "operation": "Get heart rate data from Fitbit",
+      "target": {
+        "protocol": "API",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data at lower bound (e.g., 60 bpm)"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "heart_rate": 60
+      },
+      "expectations": {
+        "msg": "Validate heart rate and continue with normal flow"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC007",
+  "name": "boundary case - heart rate at upper bound",
+  "steps": [
+    {
+      "operation": "Get heart rate data from Fitbit",
+      "target": {
+        "protocol": "API",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Receive heart rate data at upper bound (e.g., 100 bpm)"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "heart_rate": 100
+      },
+      "expectations": {
+        "msg": "Validate heart rate and continue with normal flow"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC008",
+  "name": "enable wheels for rotate command",
+  "steps": [
+    {
+      "operation": "Enable Wheels for Rotate command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED after rotation executed successfully"
+      }
+    }
+  ]
+}
+}
+```
+Time Spent = 130449ms

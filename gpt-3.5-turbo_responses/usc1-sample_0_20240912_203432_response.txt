@@ -1,0 +1,102 @@
+
+[
+{
+"TC_ID": "TC001",
+"name": "Normal Flow Scenario",
+"steps": [
+{
+"operation": "Receive heartrate data from Fitbit",
+"target": {
+"protocol": "HTTP",
+"method": "GET",
+"name": "Fitbit"
+},
+"inputs": {
+"data": "70 bpm"
+},
+"expectations": {
+"msg": "Receive Fitbit Data"
+}
+},
+{
+"operation": "Validate heartrate",
+"target": "",
+"inputs": {
+"data": 70
+},
+"expectation": {
+"msg": "heartrate is valid"
+}
+},
+{
+"operation": "Send SPEAK command to Buddy",
+"target": "",
+"inputs": {
+"message": "Normal"
+},
+"expectations": {
+"msg": "Buddy speaks 'Normal'"
+}
+},
+{
+"operation": "Send MOVE command to Buddy",
+"target": "",
+"inputs": {
+"distance": "10m",
+"speed": "5m/s"
+},
+"expectations": {
+"msg": "Buddy moves with specified distance and speed"
+}
+}
+]
+},
+{
+"TC_ID": "TC002",
+"name": "No Fitbit Data Scenario",
+"steps": [
+{
+"operation": "Receive no heartrate data from Fitbit",
+"target": {
+"protocol": "HTTP",
+"method": "GET",
+"name": "Fitbit"
+},
+"inputs": {
+"data": null
+},
+"expectations": {
+"msg": "Receive no Fitbit Data"
+}
+},
+{
+"operation": "Send Rotate command to Buddy",
+"target": "",
+"inputs": {
+"angle": "90 degrees",
+"speed": "3 m/s"
+},
+"expectations": {
+"msg": "Buddy rotates with specified angle and speed"
+}
+}
+]
+},
+{
+"TC_ID": "TC003",
+"name": "Wheels not enabled Scenario",
+"steps": [
+{
+"operation": "Set EnableWheels to 0",
+"target": "",
+"inputs": {
+"value": 0
+},
+"expectation": {
+"msg": "Buddy displays 'Wheels not enabled' warning message"
+}
+}
+]
+}
+]
+Time Spent = 70677ms

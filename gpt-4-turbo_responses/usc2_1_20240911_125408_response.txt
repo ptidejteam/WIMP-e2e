@@ -1,0 +1,170 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal flow - Abnormal heartrate triggers move command",
+  "steps": [
+    {
+      "operation": "Request heartrate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully requested heartrate data"
+      }
+    },
+    {
+      "operation": "Receive and validate heartrate data",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Valid heartrate data received and validated"
+      }
+    },
+    {
+      "operation": "Check heartrate is below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Heartrate confirmed to be below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy",
+      "target": "WIMP",
+      "data": {
+        "distance": "1.5",
+        "speed": "0.3"
+      },
+      "expectations": {
+        "msg": "MOVE command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Buddy activates wheels and moves",
+      "target": "Buddy",
+      "expectations": {
+        "msg": "Buddy has moved the required distance and spoken the message"
+      }
+    }
+  ],
+  "post_conditions": [
+    {
+      "condition": "Buddy spoke 'Special attention Needed'",
+      "status": "WHEEL_MOVE_FINISHED"
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "Bounded alternative flow - No heartrate data received",
+  "steps": [
+    {
+      "operation": "WIMP does not receive heartrate data from Fitbit",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "No heartrate data has been received"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": "WIMP",
+      "data": {
+        "message": "No heartrate data"
+      },
+      "expectations": {
+        "msg": "SPEAK command with appropriate message sent to Buddy"
+      }
+    }
+  ],
+  "post_conditions": [
+    {
+      "condition": "Buddy spoke 'No heartrate data'",
+      "status": "SPEAK_ACTION_COMPLETED"
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Specific alternative flow - Heartrate not abnormal",
+  "steps": [
+    {
+      "operation": "Receive and validate heartrate data within normal range",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Heartrate data received is not below 50 or not greater than 100 bpm"
+      }
+    },
+    {
+      "operation": "Send SPEAK command and set mood to HAPPY",
+      "target": "WIMP",
+      "data": {
+        "message": "No Special attention Needed"
+      },
+      "expectations": {
+        "msg": "Commands for speech and happy mood sent successfully to Buddy"
+      }
+    },
+    {
+      "operation": "Buddy rotates 90 degrees clockwise",
+      "target": "Buddy",
+      "expectations": {
+        "msg": "Buddy completed rotation correctly"
+      }
+    }
+  ],
+  "post_conditions": [
+    {
+      "condition": "Buddy spoke 'No Special attention Needed' and rotated 90 degrees",
+      "status": "WHEEL_MOVE_FINISHED"
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Alternative flow - No feedback from Buddy on move command",
+  "steps": [
+    {
+      "operation": "WIMP sends MOVE command to Buddy",
+      "target": "WIMP",
+      "data": {
+        "distance": "1.5",
+        "speed": "0.3"
+      },
+      "expectations": {
+        "msg": "MOVE command sent to Buddy"
+      }
+    },
+    {
+      "operation": "WIMP receives no feedback from Buddy",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "No feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "WIMP displays warning message",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ],
+  "post_conditions": [
+    {
+      "condition": "No action observed. WIMP displays a warning message."
+    }
+  ]
+}
+```
+
+These JSON objects represent a structured approach to testing each relevant flow in the specified use case scenario, covering all alternatives, actions, and expected post-conditions. This ensures comprehensive verification of each system path.
+Time Spent = 91102ms

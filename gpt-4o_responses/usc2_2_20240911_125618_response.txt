@@ -1,0 +1,285 @@
+Based on the given use case scenario, here are the test cases:
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Abnormal heartrate detected - move action required",
+  "steps": [
+    {
+      "operation": "Request heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully requested heartrate data"
+      }
+    },
+    {
+      "operation": "Receive and validate heartrate data",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Valid heartrate data received and confirmed it is heartrate data"
+      }
+    },
+    {
+      "operation": "Check if heartrate is below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Validated heartrate is below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy with proper distance and speed",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent with a distance less than 2.0m and speed less than 0.5m/s"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy after MOVE action",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    },
+    {
+      "operation": "Validate Buddy's action after MOVE command",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy moved as expected, spoke 'Special Attention Needed', and changed face to mood 'SURPRISED'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No heartrate data received from Fitbit",
+  "steps": [
+    {
+      "operation": "Request heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully requested heartrate data"
+      }
+    },
+    {
+      "operation": "Wait for heartrate data",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Timeout or no data received"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy with 'No heartrate data' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy speaks 'No heartrate data' message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heartrate is not in abnormal range",
+  "steps": [
+    {
+      "operation": "Request heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully requested heartrate data"
+      }
+    },
+    {
+      "operation": "Receive and validate heartrate data",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Valid heartrate data received"
+      }
+    },
+    {
+      "operation": "Check if heartrate is below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Heartrate is not below 50 bpm or it is greater than 100 bpm"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy with 'No Special Attention Needed' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy speaks 'No Special Attention Needed', face mood set to HAPPY, and rotates 90 degrees clockwise"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "No feedback from Buddy after MOVE command",
+  "steps": [
+    {
+      "operation": "Request heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully requested heartrate data"
+      }
+    },
+    {
+      "operation": "Receive and validate heartrate data",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Valid heartrate data received"
+      }
+    },
+    {
+      "operation": "Check if heartrate is below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Validated heartrate is below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy with proper distance and speed",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent with a distance less than 2.0m and speed less than 0.5m/s"
+      }
+    },
+    {
+      "operation": "Wait for feedback from Buddy after MOVE action",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Timeout or no feedback received"
+      }
+    },
+    {
+      "operation": "Display warning message on WIMP",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Wheels cannot be activated",
+  "steps": [
+    {
+      "operation": "Enable wheels on Buddy",
+      "target": {
+        "protocol": "USB",
+        "method": "EnableWheels",
+        "name": "Buddy"
+      },
+      "expectations": {
+        "msg": "Failed to enable wheels"
+      }
+    },
+    {
+      "operation": "Buddy speaks 'Wheels are not enabled' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'Wheels are not enabled'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "MOVE command cannot be completed",
+  "steps": [
+    {
+      "operation": "Send MOVE command to Buddy with proper distance and speed",
+      "target": {
+        "protocol": "USB",
+        "method": "moveBuddy",
+        "name": "Buddy"
+      },
+      "parameters": {
+        "speed": 0.5,
+        "distance": 1.5
+      },
+      "expectations": {
+        "msg": "Failed to complete MOVE command"
+      }
+    },
+    {
+      "operation": "Buddy speaks 'Move not completed' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'Move not completed'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC007",
+  "name": "No execution feedback from Buddy",
+  "steps": [
+    {
+      "operation": "Send MOVE command to Buddy with proper distance and speed",
+      "target": {
+        "protocol": "USB",
+        "method": "moveBuddy",
+        "name": "Buddy"
+      },
+      "parameters": {
+        "speed": 0.5,
+        "distance": 1.5
+      },
+      "expectations": {
+        "msg": "MOVE command executed"
+      }
+    },
+    {
+      "operation": "Wait for execution feedback from Buddy",
+      "target": "Buddy",
+      "expectations": {
+        "msg": "Timeout or no execution feedback received"
+      }
+    },
+    {
+      "operation": "Display warning message on WIMP",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+
+These test cases cover the main flow, boundary conditions, and specific alternative flows as described in the use case scenario. Each test case is structured to clearly present the operation, target, and expectations.
+Time Spent = 71705ms

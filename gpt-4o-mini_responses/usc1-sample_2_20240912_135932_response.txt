@@ -1,0 +1,331 @@
+Based on the use case scenario provided, here are the comprehensive test cases structured in the specified format:
+
+### Test Cases
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Move buddy successfully with valid heart rate",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is normal"
+      }
+    },
+    {
+      "operation": "Set buddy mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "Set buddy mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Mood set to HAPPY"
+      }
+    }
+  ],
+  "postconditions": {
+    "buddyMood": "HAPPY",
+    "status": "WHEEL_MOVE_FINISHED"
+  }
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No heart rate data received",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": null
+      },
+      "expectations": {
+        "msg": "No heart rate data"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "speed": 30
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "Set buddy mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood set to NEUTRAL"
+      }
+    }
+  ],
+  "postconditions": {
+    "buddyMood": "NEUTRAL",
+    "status": "WHEEL_MOVE_FINISHED"
+  }
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Wheels not enabled for move command",
+  "steps": [
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Try to call move functions",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "speed": 0.5,
+        "distance": 1
+      },
+      "expectations": {
+        "msg": "Wheels not enabled warning displayed"
+      }
+    }
+  ],
+  "postconditions": {
+    "warningMessage": "Wheels not enabled"
+  }
+}
+```
+
+### Edge Cases
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heart rate exactly at lower bound",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 60
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 60
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    }
+  ],
+  "postconditions": {
+    "status": "Valid heart rate processed"
+  }
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Heart rate exactly at upper bound",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 100
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 100
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    }
+  ],
+  "postconditions": {
+    "status": "Valid heart rate processed"
+  }
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "Heart rate just below normal",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 59
+      },
+      "expectations": {
+        "msg": "Heart rate outside normal range"
+      }
+    }
+  ],
+  "postconditions": {
+    "status": "Processed invalid heart rate"
+  }
+}
+```
+
+```json
+{
+  "TC_ID": "TC007",
+  "name": "Heart rate just above normal",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 101
+      },
+      "expectations": {
+        "msg": "Heart rate outside normal range"
+      }
+    }
+  ],
+  "postconditions": {
+    "status": "Processed invalid heart rate"
+  }
+}
+```
+
+These test cases thoroughly cover the main use case, including normal, bounded alternative flows, specific alternative flows, and edge cases, ensuring comprehensive testing of the system's capabilities and behaviors.
+Time Spent = 18352ms

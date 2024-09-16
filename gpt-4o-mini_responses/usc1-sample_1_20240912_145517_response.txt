@@ -1,0 +1,269 @@
+Here are the detailed test cases based on the provided use case scenario "Fitbit Sends Data, Buddy Moves". Each test case includes the operations, inputs, expected outcomes, and considerations for normal flows, bounded alternative flows, and specific alternative flows.
+
+### Test Cases
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "protocol": "HTTP",
+        "method": "PUT",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to HAPPY",
+      "target": {
+        "protocol": "HTTP",
+        "method": "PUT",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to HAPPY"
+      }
+    }
+  ]
+}
+
+{
+  "TC_ID": "TC002",
+  "name": "No Heart Rate Data from Fitbit, Buddy Rotates",
+  "steps": [
+    {
+      "operation": "Collect Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "speed": 40
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90 degrees at 40°/s"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "protocol": "HTTP",
+        "method": "PUT",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Speak feedback from Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "No heart rate data"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No heart rate data'"
+      }
+    }
+  ]
+}
+
+{
+  "TC_ID": "TC003",
+  "name": "Wheels Not Enabled Warning",
+  "steps": [
+    {
+      "operation": "Check Enable Wheels status",
+      "target": "",
+      "inputs": {
+        "EnableWheels": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Display warning about wheels",
+      "target": "WIMP",
+      "inputs": {
+        "warning": "Wheels not enabled"
+      },
+      "expectations": {
+        "msg": "WIMP displays 'Wheels not enabled' warning message"
+      }
+    }
+  ]
+}
+
+{
+  "TC_ID": "TC004",
+  "name": "Invalid Heart Rate Data Received",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "",
+      "inputs": {
+        "data": 55 // Below valid range
+      },
+      "expectations": {
+        "msg": "Heart rate is invalid"
+      }
+    },
+    {
+      "operation": "Send Error message to Buddy",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Heart rate invalid"
+      },
+      "expectations": {
+        "msg": "Buddy does not speak"
+      }
+    }
+  ]
+}
+
+```
+
+### Summary of Test Cases
+
+1. **TC001**: Tests the successful flow where valid heart rate data is received from Fitbit, and Buddy moves accordingly while changing mood.
+2. **TC002**: Tests the behavior when no heart rate data is received, verifying Buddy rotates instead and changes mood to NEUTRAL.
+3. **TC003**: Validates the display of a warning when the wheels are not enabled.
+4. **TC004**: Ensures that invalid heart rate data does not trigger a move command and appropriately handles error messaging.
+
+These cases will effectively test the core functionalities of the interaction between the Fitbit, Buddy, and the WIMP interface, covering normal, alternative, and edge scenarios.
+Time Spent = 23517ms

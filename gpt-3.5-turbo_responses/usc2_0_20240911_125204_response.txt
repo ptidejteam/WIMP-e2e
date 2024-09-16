@@ -1,0 +1,234 @@
+{
+"TC_ID":"TC001",
+  "name": "Abnormal heartrate detected - move action required",
+  "steps": [
+	{
+  	"operation": "Request heartrate data from Fitbit",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "Fitbit"
+  	},
+  	"expectations": {
+    	"msg": "Successfully request heartrate data"
+  	}
+	},
+	{
+  	"operation": "Receive and validate heartrate data",
+  	"target": "FitbitApp",
+  	"expectations": {
+    	"msg": "Valid heartrate data received"
+  	}
+	},
+  {
+  	"operation": "Activate heart monitor sensor",
+  	"target": "FitbitApp",
+  	"expectations": {
+    	"msg": "Heart monitor sensor activated"
+  	}
+	},
+  {
+  	"operation": "Send heartrate data to WIMP",
+  	"target": "FitbitApp",
+  	"expectations": {
+    	"msg": "Heartrate data sent to WIMP"
+  	}
+	},
+  {
+  	"operation": "Validate heartrate below 50bpm",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Heartrate below 50bpm"
+  	}
+	},
+  {
+  	"operation": "Send MOVE command to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"distance": 1.5,
+    	"speed": 0.4
+    },
+  	"expectations": {
+    	"msg": "Buddy moves with special attention message"
+  	}
+	},
+  {
+  	"operation": "Receive feedback from Buddy",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Feedback received from Buddy"
+  	}
+	}
+  ]
+}
+
+{
+"TC_ID":"TC002",
+  "name": "No heartrate data received - alternative flow",
+  "steps": [
+	{
+  	"operation": "Receive no heartrate data",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "No heartrate data received"
+  	}
+	},
+	{
+  	"operation": "Send SPEAK command to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"text": "No heartrate data"
+    },
+  	"expectations": {
+    	"msg": "Buddy speaks 'No heartrate data'"
+  	}
+	},
+  {
+  	"operation": "Receive feedback from Buddy",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Feedback received from Buddy"
+  	}
+	}
+  ]
+}
+
+{
+"TC_ID":"TC003",
+  "name": "Heartrate above 50bpm - specific alternative flow",
+  "steps": [
+	{
+  	"operation": "Receive heartrate data above 50bpm",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Heartrate data above 50bpm"
+  	}
+	},
+	{
+  	"operation": "Send SPEAK command to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "WIMP"
+  	},
+  	"expectations": {
+    	"msg": "Buddy speaks 'No special attention needed'"
+  	}
+	},
+  {
+  	"operation": "Activate wheels and rotate",
+    "target": {
+      "method": "rotateBuddy",
+      "inputs": {
+        "speed": -30,
+        "angle": 90
+      },
+      "callback": "RspCallback"
+    },
+  	"expectations": {
+    	"msg": "Buddy rotates 90 degrees"
+  	}
+	},
+  {
+  	"operation": "Receive feedback from Buddy",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Feedback received from Buddy"
+  	}
+	}
+  ]
+}
+
+{
+"TC_ID":"TC004",
+  "name": "No feedback received from Buddy - specific alternative flow",
+  "steps": [
+	{
+  	"operation": "Wait for feedback from Buddy",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "No feedback received from Buddy"
+  	}
+	},
+	{
+  	"operation": "Display warning message",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Warning message displayed"
+  	}
+	}
+  ]
+}
+
+{
+"TC_ID":"TC005",
+  "name": "Wheels not enabled - specific alternative flow",
+  "steps": [
+	{
+  	"operation": "Wheels are not enabled",
+  	"target": "Buddy",
+  	"expectations": {
+    	"msg": "Wheels are not enabled"
+  	}
+	},
+	{
+  	"operation": "Buddy speaks 'Wheels are not enabled'",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"expectations": {
+    	"msg": "Buddy speaks 'Wheels are not enabled'"
+   }
+	},
+  {
+  	"operation": "Send feedback to WIMP",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Feedback sent to WIMP"
+  	}
+	}
+  ]
+}
+
+{
+"TC_ID":"TC006",
+  "name": "Move not completed - specific alternative flow",
+  "steps": [
+	{
+  	"operation": "Move is not completed",
+  	"target": "Buddy",
+  	"expectations": {
+    	"msg": "Move not completed"
+  	}
+	},
+	{
+  	"operation": "Buddy speaks 'Move not completed'",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+  	},
+  	"expectations": {
+    	"msg": "Buddy speaks 'Move not completed'"
+   }
+	},
+  {
+  	"operation": "Send feedback to WIMP",
+  	"target": "WIMP",
+  	"expectations": {
+    	"msg": "Feedback sent to WIMP"
+  	}
+	}
+  ]
+}
+Time Spent = 143125ms

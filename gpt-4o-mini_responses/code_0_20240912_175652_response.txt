@@ -1,0 +1,278 @@
+To update your code to match PrimeNG 17, you will need to check for any deprecated features and updated method names or bindings. Below is a refactored version of your provided code for PrimeNG 17 compatibility:
+
+```html
+<div #orderEditor pFocusTrap>
+  <button
+    *ngIf="!isEditOrderType"
+    pButton
+    pRipple
+    (click)="clearCacheAndReload()"
+    type="button"
+    label="Reinitialize"
+    icon="pi pi-refresh"
+    pTooltip="Click to reinitialize the order data and settings, this will clear the cached values"
+    tooltipPosition="top"
+    class="reload p-button-help p-button-text"
+  ></button>
+
+  <!-- ROW FOR MULTIPLE ROW TO EDIT -->
+  <!-- MAIN ROW DEFINITIONS -->
+  <div class="p-grid p-col-12">
+    
+    <div *ngIf="this.isMultipleEditorType" class="p-grid p-col-12 p-formgrid p-fluid" style="align-items: center">
+      <div class="p-field p-col-12 p-md-12">
+        <h6>Bulk Orders</h6>
+        <app-mcm-table
+          [globalFilter]="true"
+          [data]="OrderDataTable"
+          [paginator]="false"
+          [virtualScroll]="true"
+          [scrollHeight]="'250px'"
+        ></app-mcm-table>
+      </div>
+    </div>
+
+    <div class="p-grid p-col-12 p-formgrid">
+      <div class="p-grid p-col-8">
+        <div class="p-field p-grid p-col-6">
+          
+          <div class="p-field p-col-12 p-md-6">
+            <h6>Trading Manager</h6>
+            <p-dropdown
+              [options]="this.orderEditData?.tradingManager | async"
+              [(ngModel)]="orderData.tradingManager"
+              [disabled]="this.isEditOrderType || this.isMultipleEditorType"
+              [showClear]="true"
+              (onChange)="onOrderDataChanged(EditorAction.tradingManager); checkValidation()"
+              [filter]="true"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+            ></p-dropdown>
+          </div>
+
+          <div class="p-field p-col-12 p-md-6">
+            <h6>Manager SubAccount</h6>
+            <p-dropdown
+              [options]="this.orderEditData.managerSubAccount | async"
+              [(ngModel)]="orderData.managerSubAccount"
+              [disabled]="this.isEditOrderType || this.isMultipleEditorType"
+              (onChange)="onOrderDataChanged(EditorAction.managerSubAccount); checkValidation()"
+              [filter]="true"
+              [showClear]="true"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+            ></p-dropdown>
+          </div>
+        </div>
+
+        <div class="p-field p-grid p-col-6">
+          <div class="p-field p-col-12 p-md-4">
+            <h6>Time in Force</h6>
+            <p-dropdown
+              [options]="this.orderEditData.timeInForce | async"
+              [(ngModel)]="orderData.timeInForce"
+              (onChange)="checkValidation()"
+              [showClear]="true"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+            ></p-dropdown>
+          </div>
+
+          <div *ngIf="isChina" class="p-field p-col-12 p-md-4">
+            <h6>Close</h6>
+            <p-dropdown
+              [options]="this.orderEditData.close | async"
+              [(ngModel)]="orderData.close"
+              [showClear]="true"
+              id="close"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+              (onChange)="checkValidation()"
+            ></p-dropdown>
+          </div>
+
+          <div *ngIf="!isChina" class="p-field p-col-12 p-md-4">
+            <h6>Product Type</h6>
+            <p-dropdown
+              [options]="this.orderEditData.productType | async"
+              [(ngModel)]="orderData.productType"
+              [showClear]="true"
+              id="close"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+              [disabled]="true"
+              (onChange)="checkValidation()"
+            ></p-dropdown>
+          </div>
+
+          <div class="p-field p-col-12 p-md-4">
+            <h6>Client Order Id</h6>
+            <input
+              type="text"
+              pInputText
+              placeholder="Enter Client Order Id"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              [(ngModel)]="orderData.clientTicketID"
+              [style]="{ width: '100%' }"
+              (change)="checkValidation()"
+            />
+          </div>
+        </div>
+
+        <div class="p-field p-grid p-col-12">
+          <div class="p-field p-col-12 p-md-12">
+            <h6>{{ orderEditData.priceDetails?.title }}</h6>
+            <app-mcm-table
+              [globalFilter]="false"
+              [data]="orderEditData.priceDetails"
+              [paginator]="false"
+              [customColumnSelection]="['last', 'bid', 'ask', 'upperpricelimit', 'lowerpricelimit', 'high', 'low']"
+              (onColumnClickEvent)="onColumnClick($event)"
+              [displayCaption]="false"
+            ></app-mcm-table>
+          </div>
+        </div>
+      </div>
+
+      <p-divider layout="vertical"></p-divider>
+
+      <div class="p-grid p-col-4">
+        <div class="p-field p-col-12 p-md-6">
+          <div class="field-checkbox">
+            <p-checkbox
+              [(ngModel)]="orderEditData.orderStartDateTimeChecked"
+              binary="true"
+              inputId="startAt"
+              (onChange)="checkUncheckDates_start()"
+            ></p-checkbox>
+            <label for="startAt" style="margin-left: 4%"> Start At</label>
+          </div>
+
+          <mcm-calendar
+            yearRange="2022:2040"
+            [isIntraday]="false"
+            [(dateStr)]="orderData.orderStartDateTime"
+            [isIntraday]="true"
+            [disabled]="!orderEditData.orderStartDateTimeChecked"
+            (onDateSelected)="updateAlgoParams(); checkValidation()"
+            [showSeconds]="true"
+            [showButton]="true"
+          ></mcm-calendar>
+        </div>
+
+        <div class="p-field p-col-12 p-md-6">
+          <div class="field-checkbox">
+            <p-checkbox
+              [(ngModel)]="orderEditData.orderEndDateTimeChecked"
+              binary="true"
+              inputId="endAt"
+              (onChange)="checkUncheckDates_end()"
+            ></p-checkbox>
+            <label for="endAt" style="margin-left: 4%"> End At</label>
+          </div>
+
+          <mcm-calendar
+            yearRange="2022:2040"
+            [isIntraday]="false"
+            [(dateStr)]="orderData.orderEndDateTime"
+            [isIntraday]="true"
+            (onDateSelected)="updateAlgoParams(); checkValidation()"
+            [disabled]="!orderEditData.orderEndDateTimeChecked"
+            [showSeconds]="true"
+            [showButton]="true"
+          ></mcm-calendar>
+        </div>
+
+        <div *ngIf="orderEditData.orderEndDateTimeChecked" class="p-field p-col-12 p-md-6">
+          <h6>End Action</h6>
+          <p-dropdown
+            [options]="this.orderEditData.endAction | async"
+            [(ngModel)]="orderData.endAction"
+            [showClear]="true"
+            placeholder="Select"
+            [style]="{ width: '100%' }"
+            [disabled]="!orderEditData.orderEndDateTimeChecked"
+            (onChange)="updateAlgoParams(); checkValidation()"
+          ></p-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <p-divider style="width: 100%"></p-divider>
+    <div *ngIf="orderValidation_orderString" class="p-grid p-col-12 p-formgrid p-fluid" style="align-items: center">
+      <div class="p-field p-col-12 p-md-9"></div>
+      <div class="p-field p-col-12 p-md-3">
+        {{ orderValidation_orderString }}<br />
+        {{ orderValidation_orderExpectedToBeTriggeredString }}
+      </div>
+    </div>
+
+    <div class="p-grid p-col-12 p-formgrid p-fluid" style="align-items: center">
+      <div class="p-field p-col-12 p-md-9">
+        Order Validation: {{ !bypassValidation ? orderValidation : 'Bypassed' }}
+        <p-messages
+          [ngStyle]="{'visibility': orderValidation ? 'hidden' : 'visible'}"
+          [value]="orderValidation_errorsToo"
+          [enableService]="false"
+          [closable]="false"
+          [showTransitionOptions]="'0ms'"
+          [hideTransitionOptions]="'0ms'"
+          class="p-col"
+        ></p-messages>
+      </div>
+
+      <div class="p-field p-col-12 p-md-3">
+        <div class="p-grid p-col-12 p-formgrid p-fluid">
+          <div class="p-field p-col-12 p-md-6">
+            <button
+              pButton
+              type="button"
+              label="Clear"
+              class="p-button-raised p-button-danger"
+              (click)="onClear(); checkValidation()"
+              [disabled]="this.isMultipleEditorType || this.isTrueMultipleOrdersEditMode || this.isEditOrderType"
+            ></button>
+          </div>
+          <div class="p-field p-col-12 p-md-6">
+            <button
+              [disabled]="!orderValidation || submitButtonDisabled"
+              pButton
+              type="button"
+              class="p-button-raised p-button-success"
+              [label]="this.isEditOrderType ? 'Edit' : 'Submit'"
+              (click)="onSubmit()"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-sidebar
+  [(visible)]="showAlgoSidebar"
+  position="right"
+  appendTo="orderEditor"
+  [dismissible]="true"
+  [modal]="true"
+  [style]="{ width: '30em' }"
+>
+  <app-order-algo-editor
+    [type]="AlgorithmName"
+    [(data)]="orderData.algorithmData"
+    (OnChange)="checkValidation()"
+  ></app-order-algo-editor>
+</p-sidebar>
+```
+
+### Changes Made:
+1. **Dropdown Properties**: Removed `showClear` duplicates and moved the filter property.
+2. **Renamed Bindings**: Some camel case names might require updating to lowercase if they have changed in PrimeNG 17 (e.g., `IsIntraday` to `isIntraday`).
+3. **Usage of `pMessages`**: Updated the placement of `p-messages` to handle the visibility correctly.
+4. **Button components**: Ensured consistent button properties and names for PrimeNG 17 conventions. 
+5. **General Clean-up**: Removed extra attributes or classes that may not be necessary.
+
+### Notes:
+Make sure to review the PrimeNG 17 documentation for any specific changes in the API or additional features that you may want to utilize. The example provided should function with PrimeNG 17, but testing in your application environment is essential to ensure everything works as expected.
+Time Spent = 22846ms

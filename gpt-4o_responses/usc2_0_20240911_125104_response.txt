@@ -1,0 +1,471 @@
+Here are the detailed test cases based on the use case scenario outlined:
+
+### Normal Flow Test Cases
+
+1. **TC_ID**: TC001
+   - **name**: Move Buddy successfully with Bradycardia
+   - **steps**:
+     - **step 1**: 
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Receive Fitbit Data
+     - **step 2**:
+       - **operation**: Validate heartrate data type
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartmonitor sensor activated
+     - **step 3**:
+       - **operation**: Sense heartrate data
+       - **target**: FitbitApp
+       - **expectations**: Data sensed
+     - **step 4**:
+       - **operation**: Send heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: WIMP
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartrate data received by WIMP
+     - **step 5**:
+       - **operation**: Validate heartrate data
+       - **inputs**: 
+         - **heartrate**: 45 (below 50)
+       - **expectations**: Move command sent to Buddy
+     - **step 6**:
+       - **operation**: Enable wheels
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **left**: 1
+         - **right**: 1
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 7**:
+       - **operation**: Move Buddy
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **distance**: 1.5
+         - **speed**: 0.4
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 8**: 
+       - **operation**: Speak
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **message**: "Special attention Needed"
+       - **expectations**: Speak action completed
+     - **step 9**: 
+       - **operation**: Set mood
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **mood**: SURPRISED
+       - **expectations**: Mood set
+     - **step 10**:
+       - **operation**: Receive feedback
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: receive
+         - **name**: WIMP
+       - **expectations**: Execution feedback received
+
+### Bounded Alternative Flow Test Cases
+
+2. **TC_ID**: TC002
+   - **name**: Handle no heartrate data received from Fitbit
+   - **steps**:
+     - **step 1**:
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: No data received
+     - **step 2**:
+       - **operation**: Send speak command
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**:
+         - **message**: "No heartrate data"
+       - **expectations**: Speak action completed
+
+### Specific Alternative Flow Test Cases
+
+3. **TC_ID**: TC003
+   - **name**: Handle heartrate not in Bradycardia or Tachycardia range
+   - **steps**: 
+     - **step 1**:
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Receive Fitbit Data
+     - **step 2**:
+       - **operation**: Validate heartrate data type
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartmonitor sensor activated
+     - **step 3**:
+       - **operation**: Sense heartrate data
+       - **target**: FitbitApp
+       - **expectations**: Data sensed
+     - **step 4**:
+       - **operation**: Send heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: WIMP
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartrate data received by WIMP
+     - **step 5**:
+       - **operation**: Validate heartrate data
+       - **inputs**: 
+         - **heartrate**: 70 (not below 50, not above 100)
+       - **expectations**: Speak command sent to Buddy
+     - **step 6**:
+       - **operation**: Speak
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **message**: "No Special attention Needed"
+       - **expectations**: Speak action completed
+     - **step 7**: 
+       - **operation**: Set mood
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **mood**: HAPPY
+       - **expectations**: Mood set
+     - **step 8**:
+       - **operation**: Enable wheels
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **left**: 1
+         - **right**: 1
+       - **expectations**: Wheels enabled
+     - **step 9**:
+       - **operation**: Rotate Buddy 90 degrees clockwise
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**:
+         - **speed**: -60
+         - **angle**: 90
+       - **expectations**: Rotation completed with "WHEEL_MOVE_FINISHED"
+
+4. **TC_ID**: TC004
+   - **name**: Handle no feedback received after move command
+   - **steps**:
+     - **step 1**:
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Receive Fitbit Data
+     - **step 2**:
+       - **operation**: Validate heartrate data type
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartmonitor sensor activated
+     - **step 3**:
+       - **operation**: Sense heartrate data
+       - **target**: FitbitApp
+       - **expectations**: Data sensed
+     - **step 4**:
+       - **operation**: Send heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: WIMP
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartrate data received by WIMP
+     - **step 5**:
+       - **operation**: Validate heartrate data
+       - **inputs**: 
+         - **heartrate**: 45 (below 50)
+       - **expectations**: Move command sent to Buddy
+     - **step 6**:
+       - **operation**: Enable wheels
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **left**: 1
+         - **right**: 1
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 7**:
+       - **operation**: Move Buddy
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **distance**: 1.5
+         - **speed**: 0.4
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 8**: 
+       - **operation**: Speak
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **message**: "Special attention Needed"
+       - **expectations**: Speak action completed
+     - **step 9**: 
+       - **operation**: Set mood
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **mood**: SURPRISED
+       - **expectations**: Mood set
+     - **step 10**:
+       - **operation**: Wait for feedback
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: receive
+         - **name**: WIMP
+       - **expectations**: Execution feedback not received
+     - **step 11**:
+       - **operation**: Display warning message
+       - **target**:
+         - **protocol**: GUI
+         - **method**: show
+         - **name**: WIMP
+       - **expectations**: Warning message displayed
+
+5. **TC_ID**: TC005
+   - **name**: Handle wheels not enabled 
+   - **steps**:
+     - **step 1**:
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Receive Fitbit Data
+     - **step 2**:
+       - **operation**: Validate heartrate data type
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartmonitor sensor activated
+     - **step 3**:
+       - **operation**: Sense heartrate data
+       - **target**: FitbitApp
+       - **expectations**: Data sensed
+     - **step 4**:
+       - **operation**: Send heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: WIMP
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartrate data received by WIMP
+     - **step 5**:
+       - **operation**: Validate heartrate data
+       - **inputs**: 
+         - **heartrate**: 45 (below 50)
+       - **expectations**: Move command sent to Buddy
+     - **step 6**:
+       - **operation**: Enable wheels
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **left**: 0
+         - **right**: 0
+       - **expectations**: NOK
+     - **step 7**:
+       - **operation**: Speak
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**:
+         - **message**: "Wheels are not enabled"
+       - **expectations**: Speak action completed
+
+### Missing Executions and Feedback Test Cases
+
+6. **TC_ID**: TC006
+   - **name**: Handle move not completed
+   - **steps**:
+     - **step 1**:
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Receive Fitbit Data
+     - **step 2**:
+       - **operation**: Validate heartrate data type
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartmonitor sensor activated
+     - **step 3**:
+       - **operation**: Sense heartrate data
+       - **target**: FitbitApp
+       - **expectations**: Data sensed
+     - **step 4**:
+       - **operation**: Send heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: WIMP
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartrate data received by WIMP
+     - **step 5**:
+       - **operation**: Validate heartrate data
+       - **inputs**: 
+         - **heartrate**: 45 (below 50)
+       - **expectations**: Move command sent to Buddy
+     - **step 6**:
+       - **operation**: Enable wheels
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **left**: 1
+         - **right**: 1
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 7**:
+       - **operation**: Move Buddy
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **distance**: 1.5
+         - **speed**: 0.4
+       - **expectations**: MOVE_NOT_COMPLETED
+
+7. **TC_ID**: TC007
+   - **name**: WIMP receives no execution feedback from Buddy 
+   - **steps**:
+     - **step 1**:
+       - **operation**: Get heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: Fitbit
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Receive Fitbit Data
+     - **step 2**:
+       - **operation**: Validate heartrate data type
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartmonitor sensor activated
+     - **step 3**:
+       - **operation**: Sense heartrate data
+       - **target**: FitbitApp
+       - **expectations**: Data sensed
+     - **step 4**:
+       - **operation**: Send heartrate data
+       - **target**:
+         - **protocol**: Http
+         - **method**: POST
+         - **name**: WIMP
+       - **inputs**: 
+         - **datatype**: bpm
+       - **expectations**: Heartrate data received by WIMP
+     - **step 5**:
+       - **operation**: Validate heartrate data
+       - **inputs**: 
+         - **heartrate**: 45 (below 50)
+       - **expectations**: Move command sent to Buddy
+     - **step 6**:
+       - **operation**: Enable wheels
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **left**: 1
+         - **right**: 1
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 7**:
+       - **operation**: Move Buddy
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **distance**: 1.5
+         - **speed**: 0.4
+       - **expectations**: WHEEL_MOVE_FINISHED
+     - **step 8**: 
+       - **operation**: Speak
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **message**: "Special attention Needed"
+       - **expectations**: Speak action completed
+     - **step 9**: 
+       - **operation**: Set mood
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: send
+         - **name**: Buddy
+       - **inputs**: 
+         - **mood**: SURPRISED
+       - **expectations**: Mood set
+     - **step 10**:
+       - **operation**: Wait for feedback
+       - **target**:
+         - **protocol**: Websocket
+         - **method**: receive
+         - **name**: WIMP
+       - **expectations**: Execution feedback not received
+     - **step 11**:
+       - **operation**: Display warning message
+       - **target**:
+
+Time Spent = 83358ms

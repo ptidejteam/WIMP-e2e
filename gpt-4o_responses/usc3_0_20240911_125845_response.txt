@@ -1,0 +1,471 @@
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "move buddy successfully when heartrate above 100",
+    "steps": [
+      {
+        "operation": "Get fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Validate heartrate data above 100",
+        "target": "",
+        "inputs": {
+          "data": 130
+        },
+        "expectations": {
+          "msg": "Heartrate above threshold"
+        }
+      },
+      {
+        "operation": "Enable_Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "OK"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 3.0,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "WHEEL_MOVE_FINISHED"
+        }
+      },
+      {
+        "operation": "Set Mood to Scared",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "SCARED"
+        },
+        "expectations": {
+          "msg": "Mood_SCARED_Set"
+        }
+      },
+      {
+        "operation": "Speech",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "Attention is required",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Speech_Completed"
+        }
+      },
+      {
+        "operation": "Send Feedback to WIMP",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "BuddyApp"
+        },
+        "inputs": {
+          "status": "WHEEL_MOVE_FINISHED"
+        },
+        "expectations": {
+          "msg": "Feedback_Received"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "speak no heartrate data when no data received",
+    "steps": [
+      {
+        "operation": "Get fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "No data received"
+        }
+      },
+      {
+        "operation": "Send SPEAK Command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "No heartrate data",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Speech_Completed"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "speak no special attention needed when heartrate not in range",
+    "steps": [
+      {
+        "operation": "Get fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Validate heartrate data not in range",
+        "target": "",
+        "inputs": {
+          "data": 70
+        },
+        "expectations": {
+          "msg": "Heartrate not in range"
+        }
+      },
+      {
+        "operation": "Send SPEAK Command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "No Special Attention Needed",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Speech_Completed"
+        }
+      },
+      {
+        "operation": "Set Mood to Happy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "HAPPY"
+        },
+        "expectations": {
+          "msg": "Mood_HAPPY_Set"
+        }
+      },
+      {
+        "operation": "Enable_Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "OK"
+        }
+      },
+      {
+        "operation": "Rotate Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "speed": -30,
+          "angle": 180
+        },
+        "expectations": {
+          "msg": "WHEEL_MOVE_FINISHED"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "show warning when no feedback from Buddy",
+    "steps": [
+      {
+        "operation": "Get fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Validate heartrate data above 100",
+        "target": "",
+        "inputs": {
+          "data": 130
+        },
+        "expectations": {
+          "msg": "Heartrate above threshold"
+        }
+      },
+      {
+        "operation": "Enable_Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "OK"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 3.0,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "WHEEL_MOVE_FINISHED"
+        }
+      },
+      {
+        "operation": "Set Mood to Scared",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "SCARED"
+        },
+        "expectations": {
+          "msg": "Mood_SCARED_Set"
+        }
+      },
+      {
+        "operation": "Speech",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "Attention is required",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Speech_Completed"
+        }
+      },
+      {
+        "operation": "Send Feedback to WIMP",
+        "target": "",
+        "inputs": {
+          "action": "Wait for feedback"
+        },
+        "expectations": {
+          "msg": "No feedback received"
+        }
+      },
+      {
+        "operation": "Display warning",
+        "target": "",
+        "inputs": {
+          "message": "No feedback from Buddy"
+        },
+        "expectations": {
+          "msg": "Warning_Displayed"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC005",
+    "name": "show warning when wheels not enabled",
+    "steps": [
+      {
+        "operation": "Get fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Validate heartrate data above 100",
+        "target": "",
+        "inputs": {
+          "data": 130
+        },
+        "expectations": {
+          "msg": "Heartrate above threshold"
+        }
+      },
+      {
+        "operation": "Enable_Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 0,
+          "right": 0
+        },
+        "expectations": {
+          "msg": "NOK"
+        }
+      },
+      {
+        "operation": "Speech",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "Wheels are not enabled",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Speech_Completed"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC006",
+    "name": "show warning when no feedback for move action",
+    "steps": [
+      {
+        "operation": "Get fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Validate heartrate data above 100",
+        "target": "",
+        "inputs": {
+          "data": 130
+        },
+        "expectations": {
+          "msg": "Heartrate above threshold"
+        }
+      },
+      {
+        "operation": "Enable_Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "OK"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 3.0,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "No feedback received"
+        }
+      },
+      {
+        "operation": "Display warning",
+        "target": "",
+        "inputs": {
+          "message": "No feedback for move action"
+        },
+        "expectations": {
+          "msg": "Warning_Displayed"
+        }
+      }
+    ]
+  }
+]
+```
+Time Spent = 54886ms

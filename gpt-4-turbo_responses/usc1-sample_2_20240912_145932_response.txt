@@ -1,0 +1,179 @@
+Below are the test cases covering the specified normal, bounded alternative, and specific alternative flows, addressing different edge cases and ensuring the test plan is comprehensive and robust.
+
+### Test Case 1: Successful Heart Rate Data Reception and Buddy Movement
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 85
+      },
+      "expectations": {
+        "msg": "Heart rate is valid (between 60 and 100 bpm)"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "Speech.startSpeaking"
+      },
+      "inputs": {
+        "iText": "Normal",
+        "IExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "USB.moveBuddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Distance": 1
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives 'WHEEL_MOVE_FINISHED' notification status"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to HAPPY",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "HAPPY",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to HAPPY"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: No Heart Rate Data Received, Buddy to Rotate
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heart Rate Data, Buddy Rotates",
+  "steps": [
+    {
+      "operation": "Check reception of Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "USB.rotateBuddy"
+      },
+      "inputs": {
+        "Speed": 50,
+        "Angle": 180
+      },
+      "expectations": {
+        "msg": "Buddy rotates with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives 'Rotate execution completed' status"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: Wheels Not Enabled Error
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Attempt to Move Buddy with Wheels Not Enabled",
+  "steps": [
+    {
+      "operation": "Attempt to send Move command to Buddy without enabling wheels",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "USB.moveBuddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Distance": 1
+      },
+      "expectations": {
+        "msg": "WIMP displays 'Wheels not enabled' warning message"
+      }
+    }
+  ]
+}
+```
+
+### Additional Edge Cases:
+- Test cases where heart rate data is exactly at the boundary values (60 and 100 bpm).
+- Test rotating Buddy with min and max speed values.
+- Attempts to command an invalid action such as setting an undefined mood or moving a negative distance.
+
+These test cases focus on verifying each critical pathway through the system according to the requirements stated in the use case scenario, ensuring functionality and robust error handling.
+Time Spent = 111263ms

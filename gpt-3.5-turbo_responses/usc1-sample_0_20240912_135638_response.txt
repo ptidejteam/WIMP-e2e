@@ -1,0 +1,106 @@
+{
+"TC_ID":"TC001",
+"name": "Heart rate data within normal range",
+"steps": [
+	{
+  	"operation": "Receive heartrate data from Fitbit",
+  	"target": {
+    	"protocol": "Bluetooth",
+    	"method": "POST",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"data": 80
+  	},
+  	"expectations": {
+    	"msg": "Valid heartrate data received"
+  	}
+	},
+	{
+  	"operation": "Send speak command to Buddy",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"message": "Normal"
+  	},
+  	"expectations": {
+    	"msg": "Buddy speaks 'Normal'"
+  	}
+	},
+	{
+  	"operation": "Set Buddy's mood to Neutral",
+  	"target": {
+    	"protocol": "USB",
+    	"method": "invoke",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"mood": "NEUTRAL"
+  	},
+  	"expectations": {
+    	"msg": "Buddy's mood set to Neutral"
+   }
+  },
+  {
+  	"operation": "Send move command to Buddy",
+  	"target": {
+    	"protocol": "USB",
+    	"method": "invoke",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"distance": 2,
+    	"speed": 0.5
+  	},
+  	"expectations": {
+    	"msg": "Buddy moves specified distance and speed"
+  	}
+  },
+  {
+  	"operation": "Receive move execution feedback",
+  	"target": {
+    	"protocol": "Bluetooth",
+    	"method": "POST",
+    	"name": "WIMP"
+   },
+  	"inputs": {
+    	"feedback": "WHEEL_MOVE_FINISHED"
+   },
+  	"expectations": {
+    	"msg": "Move execution feedback received"
+   }
+  },
+  {
+  	"operation": "Set Buddy's mood to Happy",
+  	"target": {
+    	"protocol": "USB",
+    	"method": "invoke",
+    	"name": "Buddy"
+   },
+  	"inputs": {
+    	"mood": "HAPPY"
+   },
+  	"expectations": {
+    	"msg": "Buddy's mood set to Happy"
+   }
+  },
+  {
+  	"operation": "Receive WHEEL_MOVE_FINISHED notification",
+  	"target": {
+    	"protocol": "Bluetooth",
+    	"method": "POST",
+    	"name": "WIMP"
+   },
+  	"inputs": {
+    	"notification": "WHEEL_MOVE_FINISHED"
+   },
+  	"expectations": {
+    	"msg": "WHEEL_MOVE_FINISHED notification received"
+   }
+  }
+  ]
+}
+Time Spent = 90338ms

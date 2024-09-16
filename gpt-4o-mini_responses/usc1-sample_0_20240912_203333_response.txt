@@ -1,0 +1,252 @@
+Here are the generated test cases based on the provided use case specification for "Fitbit Sends Data, Buddy Moves."
+
+### Test Cases
+
+```json
+[
+    {
+        "TC_ID": "TC00101",
+        "name": "Valid Heart Rate Data Processing",
+        "steps": [
+            {
+                "operation": "Get heartrate data from Fitbit",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Fitbit"
+                },
+                "inputs": {
+                    "data": "75"
+                },
+                "expectations": {
+                    "msg": "Receive valid heart rate data"
+                }
+            },
+            {
+                "operation": "Validate heart rate",
+                "target": "",
+                "inputs": {
+                    "data": 75
+                },
+                "expectations": {
+                    "msg": "Heart rate is within normal range"
+                }
+            },
+            {
+                "operation": "Send SPEAK command to Buddy",
+                "target": "",
+                "inputs": {
+                    "message": "Normal"
+                },
+                "expectations": {
+                    "msg": "Buddy should speak Normal"
+                }
+            },
+            {
+                "operation": "Send MOVE command to Buddy",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Buddy"
+                },
+                "inputs": {
+                    "distance": "5",
+                    "speed": "2"
+                },
+                "expectations": {
+                    "msg": "Buddy starts moving"
+                }
+            },
+            {
+                "operation": "Receive MOVE execution feedback",
+                "target": "",
+                "inputs": {},
+                "expectations": {
+                    "msg": "WHEEL_MOVE_FINISHED"
+                }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC00102",
+        "name": "No Heart Rate Data",
+        "steps": [
+            {
+                "operation": "Get heartrate data from Fitbit",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Fitbit"
+                },
+                "inputs": {
+                    "data": null
+                },
+                "expectations": {
+                    "msg": "No heart rate data received"
+                }
+            },
+            {
+                "operation": "Send Rotate command to Buddy",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Buddy"
+                },
+                "inputs": {
+                    "angle": "90",
+                    "rotation_speed": "1"
+                },
+                "expectations": {
+                    "msg": "Buddy starts rotating"
+                }
+            },
+            {
+                "operation": "Receive ROTATE execution feedback",
+                "target": "",
+                "inputs": {},
+                "expectations": {
+                    "msg": "Rotate action completed"
+                }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC00103",
+        "name": "Wheels Not Enabled",
+        "steps": [
+            {
+                "operation": "Get heartrate data from Fitbit",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Fitbit"
+                },
+                "inputs": {
+                    "data": "70"
+                },
+                "expectations": {
+                    "msg": "Receive valid heart rate data"
+                }
+            },
+            {
+                "operation": "Check EnableWheels state",
+                "target": "",
+                "inputs": {
+                    "EnableWheels": "0"
+                },
+                "expectations": {
+                    "msg": "Wheels not enabled"
+                }
+            },
+            {
+                "operation": "Display warning message",
+                "target": "",
+                "inputs": {},
+                "expectations": {
+                    "msg": "Wheels not enabled warning message displayed"
+                }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC00104",
+        "name": "Heart Rate Below Normal",
+        "steps": [
+            {
+                "operation": "Get heartrate data from Fitbit",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Fitbit"
+                },
+                "inputs": {
+                    "data": "50"
+                },
+                "expectations": {
+                    "msg": "Receive low heart rate data"
+                }
+            },
+            {
+                "operation": "Validate heart rate",
+                "target": "",
+                "inputs": {
+                    "data": 50
+                },
+                "expectations": {
+                    "msg": "Heart rate is below normal range"
+                }
+            },
+            {
+                "operation": "Send Rotate command to Buddy",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Buddy"
+                },
+                "inputs": {
+                    "angle": "180",
+                    "rotation_speed": "2"
+                },
+                "expectations": {
+                    "msg": "Buddy starts rotating"
+                }
+            }
+        ]
+    },
+    {
+        "TC_ID": "TC00105",
+        "name": "Heart Rate Above Normal",
+        "steps": [
+            {
+                "operation": "Get heartrate data from Fitbit",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Fitbit"
+                },
+                "inputs": {
+                    "data": "110"
+                },
+                "expectations": {
+                    "msg": "Receive high heart rate data"
+                }
+            },
+            {
+                "operation": "Validate heart rate",
+                "target": "",
+                "inputs": {
+                    "data": 110
+                },
+                "expectations": {
+                    "msg": "Heart rate is above normal range"
+                }
+            },
+            {
+                "operation": "Send Rotate command to Buddy",
+                "target": {
+                    "protocol": "HTTP",
+                    "method": "POST",
+                    "name": "Buddy"
+                },
+                "inputs": {
+                    "angle": "270",
+                    "rotation_speed": "3"
+                },
+                "expectations": {
+                    "msg": "Buddy starts rotating"
+                }
+            }
+        ]
+    }
+]
+```
+
+### Explanation
+1. **Valid Heart Rate Data Processing**: This test case simulates receiving normal heart rate data and the subsequent actions taken by the WIMP and Buddy.
+2. **No Heart Rate Data**: This test case simulates the scenario where no heart rate data is received and Buddy needs to rotate instead.
+3. **Wheels Not Enabled**: This test case tests how the system responds when Buddy is instructed to move but the wheels are not enabled.
+4. **Heart Rate Below Normal**: This case tests the behavior when a low heart rate data (below the normal range) is received.
+5. **Heart Rate Above Normal**: This case tests the behavior when a high heart rate data (above the normal range) is received. 
+
+Each test case covers different scenarios described in the specification to ensure that all functionalities are tested.
+Time Spent = 11763ms

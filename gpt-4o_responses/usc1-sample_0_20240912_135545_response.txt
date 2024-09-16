@@ -1,0 +1,347 @@
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Buddy moves successfully with normal heartrate data",
+    "steps": [
+      {
+        "operation": "Receive data",
+        "target": {
+          "protocol": "Bluetooth",
+          "method": "Receive",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate",
+        "target": {
+          "protocol": "Internal",
+          "method": "Validate",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heartrate is between 60 and 100 bpm"
+        }
+      },
+      {
+        "operation": "Send speak command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "Normal",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Buddy speaks 'Normal'"
+        }
+      },
+      {
+        "operation": "Set mood",
+        "target": {
+          "protocol": "Internal",
+          "method": "Set",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Buddy's mood set to NEUTRAL"
+        }
+      },
+      {
+        "operation": "Receive feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "receive",
+          "name": "Buddy"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Speak feedback received from Buddy"
+        }
+      },
+      {
+        "operation": "Send move command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 1.0,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "Move command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Enable wheels",
+        "target": {
+          "protocol": "Internal",
+          "method": "Enable",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "Wheels enabled"
+        }
+      },
+      {
+        "operation": "Move",
+        "target": {
+          "protocol": "Internal",
+          "method": "Move",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 1.0,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "Buddy moves"
+        }
+      },
+      {
+        "operation": "Receive move feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "receive",
+          "name": "Buddy"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Move execution feedback received"
+        }
+      },
+      {
+        "operation": "Set mood",
+        "target": {
+          "protocol": "Internal",
+          "method": "Set",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "HAPPY"
+        },
+        "expectations": {
+          "msg": "Buddy's mood set to HAPPY"
+        }
+      }
+    ]
+  },
+  
+  {
+    "TC_ID": "TC002",
+    "name": "No heartrate data received",
+    "steps": [
+      {
+        "operation": "Receive data",
+        "target": {
+          "protocol": "Bluetooth",
+          "method": "Receive",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "No heartrate data received"
+        }
+      },
+      {
+        "operation": "Send rotate command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "angle": 90,
+          "speed": 50
+        },
+        "expectations": {
+          "msg": "Rotate command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Enable wheels",
+        "target": {
+          "protocol": "Internal",
+          "method": "Enable",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "Wheels enabled"
+        }
+      },
+      {
+        "operation": "Rotate",
+        "target": {
+          "protocol": "Internal",
+          "method": "Rotate",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "angle": 90,
+          "speed": 50
+        },
+        "expectations": {
+          "msg": "Buddy rotates"
+        }
+      },
+      {
+        "operation": "Receive rotate feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "receive",
+          "name": "Buddy"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Rotate execution feedback received"
+        }
+      },
+      {
+        "operation": "Set mood",
+        "target": {
+          "protocol": "Internal",
+          "method": "Set",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Buddy's mood set to NEUTRAL"
+        }
+      }
+    ]
+  },
+
+  {
+    "TC_ID": "TC003",
+    "name": "Wheels not enabled when move command is sent",
+    "steps": [
+      {
+        "operation": "Send move command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 1.0,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "Error: Wheels not enabled"
+        }
+      },
+      {
+        "operation": "Verify warning",
+        "target": {
+          "protocol": "UI",
+          "method": "Display",
+          "name": "WIMP"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Wheels not enabled warning displayed"
+        }
+      }
+    ]
+  },
+
+  {
+    "TC_ID": "TC004",
+    "name": "Invalid heartrate data received",
+    "steps": [
+      {
+        "operation": "Receive data",
+        "target": {
+          "protocol": "Bluetooth",
+          "method": "Receive",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate",
+        "target": {
+          "protocol": "Internal",
+          "method": "Validate",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "heartrate": 110
+        },
+        "expectations": {
+          "msg": "Heartrate is NOT between 60 and 100 bpm"
+        }
+      },
+      {
+        "operation": "Send speak command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "text": "Abnormal",
+          "expression": "SPEAK_NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Buddy speaks 'Abnormal'"
+        }
+      },
+      {
+        "operation": "Set mood",
+        "target": {
+          "protocol": "Internal",
+          "method": "Set",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Buddy's mood set to NEUTRAL"
+        }
+      },
+      {
+        "operation": "Receive feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "receive",
+          "name": "Buddy"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Speak feedback received from Buddy"
+        }
+      }
+    ]
+  }
+]
+```
+Time Spent = 36880ms

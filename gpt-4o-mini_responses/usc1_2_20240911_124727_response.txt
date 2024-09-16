@@ -1,0 +1,321 @@
+Here are the comprehensive test cases based on the provided use case scenario:
+
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Receive Normal Heartrate and Notify Buddy",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data requested"
+        }
+      },
+      {
+        "operation": "Wait for heartrate data",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate data",
+        "target": "",
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heartrate validated within normal range"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Normal"
+        },
+        "expectations": {
+          "msg": "Buddy notified with 'Normal'"
+        }
+      },
+      {
+        "operation": "Receive feedback from Buddy",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Buddy displayed mood NEUTRAL and spoke 'Normal'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy has spoken 'Normal' and set mood to NEUTRAL"
+    }
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "Handle No Heartrate Data from Fitbit",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data requested"
+        }
+      },
+      {
+        "operation": "Wait for heartrate data",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "No heartrate data received"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "No heartrate data"
+        },
+        "expectations": {
+          "msg": "Buddy notified with 'No heartrate data'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy has spoken 'No heartrate data'"
+    }
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "Receive Slightly Low Heartrate and Notify Buddy",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data requested"
+        }
+      },
+      {
+        "operation": "Wait for heartrate data",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate data",
+        "target": "",
+        "inputs": {
+          "heartrate": 55
+        },
+        "expectations": {
+          "msg": "Heartrate validated as slightly low"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "No special attention"
+        },
+        "expectations": {
+          "msg": "Buddy notified with 'No special attention'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy has spoken 'No special attention'"
+    }
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "Receive Low Heartrate and Request Special Attention",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data requested"
+        }
+      },
+      {
+        "operation": "Wait for heartrate data",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate data",
+        "target": "",
+        "inputs": {
+          "heartrate": 40
+        },
+        "expectations": {
+          "msg": "Heartrate validated as low"
+        }
+      },
+      {
+        "operation": "Enable Wheels on Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "Wheels enabled"
+        }
+      },
+      {
+        "operation": "Rotate Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "speed": 90,
+          "angle": 90
+        },
+        "expectations": {
+          "msg": "Buddy rotates clockwise"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Special attention is needed"
+        },
+        "expectations": {
+          "msg": "Buddy notified with 'Special attention is needed'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy has spoken 'Special attention is needed'"
+    }
+  },
+  {
+    "TC_ID": "TC005",
+    "name": "Handle No Feedback from Buddy After Speak Command",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data requested"
+        }
+      },
+      {
+        "operation": "Wait for heartrate data",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartrate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate data",
+        "target": "",
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heartrate validated within normal range"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Normal"
+        },
+        "expectations": {
+          "msg": "Buddy notified with 'Normal'"
+        }
+      },
+      {
+        "operation": "Wait for feedback from Buddy",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "No feedback received"
+        }
+      },
+      {
+        "operation": "Display warning message",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Warning message displayed"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "No action is observed on Buddy."
+    }
+  }
+]
+```
+
+### Explanation:
+- Each test case follows the format specified, clearly indicating the operations, expected inputs, and yield insights into the behavior of the system in various situations.
+- Test cases cover normal paths, as well as bounded and specific alternative flows, ensuring comprehensive test coverage of the use case scenario provided. 
+- Postconditions affirm that the expected end states of the interactions are clear and verifiable.
+Time Spent = 15344ms

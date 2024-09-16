@@ -1,0 +1,730 @@
+Sure! Below are the test cases based on the provided use case scenario:
+
+### Normal Flow Test Cases
+
+#### Test Case 1: Receive and Process Normal Heart Rate Data
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Receive and Process Normal Heart Rate Data",
+  "steps": [
+    {
+      "operation": "Initialize Connections",
+      "target": {
+        "protocol": "Multiple",
+        "name": "System Initialization"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Connections Initialized"
+      }
+    },
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Heart Rate Data Received"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is normal"
+      }
+    },
+    {
+      "operation": "Send Speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Speak command sent"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Normal"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.1
+      },
+      "expectations": {
+        "msg": "MOVE command sent"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy moves",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE execution feedback received"
+      }
+    },
+    {
+      "operation": "Receive MOVE execution feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE execution feedback received"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to HAPPY"
+      }
+    }
+  ],
+  "postconditions": {
+    "WIMP": "Received 'WHEEL_MOVE_FINISHED' notification"
+  }
+}
+```
+
+### Bounded Alternative Flow Test Cases
+
+#### Test Case 2: No Heart Rate Data Received
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heart Rate Data Received",
+  "steps": [
+    {
+      "operation": "Initialize Connections",
+      "target": {
+        "protocol": "Multiple",
+        "name": "System Initialization"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Connections Initialized"
+      }
+    },
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": null
+      },
+      "expectations": {
+        "msg": "No Heart Rate Data Received"
+      }
+    },
+    {
+      "operation": "Send Rotate command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 90,
+        "speed": 0.1
+      },
+      "expectations": {
+        "msg": "Rotate command sent"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy rotates",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "ROTATE execution feedback received"
+      }
+    },
+    {
+      "operation": "Receive ROTATE execution feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED feedback received"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    }
+  ],
+  "postconditions": {
+    "WIMP": "Received 'WHEEL_MOVE_FINISHED' notification",
+    "Buddy": "Spoken 'No heart rate data' and sent 'Speak Action Completed' back to WIMP"
+  }
+}
+```
+
+### Specific Alternative Flow Test Cases
+
+#### Test Case 3: Wheels Not Enabled
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Wheels Not Enabled",
+  "steps": [
+    {
+      "operation": "Initialize Connections",
+      "target": {
+        "protocol": "Multiple",
+        "name": "System Initialization"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Connections Initialized"
+      }
+    },
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 85
+      },
+      "expectations": {
+        "msg": "Heart Rate Data Received"
+      }
+    },
+    {
+      "operation": "Send Speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Speak command sent"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Normal"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.1
+      },
+      "expectations": {
+        "msg": "MOVE command sent"
+      }
+    },
+    {
+      "operation": "Check for Wheels Enabled",
+      "target": {
+        "protocol": "Websocket",
+        "method": "check",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "Wheels not enabled"
+      },
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ],
+  "postconditions": {
+    "WIMP": "Displayed 'Wheels not enabled' warning message"
+  }
+}
+```
+
+### Edge Case Test Cases
+
+#### Test Case 4: Heart Rate Data Boundary Value Low
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heart Rate Data Boundary Value Low",
+  "steps": [
+    {
+      "operation": "Initialize Connections",
+      "target": {
+        "protocol": "Multiple",
+        "name": "System Initialization"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Connections Initialized"
+      }
+    },
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 60
+      },
+      "expectations": {
+        "msg": "Heart Rate Data Received"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "value": 60
+      },
+      "expectations": {
+        "msg": "Heart rate is normal"
+      }
+    },
+    {
+      "operation": "Send Speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Speak command sent"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Normal"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.1
+      },
+      "expectations": {
+        "msg": "MOVE command sent"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy moves",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE execution feedback received"
+      }
+    },
+    {
+      "operation": "Receive MOVE execution feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE execution feedback received"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to HAPPY"
+      }
+    }
+  ],
+  "postconditions": {
+    "WIMP": "Received 'WHEEL_MOVE_FINISHED' notification"
+  }
+}
+```
+
+#### Test Case 5: Heart Rate Data Boundary Value High
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Heart Rate Data Boundary Value High",
+  "steps": [
+    {
+      "operation": "Initialize Connections",
+      "target": {
+        "protocol": "Multiple",
+        "name": "System Initialization"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Connections Initialized"
+      }
+    },
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 100
+      },
+      "expectations": {
+        "msg": "Heart Rate Data Received"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "value": 100
+      },
+      "expectations": {
+        "msg": "Heart rate is normal"
+      }
+    },
+    {
+      "operation": "Send Speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Speak command sent"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Normal"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.1
+      },
+      "expectations": {
+        "msg": "MOVE command sent"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy moves",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE execution feedback received"
+      }
+    },
+    {
+      "operation": "Receive MOVE execution feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE execution feedback received"
+      }
+    },
+    {
+      "operation": "Set Buddys mood",
+      "target": {
+        "protocol": "",
+        "method": "",
+        "name": "UI"
+      },
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to HAPPY"
+      }
+    }
+  ],
+  "postconditions": {
+    "WIMP": "Received 'WHEEL_MOVE_FINISHED' notification"
+  }
+}
+```
+
+By covering different normal, bounded, specific alternative flows, and edge cases, the test cases provide comprehensive coverage for the given use case scenario. Each test case explicitly details the steps, parameters, expectations, and postconditions, ensuring thorough validation of the system's functional requirements.
+Time Spent = 70976ms

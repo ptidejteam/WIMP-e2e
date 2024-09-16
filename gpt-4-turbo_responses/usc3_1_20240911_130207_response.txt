@@ -1,0 +1,145 @@
+Below are the detailed test cases covering all possible flows and scenarios as described in the use case specifications for "Abnormal heart rate (tachycardia), Move action is required."
+
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Receive heart rate data above 100 bpm and execute move command successfully",
+    "steps": [
+      {
+        "operation": "Request for heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {"datatype": "bpm"},
+        "expectations": {"msg": "Data received"}
+      },
+      {
+        "operation": "Validate received heart rate data",
+        "target": "",
+        "inputs": {"heartRate": 110},
+        "expectations": {"msg": "Heart rate is above 100 bpm"}
+      },
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {"command": "MOVE", "distance": 3.0, "speed": 0.25},
+        "expectations": {"msg": "Command accepted"}
+      },
+      {
+        "operation": "Wait for MOVE completion feedback from Buddy",
+        "target": "",
+        "inputs": {},
+        "expectations": {"msg": "WHEEL_MOVE_FINISHED received from Buddy"}
+      }
+    ],
+    "postcondition": "Buddy has moved and spoken 'attention is required', face mood to SCARED"
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "Heart rate data not received, SPEAK command executed",
+    "steps": [
+      {
+        "operation": "Request for heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "inputs": {"datatype": "bpm"},
+        "expectations": {"msg": "Data not received"}
+      },
+      {
+        "operation": "Proceed with alternative action",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {"command": "SPEAK", "message": "No heart rate data"},
+        "expectations": {"msg": "Speak command executed"}
+      }
+    ],
+    "postcondition": "Buddy has spoken 'No heart rate data'."
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "Heart rate data not above 100 bpm or below 50 bpm, SPEAK alternative action executed",
+    "steps": [
+      {
+        "operation": "Receive and validate heart rate data",
+        "target": "",
+        "inputs": {"heartRate": 95},
+        "expectations": {"msg": "Heart rate not in critical range"}
+      },
+      {
+        "operation": "Send SPEAK command to Buddy (Happy)",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {"command": "SPEAK", "message": "No Special attention Needed", "mood": "HAPPY"},
+        "expectations": {"msg": "Speak command executed with happy mood"}
+      }
+    ],
+    "postcondition": "Buddy has spoken and is in a HAPPY mood."
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "No feedback received from Buddy after MOVE command",
+    "steps": [
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {"command": "MOVE", "distance": 2.5, "speed": 0.2},
+        "expectations": {"msg": "Command accepted"}
+      },
+      {
+        "operation": "Check for feedback",
+        "target": "",
+        "inputs": {},
+        "expectations": {"msg": "No feedback received"}
+      }
+    ],
+    "postcondition": "Warning message displayed on WIMP due to no feedback from Buddy."
+  },
+  {
+    "TC_ID": "TC005",
+    "name": "Wheels not enabled for move action",
+    "steps": [
+      {
+        "operation": "Attempt to enable wheels on Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {"left": 0, "right": 0},
+        "expectations": {"msg": "Enable wheels failed"}
+      },
+      {
+        "operation": "Attempt to move Buddy",
+        "target": "",
+        "inputs": {"distance": 3.0, "speed": 0.25},
+        "expectations": {"msg": "Wheels are not enabled, move not possible"}
+      }
+    ],
+    "postcondition": "Buddy speaks 'Wheels are not enabled' and move action is not executed."
+  }
+]
+```
+
+Each test case follows the sequence of operations that mimic user/system actions and checks for expected responses or states. The test cases handle normal operations as well as various alternative flows, ensuring thorough coverage of the use case scenario.
+
+Time Spent = 132745ms

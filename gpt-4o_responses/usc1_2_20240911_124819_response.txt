@@ -1,0 +1,526 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal Heartrate - complete normal flow",
+  "steps": [
+    {
+      "operation": "Get heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate"
+      },
+      "expectations": {
+        "msg": "Request sent to Fitbit for heartrate data"
+      }
+    },
+    {
+      "operation": "Receive heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate",
+        "data": "75 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate data received from Fitbit"
+      }
+    },
+    {
+      "operation": "Validate heartrate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": "75 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate is within normal range (60-100 bpm)"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": "WIMP",
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy mood",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Receive SPEAK feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak Action Completed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "Bounded Alternative Flow - no heartrate data received",
+  "steps": [
+    {
+      "operation": "Get heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate"
+      },
+      "expectations": {
+        "msg": "Request sent to Fitbit for heartrate data"
+      }
+    },
+    {
+      "operation": "Receive no data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate",
+        "data": "null"
+      },
+      "expectations": {
+        "msg": "No heartrate data received from Fitbit"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": "WIMP",
+      "inputs": {
+        "message": "No heartrate data"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "No heartrate data"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No heartrate data'"
+      }
+    },
+    {
+      "operation": "Receive SPEAK feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak Action Completed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Specific Alternative Flow - heartrate between 50 and 60 bpm",
+  "steps": [
+    {
+      "operation": "Get heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate"
+      },
+      "expectations": {
+        "msg": "Request sent to Fitbit for heartrate data"
+      }
+    },
+    {
+      "operation": "Receive heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate",
+        "data": "55 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate data received from Fitbit"
+      }
+    },
+    {
+      "operation": "Validate heartrate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": "55 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate is between 50 and 60 bpm"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": "WIMP",
+      "inputs": {
+        "message": "No special attention"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "No special attention"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No special attention'"
+      }
+    },
+    {
+      "operation": "Receive SPEAK feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak Action Completed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Specific Alternative Flow - heartrate below 50 or above 100 bpm",
+  "steps": [
+    {
+      "operation": "Get heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate"
+      },
+      "expectations": {
+        "msg": "Request sent to Fitbit for heartrate data"
+      }
+    },
+    {
+      "operation": "Receive heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate",
+        "data": "40 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate data received from Fitbit"
+      }
+    },
+    {
+      "operation": "Validate heartrate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": "40 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate is below 50 or above 100 bpm"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": "WIMP",
+      "inputs": {
+        "message": "Special attention Needed"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Enable wheels",
+      "target": "Buddy",
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Buddy wheels enabled"
+      }
+    },
+    {
+      "operation": "Rotate Buddy",
+      "target": "Buddy",
+      "inputs": {
+        "speed": -50,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90 degrees clockwise"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "Special attention is needed"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Special attention is needed'"
+      }
+    },
+    {
+      "operation": "Receive WHEEL_MOVE_FINISHED feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED received"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Specific Alternative Flow - no feedback from Buddy for speak command",
+  "steps": [
+    {
+      "operation": "Get heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate"
+      },
+      "expectations": {
+        "msg": "Request sent to Fitbit for heartrate data"
+      }
+    },
+    {
+      "operation": "Receive heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate",
+        "data": "75 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate data received from Fitbit"
+      }
+    },
+    {
+      "operation": "Validate heartrate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": "75 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate is within normal range (60-100 bpm)"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": "WIMP",
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        {
+          "msg": "Buddy speaks 'Normal'"
+        },
+        {
+          "msg": "Buddy does not send SPEAK feedback"
+        }
+      }
+    },
+    {
+      "operation": "WIMP checks for feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "No SPEAK feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Warning: No feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "Specific Alternative Flow - no feedback from Buddy for WHEEL_MOVE_FINISHED command",
+  "steps": [
+    {
+      "operation": "Get heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate"
+      },
+      "expectations": {
+        "msg": "Request sent to Fitbit for heartrate data"
+      }
+    },
+    {
+      "operation": "Receive heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heartrate",
+        "data": "45 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate data received from Fitbit"
+      }
+    },
+    {
+      "operation": "Validate heartrate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": "45 bpm"
+      },
+      "expectations": {
+        "msg": "Heartrate is below 50 or above 100 bpm"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": "WIMP",
+      "inputs": {
+        "message": "Special attention Needed"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Enable wheels",
+      "target": "Buddy",
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Buddy wheels enabled"
+      }
+    },
+    {
+      "operation": "Rotate Buddy",
+      "target": "Buddy",
+      "inputs": {
+        "speed": -50,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90 degrees clockwise"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "Special attention is needed"
+      },
+      "expectations": {
+        {
+          "msg": "Buddy speaks 'Special attention is needed'"
+        },
+        {
+          "msg": "Buddy does not send WHEEL_MOVE_FINISHED feedback"
+        }
+      }
+    },
+    {
+      "operation": "WIMP checks for feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "No WHEEL_MOVE_FINISHED feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "Warning: No feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+Time Spent = 67780ms

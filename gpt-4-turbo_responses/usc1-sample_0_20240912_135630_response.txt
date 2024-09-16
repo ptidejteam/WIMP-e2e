@@ -1,0 +1,227 @@
+Here are a set of test cases that cover the Basic Flow, Bounded Alternative Flow, and Specific Alternative Flow based on the requirements provided in the use case "Fitbit Sends Data, Buddy Moves".
+
+---
+## Test Cases for Basic Flow
+### **TC001 - Valid Heart Rate**
+{
+  "TC_ID": "TC001",
+  "name": "Valid heart rate triggers Buddy movement",
+  "steps": [
+    {
+      "operation": "Receive Heart Rate Data",
+      "target": {
+        "protocol": "HTTP",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Heart rate between 60 and 100 bpm received"
+      }
+    },
+    {
+      "operation": "Validate Heart Rate",
+      "target": {},
+      "inputs": {
+        "heartRate": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send SPEAK command with 'Normal'",
+      "target": {
+        "protocol": "Websocket",
+        "name": "Buddy"
+      },
+      "inputs":{
+        "iText": "Normal",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "HTTP",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Left": 1,
+        "Right": 1
+      },
+      "expectations": {
+        "msg": "Wheel enabled for movement"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1.5,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to HAPPY",
+      "target": {
+        "protocol": "HttpClient",
+        "name": "UI"
+      },
+      "inputs": {
+        "iExpression": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is HAPPY"
+      }
+    }
+  ]
+}
+
+### **TC002 - Heart Rate Out of Range**
+{
+  "TC_ID": "TC002",
+  "name": "Heart rate outside valid range",
+  "steps": [
+    {
+      "operation": "Receive Heart Rate Data",
+      "target": {
+        "protocol": "HTTP",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 101
+      },
+      "expectations": {
+        "msg": "Heart rate out of 60-100 bpm range"
+      }
+    },
+    {
+      "operation": "Validate Heart Rate",
+      "target": {},
+      "inputs": {
+        "heartRate": 101
+      },
+      "expectations": {
+        "msg": "Heart rate is invalid, awaiting next step"
+      }
+    }
+  ]
+}
+
+---
+## Test Cases for Bounded Alternative Flow
+### **TC003 - No Heart Rate Data Received**
+{
+  "TC_ID": "TC003",
+  "name": "No heart rate data triggers rotation",
+  "steps": [
+    {
+      "operation": "Receive Heart Rate Data",
+      "target": {
+        "protocol": "HTTP",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": null
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "HTTP",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Left": 1,
+        "Right": 1
+      },
+      "expectations": {
+        "msg": "Wheel enabled for rotation"
+      }
+    },
+    {
+      "operation": "Rotate Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 50,
+        "Angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotation initiated"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "protocol": "HttpClient",
+        "name": "UI"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is NEUTRAL"
+      }
+    }
+  ]
+}
+
+---
+## Test Cases for Specific Alternative Flow
+### **TC004 - Wheels Not Enabled for Movement**
+{
+  "TC_ID": "TC004",
+  "name": "Wheels not enabled error",
+  "steps": [
+    {
+      "operation": "Receive Heart Rate Data",
+      "target": {
+        "protocol": "HTTP",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 65
+      },
+      "expectations": {
+        "msg": "Valid heart rate received"
+      }
+    },
+    {
+      "operation": "Attempt to Move Without Enabling Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.4
+      },
+      "expectations": {
+        "msg": "Wheels not enabled warning displayed"
+      }
+    }
+  ]
+}
+Time Spent = 82253ms

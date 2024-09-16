@@ -1,0 +1,183 @@
+Below are the generated test cases covering all possible scenarios based on the provided use case specifications for the Fitbit Sends Data, Buddy Moves use case.
+
+```json
+[
+  {
+    "TC_ID": "TC00101",
+    "name": "Buddy Receives Normal Heart Rate",
+    "steps": [
+      {
+        "operation": "Get heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 75
+        },
+        "expectations": {
+          "msg": "Receive Heart Rate Data"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": "",
+        "inputs": {
+          "data": 75
+        },
+        "expectations": {
+          "msg": "Heart rate is normal"
+        }
+      },
+      {
+        "operation": "Send Speak command to Buddy",
+        "target": "",
+        "inputs": {
+          "message": "Normal"
+        },
+        "expectations": {
+          "msg": "Buddy speaks - Normal"
+        }
+      },
+      {
+        "operation": "Send Move command to Buddy",
+        "target": "",
+        "inputs": {
+          "distance": 10,
+          "speed": 5
+        },
+        "expectations": {
+          "msg": "Buddy moves with specified distance and speed"
+        }
+      },
+      {
+        "operation": "Receive Move execution feedback",
+        "target": "",
+        "expectations": {
+          "msg": "WHEEL_MOVE_FINISHED notification"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC00102",
+    "name": "Buddy Receives No Heart Rate Data",
+    "steps": [
+      {
+        "operation": "Check heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": null
+        },
+        "expectations": {
+          "msg": "No Heart Rate Data Received"
+        }
+      },
+      {
+        "operation": "Send Rotate command to Buddy",
+        "target": "",
+        "inputs": {
+          "angle": 90,
+          "rotation_speed": 5
+        },
+        "expectations": {
+          "msg": "Buddy rotates with specified angle and speed"
+        }
+      },
+      {
+        "operation": "Receive Rotate execution feedback",
+        "target": "",
+        "expectations": {
+          "msg": "WHEEL_MOVE_FINISHED notification"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC00103",
+    "name": "Buddy Wheels Not Enabled",
+    "steps": [
+      {
+        "operation": "Get heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 75
+        },
+        "expectations": {
+          "msg": "Receive Heart Rate Data"
+        }
+      },
+      {
+        "operation": "Validate enable wheels",
+        "target": "",
+        "inputs": {
+          "enabled": 0
+        },
+        "expectations": {
+          "msg": "Wheels not enabled"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC00104",
+    "name": "Buddy Moves With Invalid Heart Rate",
+    "steps": [
+      {
+        "operation": "Get heart rate data from Fitbit",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 130
+        },
+        "expectations": {
+          "msg": "Receive Heart Rate Data"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": "",
+        "inputs": {
+          "data": 130
+        },
+        "expectations": {
+          "msg": "Heart rate is invalid"
+        }
+      },
+      {
+        "operation": "Send Rotate command to Buddy",
+        "target": "",
+        "inputs": {
+          "angle": 180,
+          "rotation_speed": 7
+        },
+        "expectations": {
+          "msg": "Buddy rotates with specified angle and speed"
+        }
+      },
+      {
+        "operation": "Receive Rotate execution feedback",
+        "target": "",
+        "expectations": {
+          "msg": "WHEEL_MOVE_FINISHED notification"
+        }
+      }
+    ]
+  }
+]
+```
+
+These test cases cover various scenarios such as receiving a normal heart rate, no heart rate data, wheels not enabled, and invalid heart rates, ensuring comprehensive testing throughout the use case specifications.
+Time Spent = 8389ms

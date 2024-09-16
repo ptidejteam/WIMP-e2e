@@ -1,0 +1,214 @@
+Below are detailed test cases that cover the normal flow, bounded alternative flow, specific alternative flow, and many edge cases for the scenario where "Fitbit Sends Data, Buddy Moves."
+
+### Normal Flow Test Case
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal heart rate data handling",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 75
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send SPEAK command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent to Buddy"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 2,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    }
+  ],
+  "postcondition": "Buddy's mood is set to HAPPY and Buddy moved as expected."
+}
+```
+
+### Bounded Alternative Flow Test Case
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heart rate data flow",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": null
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 180,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "ROTATE command sent to Buddy"
+      }
+    }
+  ],
+  "postcondition": "Buddy's mood is set to NEUTRAL and Buddy rotates as expected."
+}
+```
+
+### Specific Alternative Flow Test Case
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Attempt to move Buddy with wheels not enabled",
+  "steps": [
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled error"
+      }
+    }
+  ],
+  "postcondition": "WIMP displays 'Wheels not enabled' warning message."
+}
+```
+
+### Edge Case: Heart Rate Below Normal
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heart rate below normal range",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 55
+      },
+      "expectations": {
+        "msg": "Heart rate below normal range received"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 55
+      },
+      "expectations": {
+        "msg": "Invalid heart rate"
+      }
+    }
+  ],
+  "postcondition": "No SPEAK or MOVE command sent, Buddy remains stationary and NEUTRAL."
+}
+```
+
+### Edge Case: Heart Rate Above Normal
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Heart rate above normal range",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm",
+        "value": 105
+      },
+      "expectations": {
+        "msg": "Heart rate above normal range received"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 105
+      },
+      "expectations": {
+        "msg": "Invalid heart rate"
+      }
+    }
+  ],
+  "postcondition": "No SPEAK or MOVE command sent, Buddy remains stationary and NEUTRAL."
+}
+```
+
+These test cases ensure comprehensive coverage of all specified flows and additional possibilities, capturing both expected and unspecified behavior for robust verification of the Buddy system's functionality.
+Time Spent = 104129ms

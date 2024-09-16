@@ -1,0 +1,203 @@
+{
+    "TC_ID": "TC001",
+    "name": "Successful Heart Rate Monitoring and Movement Triggered Due to Tachycardia",
+    "steps": [
+        {
+            "operation": "Request Heart Rate Data from Fitbit",
+            "target": {
+                "protocol": "HTTP",
+                "method": "GET",
+                "name": "Fitbit API"
+            },
+            "inputs": {
+                "datatype": "heartrate"
+            },
+            "expectations": {
+                "msg": "Heart Rate Data Received"
+            }
+        },
+        {
+            "operation": "Validate Heart Rate",
+            "target": "",
+            "inputs": {
+                "data": 120
+            },
+            "expectations": {
+                "msg": "Heart Rate Above 100"
+            }
+        },
+        {
+            "operation": "Activate Wheels",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "ActivateWheels"
+            },
+            "inputs": {
+                "Left": 1,
+                "Right": 1
+            },
+            "expectations": {
+                "msg": "OK"
+            }
+        },
+        {
+            "operation": "Move Buddy",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "Buddy Command"
+            },
+            "inputs": {
+                "Speed": 0.1,
+                "Distance": 2.5
+            },
+            "expectations": {
+                "msg": "WHEEL_MOVE_FINISHED"
+            }
+        },
+        {
+            "operation": "Change Buddy's Face to Scared",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "UI"
+            },
+            "inputs": {
+                "iExpression": "SCARED"
+            },
+            "expectations": {
+                "msg": "Face Mood Changed to SCARED"
+            }
+        }
+    ]
+}
+
+{
+    "TC_ID": "TC002",
+    "name": "No Heart Rate Data Received - Error Handling",
+    "steps": [
+        {
+            "operation": "Request and Wait for Heart Rate Data",
+            "target": {
+                "protocol": "HTTP",
+                "method": "GET",
+                "name": "Fitbit API"
+            },
+            "inputs": {
+                "datatype": "heartrate"
+            },
+            "expectations": {
+                "msg": "No Heart Rate Data Received"
+            }
+        },
+        {
+            "operation": "Speak Command Sent to Buddy",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "Buddy Command"
+            },
+            "inputs": {
+                "iText": "No heartrate data",
+                "IExpression": "SPEAK NEUTRAL"
+            },
+            "expectations": {
+                "msg": "Speak Action Completed"
+            }
+        }
+    ]
+}
+
+{
+    "TC_ID": "TC003",
+    "name": "Heart Rate Within Normal Range",
+    "steps": [
+        {
+            "operation": "Validate Heart Rate",
+            "target": "",
+            "inputs": {
+                "data": 60
+            },
+            "expectations": {
+                "msg": "Heart Rate is Within Normal Range"
+            }
+        },
+        {
+            "operation": "Activate Wheels",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "ActivateWheels"
+            },
+            "inputs": {
+                "Left": 1,
+                "Right": 1
+            },
+            "expectations": {
+                "msg": "OK"
+            }
+        },
+        {
+            "operation": "Rotate Buddy",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "Buddy Command"
+            },
+            "inputs": {
+                "Speed": -50,
+                "Angle": 180
+            },
+            "expectations": {
+                "msg": "WHEEL_MOVE_FINISHED"
+            }
+        },
+        {
+            "operation": "Set Buddy's Mood to Happy and Speak",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "Buddy Command"
+            },
+            "inputs": {
+                "iExpression": "HAPPY",
+                "iText": "No Special Attention Needed"
+            },
+            "expectations": {
+                "msg": "Face Mood Changed to HAPPY and Speech Completed"
+            }
+        }
+    ]
+}
+
+{
+    "TC_ID": "TC004",
+    "name": "WIMP Receives No Feedback from Buddy Post Move Command",
+    "steps": [
+        {
+            "operation": "Issue Move Command",
+            "target": {
+                "protocol": "Websocket",
+                "method": "send",
+                "name": "Buddy Movement Control"
+            },
+            "inputs": {
+                "Speed": 0.1,
+                "Distance": 2.5
+            },
+            "expectations": {
+                "msg": "No Response Received for Move Command"
+            }
+        },
+        {
+            "operation": "Display Warning Message on WIMP",
+            "target": "",
+            "inputs": {},
+            "expectations": {
+                "msg": "Warning Displayed: No Feedback from Buddy"
+            }
+        }
+    ]
+}
+Time Spent = 90852ms

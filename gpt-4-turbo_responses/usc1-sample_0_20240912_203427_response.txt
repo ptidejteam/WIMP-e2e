@@ -1,0 +1,204 @@
+Based on the use case specification provided, I will generate test cases that cover all possible scenarios, including both the basic and alternative flows. The test cases are structured to validate that each step of the use case functions as expected when executed.
+
+### Test Case 1: Normal Heart Rate Data Flow
+
+```json
+{
+  "TC_ID": "TC00101",
+  "name": "Normal Heart Rate Data Flow",
+  "steps": [
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": "80bpm"
+      },
+      "expectations": {
+        "msg": "Heart rate data received"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is normal"
+      }
+    },
+    {
+      "operation": "Send SPEAK command",
+      "target": {
+        "protocol": "TCP/IP",
+        "method": "SEND",
+        "name": "Buddy Control System"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "parameters": "Normal"
+      },
+      "expectations": {
+        "msg": "SPEAK command sent"
+      }
+    },
+    {
+      "operation": "BUDDY speaks and acknowledges",
+      "target": "",
+      "inputs": {
+        "response": "Speak Action Completed"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'Normal'"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "TCP/IP",
+        "method": "SEND",
+        "name": "Buddy Control System"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "parameters": {"distance": "5 meters", "speed": "1 m/s"}
+      },
+      "expectations": {
+        "msg": "MOVE command sent"
+      }
+    },
+    {
+      "operation": "Receive MOVE execution feedback",
+      "target": "",
+      "inputs": {
+        "response": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Buddy movement completed"
+      }
+    },
+    {
+      "operation": "Check Buddy's final mood",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy's mood is HAPPY"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: No Heart Rate Data Receives
+
+```json
+{
+  "TC_ID": "TC00102",
+  "name": "No Heart Rate Data Receives",
+  "steps": [
+    {
+      "operation": "Receive heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": "none"
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "TCP/IP",
+        "method": "SEND",
+        "name": "Buddy Control System"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "parameters": {"angle": "90 degrees", "rotation_speed": "0.5 r/s"}
+      },
+      "expectations": {
+        "msg": "ROTATE command sent"
+      }
+    },
+    {
+      "operation": "Receive ROTATE execution feedback",
+      "target": "",
+      "inputs": {
+        "response": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Buddy rotation completed"
+      }
+    },
+    {
+      "operation": "Check Buddy's final mood",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy's mood is NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: Wheels Not Enabled Alternative Flow
+
+```json
+{
+  "TC_ID": "TC00103",
+  "name": "Wheels Not Enabled Alternative Flow",
+  "steps": [
+    {
+      "operation": "Enable Buddy's wheels",
+      "target": {
+        "protocol": "TCP/IP",
+        "method": "SEND",
+        "name": "Buddy Control System"
+      },
+      "inputs": {
+        "command": "SET EnableWheels",
+        "parameters": {"left_wheel": "0", "right_wheel": "0"}
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Try MOVE command",
+      "target": {
+        "protocol": "TCP/IP",
+        "method": "SEND",
+        "name": "Buddy Control System"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "parameters": {"distance": "5 meters", "speed": "1 m/s"}
+      },
+      "expectations": {
+        "msg": "Move command ignored due to disabled wheels"
+      }
+    },
+    {
+      "operation": "Check Buddy's mood and status message",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy's mood is TIRED and displays 'Wheels not enabled' warning"
+      }
+    }
+  ]
+}
+```
+
+These JSON formatted test cases cover the primary flow and all possible alternative flows described in the use case specification, ensuring that Buddy behaves as expected under various conditions provided by data inputs from the Fitbit.
+Time Spent = 65707ms

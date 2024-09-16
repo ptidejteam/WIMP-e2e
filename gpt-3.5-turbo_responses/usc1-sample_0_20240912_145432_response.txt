@@ -1,0 +1,175 @@
+{
+"TC_ID":"TC001",
+"name": "Receive Fitbit Data, Move Buddy Successfully",
+"steps": [
+	{
+  	"operation": "Get Fitbit data",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {
+    	"datatype": "heart_rate"
+  	},
+  	"expectations": {
+    	"msg": "Receive Fitbit Data"
+  	}
+	},
+	{
+  	"operation": "Validate heart rate data",
+  	"target": "",
+  	"inputs": {
+    	"data": 80
+  	},
+  	"expectations": {
+    	"msg": "Heart rate is valid"
+  	}
+	},
+	{
+  	"operation": "Send Speak command to Buddy",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"message": "Normal"
+  	},
+  	"expectations": {
+    	"msg": "Buddy speaks 'Normal'"
+  	}
+	},
+	{
+  	"operation": "Set Buddy's mood to NEUTRAL",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "PUT",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"mood": "NEUTRAL",
+    	"speed": 0.5
+  	},
+  	"expectations": {
+    	"msg": "Buddy's mood set to NEUTRAL"
+   }
+	},
+	{
+  	"operation": "Send Move command to Buddy",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"distance": 1,
+    	"speed": 0.5
+  	},
+  	"expectations": {
+    	"msg": "Buddy moves with specified distance and speed"
+  	}
+	},
+	{
+  	"operation": "Receive Move execution feedback from Buddy",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"action": "MOVE"
+   },
+   "expectations": {
+    	"msg": "WIMP receives MOVE execution feedback"
+   }
+    }
+  ]
+}
+
+{
+"TC_ID":"TC002",
+"name": "Receive no Fitbit Data, Rotate Buddy Successfully",
+"steps": [
+	{
+  	"operation": "Get Fitbit data",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {
+    	"datatype": "heart_rate"
+  	},
+  	"expectations": {
+    	"msg": "Do not receive Fitbit Data"
+  	}
+	},
+	{
+  	"operation": "Send Rotate command to Buddy",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Buddy"
+  	},
+  	"inputs": {
+    	"angle": 90,
+    	"speed": 30
+  	},
+  	"expectations": {
+    	"msg": "Buddy rotates at specified angle and speed"
+  	}
+	},
+	{
+  	"operation": "Receive ROTATE Execution feedback from Buddy",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "GET",
+    	"name": "WIMP"
+  	},
+  	"inputs": {
+    	"action": "ROTATE"
+   },
+   "expectations": {
+    	"msg": "WIMP receives ROTATE execution feedback"
+   }
+	}
+  ]
+}
+
+{
+"TC_ID":"TC003",
+"name": "Move Buddy with Disabled Wheels",
+"steps": [
+	{
+  	"operation": "Get Fitbit data",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {
+    	"datatype": "heart_rate"
+   },
+   "expectations": {
+    	"msg": "Receive Fitbit Data"
+   }
+	},
+	{
+  	"operation": "Enable Wheels",
+  	"target": {
+    	"protocol": "Websocket",
+    	"method": "send",
+    	"name": "Buddy"
+   },
+   "inputs": {
+     "left": 0,
+     "right": 0
+   },
+   "expectations": {
+     "msg": "Wheels not enabled"
+   }
+	}
+  ]
+}
+Time Spent = 81479ms

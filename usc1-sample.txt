@@ -1,0 +1,82 @@
+||Task Description||
+[Generate test cases from use case specification and give all the possible tests covering all possible scenarios.]
+||Additional Notes: Use case specification||
+[
+1. Use Case :Fitbit Sends Data, Buddy Moves
+1.1 Precondition
+BuddyApp is running
+FitbitApp is running
+Connections have been initialized
+1.2 Basic Flow
+1.The WIMP RECEIVES heartrate data FROM fitbit
+2.The WIMP VALIDATES THAT heartrate is between 60 and 100 bpm 
+3.The WIMP SENDS SPEAK command to Buddy with "Normal" message
+4. Buddy's mood is SET to NEUTRAL
+5. Buddy SPEAKS "Normal"
+6.Budd SENDS SPEAK feedback to WIMP
+7.The WIMP SENDS MOVE Command to Buddy With distance and speed parameters.
+8. Buddy SETS EnableWheels to 1 for both Left and Right Wheels
+9. Buddy MOVES with Specified distance and speed.
+10. Buddy SENDS MOVE execution feedback to WIMP
+11. WIMP RECEIVES MOVE execution feedback from Buddy
+12. Buddy's mood is SET to HAPPY
+Postcondition
+WIMP receives “WHEEL_MOVE_FINISHED” notification status
+Buddy's mood is SET to HAPPY
+1.3 Bounded Alternative Flow
+RFS 1-7
+1.IF WIMP receives no heartrate data from Fitbit THEN
+2.WIMP SENDS Rotate command to Buddy with angle and rotation speed.
+3. Buddy SETS EnableWheels to 1 for both left and right wheels
+4. Buddy MOVES with Specified distance and speed.
+5.Buddy SENDS ROTATE Execution feedback to WIMP
+6. WIMP RECEIVES "WHEEL_MOVE_FINISHED" feedback from Buddy
+7. Buddy's mood is SET to NEUTRAL
+Postcondition
+Mood is set to NEUTRAL
+Buddy has spoken "No heartrate data" and sent "Speak Action Completed" back to WIMP
+1.4 Specific Alternative Flow
+RFS 8
+1.IF EnableWheels is not to 1 THEN
+2. Buddy displays "Wheels not enabled"warning message.
+3. Buddy's mood is SET to TIRED
+4.ENDIF
+Postcondition
+Buddy's mood is SET to TIRED 
+]
+||Constraints||
+[
+if the specific operation will be executed by the device, for target, mention the name of device, method and protocol to use. 
+If the operation is to be executed by the application layer, leave it empty.please follow the sample output  format  below for each operation  :
+{
+"TC_ID":"TC001XX",
+  "name": "<ScenarioName>",
+  "steps": [
+	{
+  	"operation": "Get fitbit data",
+  	"target": {
+    	"protocol": "HTTP",
+    	"method": "POST",
+    	"name": "Fitbit"
+  	},
+  	"inputs": {
+    	"data": "bpm"
+  	},
+  	"expectations": {
+    	"msg": "Receive Fitbit Data"
+  	}
+	},
+	{
+  	"operation": "Determine buddy action",
+  	"target": "",
+  	"inputs": {
+    	"data": 130
+  	},
+  	"expectation": {
+    	"msg": "ask Buddy Robot to move"
+  	}
+	
+
+}]
+}
+]

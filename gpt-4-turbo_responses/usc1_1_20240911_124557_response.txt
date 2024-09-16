@@ -1,0 +1,220 @@
+Below are the comprehensive test cases designed to fully validate all scenarios of the specification provided, covering normal flows, bounded and specific alternative flows.
+
+### Test Case 1: Normal Heart Rate Data Handling
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal Heart Rate Data Handling",
+  "steps": [
+    {
+      "operation": "Get heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data",
+        "data": 75
+      }
+    },
+    {
+      "operation": "Check received data",
+      "target": "",
+      "inputs": {
+        "heartRate": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is valid normal range: 60-100 bpm"
+      }
+    },
+    {
+      "operation": "Speak command",
+      "target": {
+        "protocol": "MQTT",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Receive feedback",
+      "target": {
+        "protocol": "MQTT",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak Action Completed"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: No Heart Rate Data Received
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heart Rate Data Received",
+  "steps": [
+    {
+      "operation": "Get heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send SPEAK command with error",
+      "target": {
+        "protocol": "MQTT",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "No heartrate data"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No heartrate data'"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: Heart Rate Requiring No Special Attention
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heart Rate Requiring No Special Attention",
+  "steps": [
+    {
+      "operation": "Get heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data",
+        "data": 55
+      }
+    },
+    {
+      "operation": "Check received data",
+      "target": "",
+      "inputs": {
+        "heartRate": 55
+      },
+      "expectations": {
+        "msg": "Heart rate requires no special attention: 50-60 bpm"
+      }
+    },
+    {
+      "operation": "Send No Special Attention message",
+      "target": {
+        "protocol": "MQTT",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "No special attention"
+      },
+      "expectations": {
+        "msg": "Speak Action Completed"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 4: Heart Rate Requiring Special Attention
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heart Rate Requiring Special Attention",
+  "steps": [
+    {
+      "operation": "Get heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data",
+        "data": 101
+      }
+    },
+    {
+      "operation": "Send Special Attention message",
+      "target": {
+        "protocol": "MQTT",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Special attention Needed",
+        "rotate": {
+          "Angle": 90,
+          "Speed": -100
+        }
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Special attention is needed' and rotates"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 5: No feedback from Buddy
+```json
+{
+  "TC_ID": "TC005",
+  "name": "No feedback from Buddy",
+  "steps": [
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "MQTT",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Receive no feedback",
+        "action": "WIMP displays warning message"
+      }
+    }
+  ]
+}
+```
+
+These test cases aim to ensure that all scenarios and their respective postconditions are verified thoroughly. Each test case has structured steps, operations, expectations, and inputs tailored to challenge the provided system adequately.
+Time Spent = 109247ms

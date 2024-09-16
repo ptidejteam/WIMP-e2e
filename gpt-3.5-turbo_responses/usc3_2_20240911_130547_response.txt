@@ -1,0 +1,740 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "abnormal heart rate detected, move action performed successfully",
+  "steps": [
+    {
+      "operation": "Request heart rate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data received",
+      "target": "",
+      "inputs": {
+        "data": 110
+      },
+      "expectations": {
+        "msg": "Heart rate is above 100"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 2.5,
+        "speed": 0.2
+      },
+      "expectations": {
+        "msg": "Buddy moved successfully"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "no heart rate data received, speak action executed",
+  "steps": [
+    {
+      "operation": "Check for heart rate data received",
+      "target": "",
+      "inputs": {
+        "data_received": false
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "No heart rate data"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'No heart rate data'"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "Speak Action Completed"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "normal heart rate detected, no special attention needed",
+  "steps": [
+    {
+      "operation": "Validate heart rate data received",
+      "target": "",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is normal"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "No Special attention Needed"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'No Special attention Needed'"
+      }
+    },
+    {
+      "operation": "Set Buddy's face to HAPPY mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's face changed to HAPPY"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "no feedback received from Buddy",
+  "steps": [
+    {
+      "operation": "Wait for feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": ""
+      },
+      "expectations": {
+        "msg": "No feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No feedback from Buddy received"
+      },
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "wheels cannot be activated",
+  "steps": [
+    {
+      "operation": "Activate wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels activation failed"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Wheels are not enabled"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'Wheels are not enabled'"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "NOK"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "no execution feedback received from Buddy",
+  "steps": [
+    {
+      "operation": "Wait for execution feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": ""
+      },
+      "expectations": {
+        "msg": "No execution feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No execution feedback from Buddy received"
+      },
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC007",
+  "name": "rotate buddy successfully",
+  "steps": [
+    {
+      "operation": "Enable wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled successfully"
+      }
+    },
+    {
+      "operation": "Rotate Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 180,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy rotated 180 degrees"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC008",
+  "name": "heart rate is less than 50 bpm, move action not taken",
+  "steps": [
+    {
+      "operation": "Validate heart rate data received",
+      "target": "",
+      "inputs": {
+        "data": 45
+      },
+      "expectations": {
+        "msg": "Heart rate is less than 50"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "No Special attention Needed"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'No Special attention Needed'"
+      }
+    },
+    {
+      "operation": "Set Buddy's face to HAPPY mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's face changed to HAPPY"
+      }
+    },
+    {
+      "operation": "Rotate Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 180,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy rotated 180 degrees"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC009",
+  "name": "FitbitApp fails to check the type of requested data",
+  "steps": [
+    {
+      "operation": "Request heart rate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data"
+      }
+    },
+    {
+      "operation": "Invalid data type received",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "FitbitApp"
+      },
+      "inputs": {
+        "error": "Invalid data type"
+      },
+      "expectations": {
+        "msg": "FitbitApp sends error message to WIMP"
+      }
+    },
+    {
+      "operation": "Check response from FitbitApp",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "Invalid data type error"
+      },
+      "expectations": {
+        "msg": "Received error message from FitbitApp"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC010",
+  "name": "WIMP receives invalid execution feedback from Buddy",
+  "steps": [
+    {
+      "operation": "Wait for execution feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "INVALID_FEEDBACK"
+      },
+      "expectations": {
+        "msg": "Received invalid feedback from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "Invalid feedback received from Buddy"
+      },
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC011",
+  "name": "Buddy fails to activate wheels",
+  "steps": [
+    {
+      "operation": "Attempt to enable wheels on Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Failed to enable wheels on Buddy"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Wheels activation failed"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'Wheels activation failed'"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "NOK"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC012",
+  "name": "Buddy fails to move due to invalid speed",
+  "steps": [
+    {
+      "operation": "Attempt to move Buddy with invalid speed",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 3,
+        "speed": 0.1
+      },
+      "expectations": {
+        "msg": "Failed to move Buddy due to invalid speed"
+      }
+    },
+    {
+      "operation": "Send SPEAK command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Invalid speed for moving"
+      },
+      "expectations": {
+        "msg": "Buddy spoke 'Invalid speed for moving'"
+      }
+    },
+    {
+      "operation": "Check feedback status from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": "NOK"
+      },
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC013",
+  "name": "WIMP displays warning message if no feedback from Buddy",
+  "steps": [
+    {
+      "operation": "Wait for feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": ""
+      },
+      "expectations": {
+        "msg": "No feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No feedback from Buddy received"
+      },
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC014",
+  "name": "WIMP displays warning message if no execution feedback from Buddy",
+  "steps": [
+    {
+      "operation": "Wait for execution feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "expected_data": ""
+      },
+      "expectations": {
+        "msg": "No execution feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No execution feedback from Buddy received"
+      },
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC015",
+  "name": "face mood change to SCARED after move action completed",
+  "steps": [
+    {
+      "operation": "Check Buddy's face mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expected_mood": "SCARED"
+      },
+      "expectations": {
+        "msg": "Buddy's face mood changed to SCARED"
+      }
+    },
+    {
+      "operation": "Send execution feedback status to WIMP",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "BuddyApp"
+      },
+      "inputs": {
+        "status": "WHEEL_MOVE_FINISHED"
+      },
+      "expectations": {
+        "msg": "Execution feedback sent to WIMP"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC016",
+  "name": "fitbitApp doesn't sense heart rate data",
+  "steps": [
+    {
+      "operation": "Send request for heart rate data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data"
+      }
+    },
+    {
+      "operation": "Wait
+Time Spent = 141159ms

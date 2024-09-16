@@ -1,0 +1,170 @@
+Here’s a detailed set of test cases based on the provided scenario about heart rate data interaction between Fitbit, WIMP, and Buddy, covering normal, bounded alternative, and specific alternative flows.
+
+### Test Case 1: Normal Flow - Valid Heart Rate Data Received
+
+```json
+{
+  "TC_ID":"TC001",
+  "name": "Normal Flow - Valid Heart Rate Data and Successful Buddy Operation",
+  "steps": [
+    {
+      "operation": "Receive Heart Rate Data from Fitbit",
+      "target": "WIMP",
+      "inputs": {
+        "heart_rate": 80
+      },
+      "expectations": {
+        "msg": "Heart rate data is received"
+      }
+    },
+    {
+      "operation": "Validate Heart Rate",
+      "target": "WIMP",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid and within range 60-100 bpm"
+      }
+    },
+    {
+      "operation": "Send SPEAK Command",
+      "target": "Buddy",
+      "inputs": {
+        "message": "Normal",
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal' with NEUTRAL expression"
+      }
+    },
+    {
+      "operation": "Send MOVE Command",
+      "target": "Buddy",
+      "inputs": {
+        "speed": 0.5,
+        "distance": 1
+      },
+      "expectations": {
+        "msg": "Buddy moves 1m at 0.5m/s speed"
+      }
+    },
+    {
+      "operation": "Receive MOVE Feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "WIMP receives 'WHEEL_MOVE_FINISHED' with status OK"
+      }
+    },
+    {
+      "operation": "Set Buddy's Mood",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to HAPPY"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: Bounded Alternative Flow - No Heart Rate Data Received
+
+```json
+{
+  "TC_ID":"TC002",
+  "name": "Bounded Alternative Flow - No Heart Rate Data",
+  "steps": [
+    {
+      "operation": "Receive Heart Rate Data",
+      "target": "WIMP",
+      "inputs": {
+        "heart_rate": null
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Rotate Buddy No Heart Rate",
+      "target": "Buddy",
+      "inputs": {
+        "angle": 180,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy rotates 180° at 50 deg/s speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate Feedback",
+      "target": "WIMP",
+      "inputs": {},
+      "expectations": {
+        "msg": "WIMP receives 'WHEEL_MOVE_FINISHED' with status OK"
+      }
+    },
+    {
+      "operation": "Buddy Speaks",
+      "target": "Buddy",
+      "inputs": {
+        "message": "No heart rate data",
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy states 'No heart rate data' with NEUTRAL expression"
+      }
+    },
+    {
+      "operation": "Buddy Mood Set",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: Specific Alternative Flow - Wheels Not Enabled
+
+```json
+{
+  "TC_ID":"TC003",
+  "name": "Specific Alternative Flow - Wheels Not Enabled Warning",
+  "steps": [
+    {
+      "operation": "Enable Wheels",
+      "target": "Buddy",
+      "inputs": {
+        "Left": 0,
+        "Right": 0
+      },
+      "expectations": {
+        "msg": "Attempt to enable wheels failed"
+      }
+    },
+    {
+      "operation": "MOVE Command with Disabled Wheels",
+      "target": "Buddy",
+      "inputs": {
+        "speed": 0.5,
+        "distance": 1
+      },
+      "expectations": {
+        "msg": "Wheels not enabled warning is displayed"
+      }
+    }
+  ]
+}
+```
+
+Note: Ensure all systems (WIMP, Buddy, and Fitbit) can log and handle unexpected values or system failures gracefully, which might require additional safety and fault-tolerance tests beyond these scenarios.
+
+Time Spent = 100786ms

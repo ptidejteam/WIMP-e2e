@@ -1,0 +1,465 @@
+To update code to be compatible with PrimeNG 17, we need to check the components and their respective properties. While the structure and template of the components in the DOM mostly stay the same, the PrimeNG framework may have introduced new properties, deprecated old ones, or even introduced entirely new components to replace the old ones. Below are the steps to ensure compatibility:
+
+1. **Check for Deprecated Components and Properties**
+2. **Update CSS Classes if Required**
+3. **Ensure Correct Imports**
+
+Below is the updated template considering potential changes. Note that you may need to refer to PrimeNG documentation for each component for specific updates depending on what has changed between versions.
+
+```html
+<div #orderEditor pFocusTrap>
+  <button
+    *ngIf="!isEditOrderType"
+    pButton
+    pRipple
+    (click)="clearCacheAndReload()"
+    type="button"
+    label="Reinitialize"
+    icon="pi pi-refresh"
+    pTooltip="Click to reinitialize the order data and settings, this will clear the cached values"
+    tooltipPosition="top"
+    class="reload p-button-help p-button-text">
+  </button>
+  
+  <div class="p-grid p-col-12">
+    <div
+      *ngIf="this.isMultipleEditorType"
+      class="p-grid p-col-12 p-formgrid p-fluid"
+      style="align-items: center">
+      <div class="p-field p-col-12 p-md-12">
+        <h6>Bulk Orders</h6>
+        <app-mcm-table
+          [globalFilter]="true"
+          [data]="OrderDataTable"
+          [paginator]="false"
+          [virtualScroll]="true"
+          [scrollHeight]="'250px'">
+        </app-mcm-table>
+      </div>
+    </div>
+
+    <div class="p-grid p-col-12 p-formgrid">
+      <!-- ROW 1 - First Col -->
+      <div class="p-grid p-col-8">
+        <div class="p-field p-grid p-col-6">
+          <div class="p-field p-col-12 p-md-6">
+            <h6>Trading Manager</h6>
+            <p-dropdown
+              [options]="this.orderEditData?.tradingManager | async"
+              [(ngModel)]="orderData.tradingManager"
+              [disabled]="this.isEditOrderType || this.isMultipleEditorType"
+              [showClear]="true"
+              (onChange)="onOrderDataChanged(EditorAction.tradingManager); checkValidation()"
+              class="light"
+              [filter]="true"
+              placeholder="Select"
+              [style]="{ width: '100%' }">
+            </p-dropdown>
+          </div>
+          <div class="p-field p-col-12 p-md-6">
+            <h6>Manager SubAccount</h6>
+            <p-dropdown
+              [options]="this.orderEditData.managerSubAccount | async"
+              [(ngModel)]="orderData.managerSubAccount"
+              [disabled]="this.isEditOrderType || this.isMultipleEditorType"
+              (onChange)="onOrderDataChanged(EditorAction.managerSubAccount); checkValidation()"
+              [filter]="true"
+              [showClear]="true"
+              placeholder="Select"
+              class="light"
+              [style]="{ width: '100%' }">
+            </p-dropdown>
+          </div>
+        </div>
+        
+        <div class="p-field p-grid p-col-6">
+          <div class="p-field p-col-12 p-md-4">
+            <h6>Time in Force</h6>
+            <p-dropdown
+              [options]="this.orderEditData.timeInForce | async"
+              [(ngModel)]="orderData.timeInForce"
+              (onChange)="checkValidation()"
+              [showClear]="true"
+              placeholder="Select"
+              class="light"
+              [style]="{ width: '100%' }">
+            </p-dropdown>
+          </div>
+          
+          <div *ngIf="isChina" class="p-field p-col-12 p-md-4">
+            <h6>Close</h6>
+            <p-dropdown
+              [options]="this.orderEditData.close | async"
+              [(ngModel)]="orderData.close"
+              [showClear]="true"
+              id="close"
+              class="light"
+              placeholder="Select"
+              (onChange)="checkValidation()"
+              [style]="{ width: '100%' }">
+            </p-dropdown>
+          </div>
+          
+          <div *ngIf="!isChina" class="p-field p-col-12 p-md-4">
+            <h6>Product Type</h6>
+            <p-dropdown
+              [options]="this.orderEditData.productType | async"
+              [(ngModel)]="orderData.productType"
+              [showClear]="true"
+              id="close"
+              class="light"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+              [disabled]="true"
+              (onChange)="checkValidation()">
+            </p-dropdown>
+          </div>
+          
+          <div class="p-field p-col-12 p-md-4">
+            <h6>Client Order Id</h6>
+            <input
+              type="text"
+              pInputText
+              class="light"
+              placeholder="Select"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              [(ngModel)]="orderData.clientTicketID"
+              [style]="{ width: '100%' }"
+              (change)="checkValidation()">
+          </div>
+        </div>
+        
+        <div class="p-field p-grid p-col-12">
+          <div class="p-field p-col-12 p-md-12">
+            <h6>{{ orderEditData.priceDetails?.title }}</h6>
+            <app-mcm-table
+              [globalFilter]="false"
+              [data]="orderEditData.priceDetails"
+              [paginator]="false"
+              [customColumnSelection]="['last','bid','ask','upperpricelimit','lowerpricelimit','high','low']"
+              (onColumnClickEvent)="onColumnClick($event)"
+              [displayCaption]="false">
+            </app-mcm-table>
+          </div>
+        </div>
+      </div>
+      
+      <p-divider layout="vertical"> </p-divider>
+      
+      <!-- ROW1 - Third Col -->
+      <div class="p-grid p-col-4">
+        <div class="p-field p-col-12 p-md-6">
+          <div class="field-checkbox">
+            <p-checkbox
+              [(ngModel)]="orderEditData.orderStartDateTimeChecked"
+              [binary]="true"
+              inputId="startAt"
+              (onChange)="checkUncheckDates_start()">
+            </p-checkbox>
+            <label for="startAt" style="margin-left: 4%"> Start At</label>
+          </div>
+  
+          <mcm-calendar
+            yearRange="2022:2040"
+            [(dateStr)]="orderData.orderStartDateTime"
+            [IsIntraday]="true"
+            [disabled]="!orderEditData.orderStartDateTimeChecked"
+            (onDateSelected)="updateAlgoParams(); checkValidation()"
+            [showSeconds]="true"
+            [showButton]="true">
+          </mcm-calendar>
+        </div>
+        
+        <div class="p-field p-col-12 p-md-6">
+          <div class="field-checkbox">
+            <p-checkbox
+              [(ngModel)]="orderEditData.orderEndDateTimeChecked"
+              [binary]="true"
+              inputId="endAt"
+              (onChange)="checkUncheckDates_end()">
+            </p-checkbox>
+            <label for="endAt" style="margin-left: 4%"> End At</label>
+          </div>
+          
+          <mcm-calendar
+            yearRange="2022:2040"
+            [(dateStr)]="orderData.orderEndDateTime"
+            [IsIntraday]="true"
+            (onDateSelected)="updateAlgoParams(); checkValidation()"
+            [disabled]="!orderEditData.orderEndDateTimeChecked"
+            [showSeconds]="true"
+            [showButton]="true">
+          </mcm-calendar>
+        </div>
+        
+        <div *ngIf="orderEditData.orderEndDateTimeChecked" class="p-field p-col-12 p-md-6">
+          <h6>End Action</h6>
+          <p-dropdown
+            [options]="this.orderEditData.endAction | async"
+            [(ngModel)]="orderData.endAction"
+            [showClear]="true"
+            class="light"
+            placeholder="Select"
+            [style]="{ width: '100%' }"
+            [disabled]="!orderEditData.orderEndDateTimeChecked"
+            (onChange)="updateAlgoParams(); checkValidation()">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-grid p-col-12 p-formgrid p-fluid">
+      <div class="p-grid p-col-4" style="align-items: center">
+        <div class="p-field p-col-12 p-md-4">
+          <h6>Actions</h6>
+          <p-selectButton
+            class="switch"
+            [options]="orderActions"
+            [(ngModel)]="orderData.sideDetail"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="onOrderDataChanged(EditorAction.sideDetail); checkValidation()"
+            [disabled]="this.isTrueMultipleOrdersEditMode">
+          </p-selectButton>
+        </div>
+        
+        <div class="p-field p-col-12 p-md-4">
+          <h6 style="visibility: hidden">.</h6>
+          <div class="button-line">
+            <button
+              pButton
+              class="p-button-outlined"
+              label="1"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              (click)="orderData.quantity = orderData.quantity + 1; checkValidation()">
+            </button>
+            <button
+              pButton
+              class="p-button-outlined"
+              label="5"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              (click)="orderData.quantity = orderData.quantity + 5; checkValidation()">
+            </button>
+            <button
+              pButton
+              class="p-button-outlined"
+              label="10"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              (click)="orderData.quantity = orderData.quantity + 10; checkValidation()">
+            </button>
+            <button
+              pButton
+              class="p-button-outlined"
+              label="50"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              (click)="orderData.quantity = orderData.quantity + 50; checkValidation()">
+            </button>
+            <button
+              pButton
+              class="p-button-outlined"
+              label="100"
+              [disabled]="this.isTrueMultipleOrdersEditMode"
+              (click)="orderData.quantity = orderData.quantity + 100; checkValidation()">
+            </button>
+          </div>
+        </div>
+        
+        <div class="p-field p-col-12 p-md-4">
+          <h6>Quantity</h6>
+          <p-inputNumber
+            [(ngModel)]="orderData.quantity"
+            [showButtons]="true"
+            inputId="horizontal"
+            [step]="1"
+            (ngModelChange)="checkValidation()"
+            (onInput)="checkValidation()"
+            [showClear]="true"
+            [disabled]="this.isTrueMultipleOrdersEditMode"
+            [style]="{ width: '100%' }">
+          </p-inputNumber>
+        </div>
+      </div>
+      
+      <div class="p-grid p-col-4" style="align-items: center">
+        <div class="p-field p-col-12 p-md-6">
+          <h6>Symbol</h6>
+          <p-dropdown
+            [options]="this.orderEditData.symbol | async"
+            [(ngModel)]="orderData.symbol"
+            [disabled]="this.isEditOrderType || this.isMultipleEditorType"
+            [showClear]="true"
+            (onChange)="onOrderDataChanged(EditorAction.symbol); checkValidation()"
+            [filter]="true"
+            [filterBy]="'value'"
+            class="light"
+            placeholder="Select"
+            [style]="{ width: '100%' }">
+          </p-dropdown>
+        </div>
+        
+        <div class="p-field p-col-12 p-md-6">
+          <h6>Expiry</h6>
+          <p-dropdown
+            [options]="this.orderEditData.expiry | async"
+            [disabled]="this.isEditOrderType || this.isMultipleEditorType"
+            [(ngModel)]="orderData.expiry"
+            (onChange)="onOrderDataChanged(EditorAction.expiry); checkValidation()"
+            [showClear]="true"
+            [filter]="true"
+            class="light"
+            placeholder="Select"
+            [style]="{ width: '100%' }">
+          </p-dropdown>
+        </div>
+      </div>
+      
+      <div class="p-grid p-col" style="align-items: center">
+        <div class="p-field p-col-12 p-md-4">
+          <h6>Order Type</h6>
+          <p-dropdown
+            [options]="this.orderEditData.orderType | async"
+            [(ngModel)]="orderData.orderType"
+            [showClear]="true"
+            class="light"
+            placeholder="Select"
+            [style]="{ width: '100%' }"
+            (onChange)="onOrderDataChanged(EditorAction.orderType); checkValidation()">
+          </p-dropdown>
+        </div>
+        
+        <div *ngIf="orderEditData.isStopOrderType" class="p-field p-col-12 p-md-4">
+          <h6>Stop Price</h6>
+          <app-order-price-input
+            [(value)]="orderData.stopPrice"
+            [price]="orderData.stopPrice"
+            [step]="marketPriceIncrement | async"
+            [minFractionDigits]="maxTickforOrderPrice"
+            [maxFractionDigits]="maxTickforOrderPrice"
+            [format]="marketPriceFormat | async"
+            (onChange)="checkValidation()">
+          </app-order-price-input>
+        </div>
+        
+        <div *ngIf="orderEditData.isLimitOrderType" class="p-field p-col-12 p-md-4">
+          <h6>Limit Price</h6>
+          <app-order-price-input
+            [(value)]="orderData.limitPrice"
+            [price]="orderData.limitPrice"
+            [step]="marketPriceIncrement | async"
+            [minFractionDigits]="maxTickforOrderPrice"
+            [maxFractionDigits]="maxTickforOrderPrice"
+            [format]="marketPriceFormat | async"
+            (onChange)="checkValidation()">
+          </app-order-price-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-col-12 p-formgrid p-fluid">
+      <div class="p-grid p-col-6">
+        <div class="p-field p-col-12 p-md-4">
+          <h6>Algo</h6>
+          <div class="algo-inline">
+            <p-dropdown
+              [options]="this.orderEditData.algorithm | async"
+              [(ngModel)]="orderData.algorithm"
+              [showClear]="true"
+              class="light"
+              placeholder="Select"
+              [style]="{ width: '100%' }"
+              (onChange)="onOrderDataChanged(EditorAction.algorithm); checkValidation()">
+            </p-dropdown>
+          </div>
+        </div>
+        
+        <div class="p-field p-col-12 p-md-4">
+          <h6>Algo-Data</h6>
+          <input
+            type="text"
+            pInputText
+            class="light"
+            placeholder="Select"
+            [(ngModel)]="orderData.algorithmData"
+            [disabled]="!isAlgorithmChosen"
+            [style]="{ width: '100%' }"
+            (click)="showAlgoDataEditor()"
+            (change)="checkValidation()">
+        </div>
+        
+        <div class="p-field p-col-12 p-md-4">
+          <h6>OCO ID</h6>
+          <input
+            type="text"
+            pInputText
+            class="light"
+            placeholder="Enter Cancel ID"
+            [disabled]="this.isTrueMultipleOrdersEditMode"
+            [(ngModel)]="orderData.ocoid"
+            [style]="{ width: '100%' }"
+            (change)="checkValidation()">
+        </div>
+      </div>
+      
+      <div class="p-grid p-col-6">
+        <div class="p-field p-col-12 p-md-4">
+          <h6>OTO ID</h6>
+          <input
+            type="text"
+            pInputText
+            class="light"
+            placeholder="Enter Trigger ID"
+            [disabled]="this.isTrueMultipleOrdersEditMode"
+            [(ngModel)]="orderData.otoid"
+            [style]="{ width: '100%' }"
+            (change)="checkValidation()">
+        </div>
+        
+        <div class="p-field p-col-12 p-md-4" style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
+          <h6>{{ orderData.createWorking ? 'Create working' : 'Create unsubmitted' }}</h6>
+          <p-checkbox
+            binary="true"
+            [(ngModel)]="orderData.createWorking"
+            (click)="checkValidation()"
+            [disabled]="isEditOrderType">
+          </p-checkbox>
+        </div>
+        
+        <div class="p-field p-col-12 p-md-4" style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
+          <h6>Bypass Validation</h6>
+          <p-checkbox
+            binary="true"
+            [(ngModel)]="bypassValidation"
+            (click)="checkValidation()">
+          </p-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 5 - CHINA TABLES -->
+
+    <p-divider style="width: 100%"></p-divider>
+    <div *ngIf="isChina" class="p-grid p-col-12 p-formgrid p-fluid">
+      <div class="p-field p-col-12 p-md-6">
+        <app-mcm-table
+          *ngIf="!isTrueMultipleOrdersEditMode"
+          [globalFilter]="false"
+          [data]="orderValidation_table1"
+          [paginator]="false"
+          [displayCaption]="false">
+        </app-mcm-table>
+      </div>
+      
+      <div class="p-field p-col-12 p-md-6">
+        <app-mcm-table
+          *ngIf="!isTrueMultipleOrdersEditMode"
+          [globalFilter]="false"
+          [data]="orderValidation_table2"
+          [paginator]="false">
+        </app-mcm-table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div *ngIf="orderValidation_orderString" class="p-grid p-col-12 p-formgrid p-fluid" style="align-items: center;">
+      <div class="p-field p-col-12 p
+Time Spent = 61210ms

@@ -1,0 +1,724 @@
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Normal flow - Move buddy successfully",
+    "steps": [
+      {
+        "operation": "Get heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit",
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Activate heart monitor",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart monitor activated"
+        }
+      },
+      {
+        "operation": "Sense heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data sensed"
+        }
+      },
+      {
+        "operation": "Send heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate data sent to WIMP"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate validated to be above 100"
+        }
+      },
+      {
+        "operation": "Send MOVE command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "MOVE command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Enable Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "WHEELS enabled"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "Buddy moved and spoke 'attention is required'"
+        }
+      },
+      {
+        "operation": "Set mood",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "SCARED"
+        },
+        "expectations": {
+          "msg": "Buddy's mood set to SCARED"
+        }
+      },
+      {
+        "operation": "Send execution feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Execution feedback sent to WIMP"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy's face mood has changed to SCARED, spoken 'attention is required', and sent 'WHEEL_MOVE_FINISHED' status to WIMP"
+    }
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "Bounded Alternative Flow - No heart rate data received",
+    "steps": [
+      {
+        "operation": "Get heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit",
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "No heart rate data received"
+        }
+      },
+      {
+        "operation": "Send SPEAK command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "No heart rate data"
+        },
+        "expectations": {
+          "msg": "Buddy spoke 'No heart rate data'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy has spoken 'No heart rate data' and sent 'Speak Action Completed' back to WIMP"
+    }
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "Specific Alternative Flow - Heart rate not above 100 or less than 50 bpm",
+    "steps": [
+      {
+        "operation": "Get heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit",
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Activate heart monitor",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart monitor activated"
+        }
+      },
+      {
+        "operation": "Sense heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data sensed"
+        }
+      },
+      {
+        "operation": "Send heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 90
+        },
+        "expectations": {
+          "msg": "Heart rate data sent to WIMP"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "data": 90
+        },
+        "expectations": {
+          "msg": "Heart rate validated to be not above 100 and not less than 50"
+        }
+      },
+      {
+        "operation": "Send SPEAK command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "No Special attention Needed"
+        },
+        "expectations": {
+          "msg": "Buddy spoke 'No Special attention Needed'"
+        }
+      },
+      {
+        "operation": "Set mood",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "HAPPY"
+        },
+        "expectations": {
+          "msg": "Buddy's mood set to HAPPY"
+        }
+      },
+      {
+        "operation": "Enable Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "WHEELS enabled"
+        }
+      },
+      {
+        "operation": "Rotate Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "angle": 180,
+          "speed": 30
+        },
+        "expectations": {
+          "msg": "Buddy rotated 180 degrees and spoke 'No Special Attention Needed'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy's face has changed to HAPPY, rotated 180 degrees, and spoken 'No Special Attention Needed'. Buddy sent 'WHEEL_MOVE_FINISHED' execution status to WIMP"
+    }
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "Specific Alternative Flow - No feedback received from Buddy",
+    "steps": [
+      {
+        "operation": "Get heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit",
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Activate heart monitor",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart monitor activated"
+        }
+      },
+      {
+        "operation": "Sense heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data sensed"
+        }
+      },
+      {
+        "operation": "Send heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate data sent to WIMP"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate validated to be above 100"
+        }
+      },
+      {
+        "operation": "Send MOVE command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "MOVE command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Enable Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "WHEELS enabled"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "Buddy moved and spoke 'attention is required'"
+        }
+      },
+      {
+        "operation": "Send execution feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "No execution feedback received from Buddy"
+        }
+      },
+      {
+        "operation": "Display warning message",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "WIMP displays warning message"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "WIMP displays warning message"
+    }
+  },
+  {
+    "TC_ID": "TC005",
+    "name": "Specific Alternative Flow - Wheels not enabled",
+    "steps": [
+      {
+        "operation": "Get heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit",
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Activate heart monitor",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart monitor activated"
+        }
+      },
+      {
+        "operation": "Sense heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data sensed"
+        }
+      },
+      {
+        "operation": "Send heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate data sent to WIMP"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate validated to be above 100"
+        }
+      },
+      {
+        "operation": "Send MOVE command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "MOVE command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Enable Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "Failed to enable wheels"
+        }
+      },
+      {
+        "operation": "Speak message",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Wheels are not enabled"
+        },
+        "expectations": {
+          "msg": "Buddy spoke 'Wheels are not enabled'"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "Buddy has spoken 'Wheels are not enabled' and sent 'NOK' to WIMP"
+    }
+  },
+  {
+    "TC_ID": "TC006",
+    "name": "Specific Alternative Flow - No execution feedback from Buddy",
+    "steps": [
+      {
+        "operation": "Get heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit",
+        },
+        "inputs": {
+          "datatype": "bpm"
+        },
+        "expectations": {
+          "msg": "Receive Fitbit Data"
+        }
+      },
+      {
+        "operation": "Activate heart monitor",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart monitor activated"
+        }
+      },
+      {
+        "operation": "Sense heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data sensed"
+        }
+      },
+      {
+        "operation": "Send heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate data sent to WIMP"
+        }
+      },
+      {
+        "operation": "Validate heart rate",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "data": 110
+        },
+        "expectations": {
+          "msg": "Heart rate validated to be above 100"
+        }
+      },
+      {
+        "operation": "Send MOVE command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "MOVE command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Enable Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "WHEELS enabled"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2.5,
+          "speed": 0.2
+        },
+        "expectations": {
+          "msg": "Buddy moved and spoke 'attention is required'"
+        }
+      },
+      {
+        "operation": "No execution feedback",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "WIMP"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "No execution feedback received from Buddy"
+        }
+      },
+      {
+        "operation": "Display warning message",
+        "target": {
+          "protocol": "",
+          "method": "",
+          "name": "WIMP"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "WIMP displays warning message"
+        }
+      }
+    ],
+    "postconditions": {
+      "msg": "
+Time Spent = 95935ms

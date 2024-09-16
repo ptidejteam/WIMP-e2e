@@ -1,0 +1,558 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Successful Normal Heartrate - Buddy Speaks 'Normal'",
+  "steps": [
+    {
+      "operation": "Get Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data within normal range"
+      }
+    },
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 85
+      },
+      "expectations": {
+        "msg": "Heart rate data is within 60-100 bpm range"
+      }
+    },
+    {
+      "operation": "Send 'Normal' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal' message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heartrate Data - Buddy Speaks 'No Heartrate Data'",
+  "steps": [
+    {
+      "operation": "Wait for Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "timeout": "30 seconds"
+      },
+      "expectations": {
+        "msg": "No Heartrate Data received within timeout"
+      }
+    },
+    {
+      "operation": "Send 'No Heartrate Data' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "No heartrate data"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No Heartrate Data' message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heartrate Data 55 bpm - Buddy Speaks 'No Special Attention'",
+  "steps": [
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 55
+      },
+      "expectations": {
+        "msg": "Heart rate data is between 50-60 bpm"
+      }
+    },
+    {
+      "operation": "Send 'No Special Attention' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "No special attention"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No Special Attention' message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Heartrate Data 110 bpm - Buddy Speaks 'Special Attention Needed' and Rotates",
+  "steps": [
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 110
+      },
+      "expectations": {
+        "msg": "Heart rate data is above 100 bpm"
+      }
+    },
+    {
+      "operation": "Send 'Special Attention Needed' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Special attention needed"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Special Attention Needed' message and rotates"
+      }
+    },
+    {
+      "operation": "Rotate Buddy Clockwise 90 degrees",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "speed": -100,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90°"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "No Feedback from Buddy - Warning Message Displayed",
+  "steps": [
+    {
+      "operation": "Receive Heartrate Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Heartrate Data successfully"
+      },
+      "postconditions": {
+        "msg": "No feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display Warning Message",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No feedback received from Buddy"
+      },
+      "expectations": {
+        "msg": "Warning message displayed on WIMP UI"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "Move Buddy Successfully After Normal Heartrate",
+  "steps": [
+    {
+      "operation": "Get Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data within normal range"
+      }
+    },
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 85
+      },
+      "expectations": {
+        "msg": "Heart rate data is within 60-100 bpm range"
+      }
+    },
+    {
+      "operation": "Send 'Normal' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal' message"
+      }
+    },
+    {
+      "operation": "Enable Wheels for Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled for Buddy"
+      }
+    },
+    {
+      "operation": "Move Buddy Forward",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.3
+      },
+      "expectations": {
+        "msg": "Buddy moves forward"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC007",
+  "name": "No Move Action Required - Buddy Stays in Place",
+  "steps": [
+    {
+      "operation": "Get Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data within normal range"
+      }
+    },
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 85
+      },
+      "expectations": {
+        "msg": "Heart rate data is within 60-100 bpm range"
+      }
+    },
+    {
+      "operation": "Send 'Normal' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal' message"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC008",
+  "name": "No Action on Buddy - Display Warning Message on WIMP due to No Feedback",
+  "steps": [
+    {
+      "operation": "Get Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data within normal range"
+      }
+    },
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 85
+      },
+      "expectations": {
+        "msg": "Heart rate data is within 60-100 bpm range"
+      }
+    },
+    {
+      "operation": "Send 'Normal' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal' message"
+      }
+    },
+    {
+      "operation": "Validate Feedback from Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "check",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expectedFeedback": false
+      },
+      "expectations": {
+        "msg": "No feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Display Warning Message on WIMP",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No feedback received from Buddy"
+      },
+      "expectations": {
+        "msg": "Warning message displayed on WIMP UI"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC009",
+  "name": "No Action on Buddy - Display Warning Message on WIMP due to No Feedback",
+  "steps": [
+    {
+      "operation": "Get Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      }
+    },
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 42
+      },
+      "expectations": {
+        "msg": "Heart rate data is below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send 'Special Attention Needed' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Special attention needed"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Special Attention Needed' message and rotates"
+      }
+    },
+    {
+      "operation": "Rotate Buddy Clockwise 90 degrees",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "speed": -100,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90°"
+      }
+    },
+    {
+      "operation": "No Feedback from Buddy - Display Warning Message on WIMP",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No feedback received from Buddy"
+      },
+      "expectations": {
+        "msg": "Warning message displayed on WIMP UI"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC010",
+  "name": "No Action on Buddy - Display Warning Message on WIMP due to No Feedback",
+  "steps": [
+    {
+      "operation": "Get Fitbit Data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data within normal range"
+      }
+    },
+    {
+      "operation": "Validate Heartrate Data",
+      "target": "",
+      "inputs": {
+        "heartrate": 120
+      },
+      "expectations": {
+        "msg": "Heart rate data is above 100 bpm"
+      }
+    },
+    {
+      "operation": "Send 'Special Attention Needed' Command to Buddy",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Special attention needed"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Special Attention Needed' message and rotates"
+      }
+    },
+    {
+      "operation": "Rotate Buddy Clockwise 90 degrees",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "speed": -100,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotates 90°"
+      }
+    },
+    {
+      "operation": "No Feedback from Buddy - Display Warning Message on WIMP",
+      "target": {
+        "protocol": "UI",
+        "method": "display",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "No feedback received from Buddy"
+      },
+      "expectations": {
+        "msg": "Warning message displayed on WIMP UI"
+      }
+    }
+  ]
+}
+```
+Time Spent = 157864ms

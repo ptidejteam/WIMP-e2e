@@ -1,0 +1,356 @@
+Here are the comprehensive test cases based on the detailed use case scenario "Fitbit Sends Data, Buddy Moves". The test cases have been structured to cover all normal flows, bounded alternative flows, specific alternative flows, and also include edge cases.
+
+### Test Cases
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "Heartbeat Not in Normal Range (Below 60 bpm)",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 50
+      },
+      "expectations": {
+        "msg": "Heart rate is low"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": 90,
+        "speed": 30
+      },
+      "expectations": {
+        "msg": "Buddy rotates with the specified angle and speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heartbeat Not in Normal Range (Above 100 bpm)",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 110
+      },
+      "expectations": {
+        "msg": "Heart rate is high"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": -90,
+        "speed": 30
+      },
+      "expectations": {
+        "msg": "Buddy rotates with the specified angle and speed"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "No Heart Rate Data Received from Fitbit",
+  "steps": [
+    {
+      "operation": "Fail to Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "ROTATE",
+        "angle": 180,
+        "speed": 40
+      },
+      "expectations": {
+        "msg": "Buddy rotates due to no heart rate data"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "ROTATE"
+      },
+      "expectations": {
+        "msg": "WIMP receives ROTATE execution feedback"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Buddy Wheel Not Enabled",
+  "steps": [
+    {
+      "operation": "Set Wheels Not Enabled",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "EnableWheels"
+      },
+      "inputs": {
+        "Left": 0,
+        "Right": 0
+      },
+      "expectations": {
+        "msg": "Left and Right Wheels disabled"
+      }
+    },
+    {
+      "operation": "Attempt to Move Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WIMP displays 'Wheels not enabled' warning message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "Successful Movement Execution Feedback",
+  "steps": [
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 2,
+        "speed": 0.6
+      },
+      "expectations": {
+        "msg": "Buddy begins moving"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    },
+    {
+      "operation": "Buddy's mood update",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "HAPPY",
+        "speed": 0.8
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to HAPPY"
+      }
+    }
+  ]
+}
+```
+
+These test cases cover a variety of scenarios, including normal flows, abnormal heart rate conditions, no data situations, and wheel enablement, thus ensuring thorough coverage of the system's behavior in accordance with the outlined use case.
+Time Spent = 31141ms

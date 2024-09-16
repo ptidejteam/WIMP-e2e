@@ -1,0 +1,405 @@
+Here are the possible test cases based on the use case scenario "Fitbit Sends Data, Buddy Moves". Each test case follows the specified structure.
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "move buddy successfully",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action",
+      "target": "",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "robot must move"
+      }
+    },
+    {
+      "operation": "Speak",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks: Normal"
+      }
+    },
+    {
+      "operation": "Set Mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled successfully"
+      }
+    },
+    {
+      "operation": "call move functions",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "no heart rate data",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "Send Rotate Command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "speed": 30,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "Rotation command sent"
+      }
+    },
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled for rotation"
+      }
+    },
+    {
+      "operation": "call rotate functions",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "speed": 30,
+        "angle": 90
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "Set Mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to NEUTRAL"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "wheels not enabled",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action",
+      "target": "",
+      "inputs": {
+        "data": 75
+      },
+      "expectations": {
+        "msg": "robot must move"
+      }
+    },
+    {
+      "operation": "Set Enable Wheels to 0",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels disabled"
+      }
+    },
+    {
+      "operation": "Attempt to call move functions",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Wheels not enabled warning"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "test with edge heart rate values",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action",
+      "target": "",
+      "inputs": {
+        "data": 60
+      },
+      "expectations": {
+        "msg": "robot must move"
+      }
+    },
+    {
+      "operation": "Speak",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks: Normal"
+      }
+    },
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action",
+      "target": "",
+      "inputs": {
+        "data": 100
+      },
+      "expectations": {
+        "msg": "robot must move"
+      }
+    },
+    {
+      "operation": "Speak",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks: Normal"
+      }
+    },
+    {
+      "operation": "Enable_Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled successfully"
+      }
+    },
+    {
+      "operation": "call move functions",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "heart rate out of bounds",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Determine buddy action",
+      "target": "",
+      "inputs": {
+        "data": 150
+      },
+      "expectations": {
+        "msg": "robot should not move"
+      }
+    },
+    {
+      "operation": "Set Mood",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "ANXIOUS"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to ANXIOUS"
+      }
+    }
+  ]
+}
+``` 
+
+These test cases cover various scenarios, including normal operation, absence of heart rate data, not enabling the wheels, edge heart rate values, and out-of-bounds heart rate values. Each test case is structured to validate the expected outcomes as per the specified use case scenario.
+Time Spent = 16686ms

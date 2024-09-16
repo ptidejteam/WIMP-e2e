@@ -1,0 +1,375 @@
+Here are the detailed test cases based on the provided use case scenario for abnormal heart rate (bradycardia) and the associated actions required involving the WIMP and Buddy robot.
+
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Get heart rate data successfully",
+    "steps": [
+      {
+        "operation": "Request heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "FitbitApp"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data received"
+        }
+      },
+      {
+        "operation": "Validate heart rate data type",
+        "target": "FitbitApp",
+        "inputs": {
+          "expectedType": "heartrate"
+        },
+        "expectations": {
+          "msg": "Validated heart rate data type successfully"
+        }
+      },
+      {
+        "operation": "Activate heartmonitor sensor",
+        "target": "FitbitApp",
+        "inputs": {},
+        "expectations": {
+          "msg": "Heartmonitor sensor activated"
+        }
+      },
+      {
+        "operation": "Sense heartrate data",
+        "target": "FitbitApp",
+        "inputs": {},
+        "expectations": {
+          "msg": "Heart rate data sensed"
+        }
+      },
+      {
+        "operation": "Send heart rate data to WIMP",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "WIMP"
+        },
+        "inputs": {
+          "heartrate": 45
+        },
+        "expectations": {
+          "msg": "Heartrate data sent to WIMP"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "Send MOVE command due to bradycardia",
+    "steps": [
+      {
+        "operation": "Receive heart rate data from Fitbit",
+        "target": "WIMP",
+        "inputs": {
+          "heartrate": 45
+        },
+        "expectations": {
+          "msg": "Heart rate data received"
+        }
+      },
+      {
+        "operation": "Validate heart rate condition",
+        "target": "WIMP",
+        "inputs": {
+          "heartrate": 45
+        },
+        "expectations": {
+          "msg": "Heart rate is below 50"
+        }
+      },
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 1,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "MOVE command sent"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "Handle no heart rate data received",
+    "steps": [
+      {
+        "operation": "Request heart rate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "FitbitApp"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "No heart rate data received"
+        }
+      },
+      {
+        "operation": "Send SPEAK command due to no data",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "No heart rate data"
+        },
+        "expectations": {
+          "msg": "Buddy said 'No heart rate data'"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "Handle heart rate not requiring special attention",
+    "steps": [
+      {
+        "operation": "Receive heart rate data",
+        "target": "WIMP",
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heart rate data received"
+        }
+      },
+      {
+        "operation": "Validate heart rate condition",
+        "target": "WIMP",
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heart rate is not below 50"
+        }
+      },
+      {
+        "operation": "Send SPEAK command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "No Special attention Needed"
+        },
+        "expectations": {
+          "msg": "Buddy said 'No Special attention Needed'"
+        }
+      },
+      {
+        "operation": "Set Buddy mood to HAPPY",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "HAPPY"
+        },
+        "expectations": {
+          "msg": "Buddy mood set to HAPPY"
+        }
+      },
+      {
+        "operation": "Rotate Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "angle": 90,
+          "speed": -30
+        },
+        "expectations": {
+          "msg": "Buddy rotated 90 degrees"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC005",
+    "name": "Handle no feedback from Buddy",
+    "steps": [
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 1,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "MOVE command sent"
+        }
+      },
+      {
+        "operation": "Wait for feedback",
+        "target": "Buddy",
+        "inputs": {},
+        "expectations": {
+          "msg": "No feedback received"
+        }
+      },
+      {
+        "operation": "Display warning message on WIMP",
+        "target": "WIMP",
+        "inputs": {
+          "message": "Warning: No feedback from Buddy"
+        },
+        "expectations": {
+          "msg": "Warning displayed on WIMP"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC006",
+    "name": "Handle Buddy wheels not enabling",
+    "steps": [
+      {
+        "operation": "Enable wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 0,
+          "right": 0
+        },
+        "expectations": {
+          "msg": "Wheels not enabled"
+        }
+      },
+      {
+        "operation": "Buddy speaks wheels not enabled",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Wheels are not enabled"
+        },
+        "expectations": {
+          "msg": "Buddy said 'Wheels are not enabled'"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC007",
+    "name": "Handle move not completed",
+    "steps": [
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 0.5,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "MOVE command sent"
+        }
+      },
+      {
+        "operation": "Simulate MOVE failure response",
+        "target": "Buddy",
+        "inputs": {},
+        "expectations": {
+          "msg": "MOVE_NOT_COMPLETED"
+        }
+      },
+      {
+        "operation": "Buddy speaks move not completed",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Move not completed"
+        },
+        "expectations": {
+          "msg": "Buddy said 'Move not completed'"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC008",
+    "name": "Handle no execution feedback from Buddy",
+    "steps": [
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 1,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "MOVE command sent"
+        }
+      },
+      {
+        "operation": "Wait for execution feedback",
+        "target": "WIMP",
+        "inputs": {},
+        "expectations": {
+          "msg": "No feedback received from Buddy"
+        }
+      },
+      {
+        "operation": "Display warning message on WIMP",
+        "target": "WIMP",
+        "inputs": {
+          "message": "Warning: No execution feedback from Buddy"
+        },
+        "expectations": {
+          "msg": "Warning displayed on WIMP"
+        }
+      }
+    ]
+  }
+]
+```
+
+### Summary of Test Cases
+- **TC001** - This test case covers the successful retrieval of heart rate data.
+- **TC002** - This test case focuses on sending a MOVE command when bradycardia is detected.
+- **TC003** - This test case handles the scenario of not receiving any heart rate data.
+- **TC004** - This test case covers the case where the heart rate is normal (not requiring special attention).
+- **TC005** - This test case checks the behavior when Buddy fails to provide feedback.
+- **TC006** - This test case assesses the scenario where Buddy's wheels cannot be enabled.
+- **TC007** - This test case checks the circumstances under which a move command cannot be completed.
+- **TC008** - This test case examines the situation where no execution feedback is received from Buddy.
+
+These test cases cover all normal flows, bounded alternatives, and specific alternatives as specified in the use case scenario while ensuring detailed input and expected outcomes.
+Time Spent = 22410ms

@@ -1,0 +1,195 @@
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Normal Workflow - Bradycardia Detected, Move Command Issued",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "expectations": {
+          "msg": "Heart rate data requested successfully"
+        }
+      },
+      {
+        "operation": "Validate and check heartrate below 50 bpm",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "Heartrate data validated and confirmed below 50 bpm"
+        }
+      },
+      {
+        "operation": "Send MOVE command with specified parameters",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "MOVE command sent with distance < 2.0m and speed < 0.5m/s"
+        }
+      },
+      {
+        "operation": "Validate Buddy's action post MOVE command",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "Buddy moved correctly and announced 'Special Attention Needed'"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "No Heart Rate Data Received",
+    "steps": [
+      {
+        "operation": "Request heartrate data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "GET",
+          "name": "Fitbit"
+        },
+        "expectations": {
+          "msg": "Heart rate data requested"
+        }
+      },
+      {
+        "operation": "Check for absence of heartrate data",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "No heartrate data received"
+        }
+      },
+      {
+        "operation": "Send SPEAK command with 'No heartrate data' message",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "SPEAK command successfully sent"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "Heart Rate Data in Normal Range (50 bpm to 100 bpm)",
+    "steps": [
+      {
+        "operation": "Request and Validate heartrate data",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "Heartrate data is between 50 and 100 bpm, validated successfully"
+        }
+      },
+      {
+        "operation": "Send SPEAK command with 'No Special Attention Needed'",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "SPEAK command sent with appropriate message"
+        }
+      },
+      {
+        "operation": "Check Buddy's rotation movement",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "Buddy rotated 90 degrees clockwise successfully"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "BuddyApp Fails to Receive Feedback",
+    "steps": [
+      {
+        "operation": "Send MOVE command to Buddy",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "MOVE command sent to Buddy"
+        }
+      },
+      {
+        "operation": "Validate absence of feedback from Buddy",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "No feedback received from Buddy"
+        }
+      },
+      {
+        "operation": "Display warning message",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "Warning message displayed"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC005",
+    "name": "Wheels Not Enabled Error",
+    "steps": [
+      {
+        "operation": "Attempt to activate wheels",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "Attempted wheel activation failed"
+        }
+      },
+      {
+        "operation": "Buddy speaks 'Wheels are not enabled'",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "Error message 'Wheels are not enabled' spoken"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC006",
+    "name": "Move Not Completed Error",
+    "steps": [
+      {
+        "operation": "Send MOVE command",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "Move command sent"
+        }
+      },
+      {
+        "operation": "Validate incomplete move",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "Move not completed, error communicated"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC007",
+    "name": "No Execution Feedback Received Post-command",
+    "steps": [
+      {
+        "operation": "Send SPEAK command",
+        "target": "BuddyApp",
+        "expectations": {
+          "msg": "SPEAK command issued"
+        }
+      },
+      {
+        "operation": "Validate no feedback received",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "No execution feedback received"
+        }
+      },
+      {
+        "operation": "Display warning message",
+        "target": "WIMP",
+        "expectations": {
+          "msg": "WIMP displayed a warning message"
+        }
+      }
+    ]
+  }
+]
+```
+Time Spent = 114513ms

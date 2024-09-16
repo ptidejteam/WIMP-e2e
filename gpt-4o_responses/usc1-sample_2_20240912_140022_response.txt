@@ -1,0 +1,746 @@
+Here are the detailed test cases based on the provided use case scenario:
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Move Buddy Successfully with Valid Heart Rate",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 70
+      },
+      "expectations": {
+        "msg": "Data is valid (between 60 and 100 bpm)"
+      }
+    },
+    {
+      "operation": "Send speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Normal",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy says 'Normal'"
+      }
+    },
+    {
+      "operation": "Set mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send feedback for SPEAK",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak feedback sent"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iSpeed": 0.5,
+        "iDistance": 2
+      },
+      "expectations": {
+        "msg": "MOVE command issued"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy Moves",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iSpeed": 0.5,
+        "iDistance": 2
+      },
+      "expectations": {
+        "msg": "Buddy moves successfully"
+      }
+    },
+    {
+      "operation": "Send MOVE feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "MOVE feedback sent"
+      }
+    },
+    {
+      "operation": "Set mood to HAPPY",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Mood is set to HAPPY"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "Handle Missing Heart Rate Data",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "No Fitbit Data Received"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Angle": 90
+      },
+      "expectations": {
+        "msg": "ROTATE command issued"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy Rotates",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Angle": 90
+      },
+      "expectations": {
+        "msg": "Buddy rotates successfully"
+      }
+    },
+    {
+      "operation": "Send ROTATE feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "ROTATE feedback sent"
+      }
+    },
+    {
+      "operation": "Set mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Speak Command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "No heart rate data",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy says 'No heart rate data'"
+      }
+    },
+    {
+      "operation": "Send SPEAK feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speech feedback sent"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Invalid Heart Rate Data (Below 60 bpm)",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 50
+      },
+      "expectations": {
+        "msg": "Data is invalid (below 60 bpm)"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Angle": 45
+      },
+      "expectations": {
+        "msg": "ROTATE command issued"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy Rotates",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Angle": 45
+      },
+      "expectations": {
+        "msg": "Buddy rotates successfully"
+      }
+    },
+    {
+      "operation": "Send ROTATE feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "ROTATE feedback sent"
+      }
+    },
+    {
+      "operation": "Set mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Speak Command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Heart rate too low",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy says 'Heart rate too low'"
+      }
+    },
+    {
+      "operation": "Send SPEAK feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speech feedback sent"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "Invalid Heart Rate Data (Above 100 bpm)",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 110
+      },
+      "expectations": {
+        "msg": "Data is invalid (above 100 bpm)"
+      }
+    },
+    {
+      "operation": "Send ROTATE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Angle": -30
+      },
+      "expectations": {
+        "msg": "ROTATE command issued"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Buddy Rotates",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "Speed": 0.5,
+        "Angle": -30
+      },
+      "expectations": {
+        "msg": "Buddy rotates successfully"
+      }
+    },
+    {
+      "operation": "Send ROTATE feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "ROTATE feedback sent"
+      }
+    },
+    {
+      "operation": "Set mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Speak Command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Heart rate too high",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy says 'Heart rate too high'"
+      }
+    },
+    {
+      "operation": "Send SPEAK feedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speech feedback sent"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Wheels Not Enabled",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 70
+      },
+      "expectations": {
+        "msg": "Data is valid (between 60 and 100 bpm)"
+      }
+    },
+    {
+      "operation": "Send speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Normal",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy says 'Normal'"
+      }
+    },
+    {
+      "operation": "Set mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send feedback for SPEAK",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak feedback sent"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iSpeed": 0.5,
+        "iDistance": 2
+      },
+      "expectations": {
+        "msg": "MOVE command issued"
+      }
+    },
+    {
+      "operation": "Check Wheels enabled",
+      "target": {},
+      "inputs": {
+        "left": 0,
+        "right": 0
+      },
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Display Warning",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "WIMP"
+      },
+      "inputs": {
+        "msg": "Wheels not enabled"
+      },
+      "expectations": {
+        "msg": "Warning displayed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "Edge Case - Invalid Speed for Movement",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate",
+      "target": "",
+      "inputs": {
+        "data": 75
+      },
+      "expectations": {
+        "msg": "Data is valid (between 60 and 100 bpm)"
+      }
+    },
+    {
+      "operation": "Send speak command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iText": "Normal",
+        "iExpression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy says 'Normal'"
+      }
+    },
+    {
+      "operation": "Set mood to NEUTRAL",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iExpression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send feedback for SPEAK",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "Speak feedback sent"
+      }
+    },
+    {
+      "operation": "Send MOVE command",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "iSpeed": 0.8, 
+        "iDistance": 2
+      },
+      "expectations": {
+        "msg": "MOVE command not issued - speed invalid"
+      }
+    },
+    {
+      "operation": "Check Wheels enabled",
+      "target": {},
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "Display Warning",
+      "target": {
+        "protocol": "Websocket",
+
+Time Spent = 67723ms

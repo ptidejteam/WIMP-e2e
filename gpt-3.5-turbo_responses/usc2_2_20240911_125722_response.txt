@@ -1,0 +1,259 @@
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Abnormal heartrate detected - move action required",
+  "steps": [
+    {
+      "operation": "Request heartrate data from Fitbit",
+      "target": {
+        "protocol": "HTTP",
+        "method": "GET",
+        "name": "Fitbit"
+      },
+      "expectations": {
+        "msg": "Successfully request heartrate data"
+      }
+    },
+    {
+      "operation": "Receive and validate heartrate data",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Valid heartrate data received"
+      }
+    },
+    {
+      "operation": "Check if heartrate is below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Validated heartrate is below 50 bpm"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy with proper distance and speed",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent with correct parameters"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy after MOVE action",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Received feedback from Buddy"
+      }
+    },
+    {
+      "operation": "Validate Buddy's action after MOVE command",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy moved as expected and spoke 'Special attention Needed'"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No heartrate data received - speak action performed",
+  "steps": [
+    {
+      "operation": "Simulate no heartrate data received",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "No heartrate data scenario simulated"
+      }
+    },
+    {
+      "operation": "Trigger SPEAK command to Buddy",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "SPEAK command sent with 'No heartrate data' message"
+      }
+    },
+    {
+      "operation": "Validate Buddy speaks 'No heartrate data' message",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'No heartrate data' message"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC003",
+  "name": "Heartrate not below 50 bpm - action based on range",
+  "steps": [
+    {
+      "operation": "Set heartrate above 50 bpm",
+      "target": "FitbitApp",
+      "expectations": {
+        "msg": "Artificially set heartrate above 50 bpm"
+      }
+    },
+    {
+      "operation": "Verify no MOVE command sent to Buddy",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "No MOVE command should be sent"
+      }
+    },
+    {
+      "operation": "Ensure Buddy's facial expression set to 'HAPPY'",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy's face in 'HAPPY' mood"
+      }
+    },
+    {
+      "operation": "Validate Buddy rotates 90 degrees clockwise",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy rotated 90 degrees"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC004",
+  "name": "No feedback from Buddy after MOVE command",
+  "steps": [
+    {
+      "operation": "Ensure no feedback sent by Buddy",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Simulate no feedback from Buddy"
+      }
+    },
+    {
+      "operation": "Display warning message by WIMP",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC005",
+  "name": "Cannot activate wheels for MOVE command",
+  "steps": [
+    {
+      "operation": "Simulate inability to activate wheels",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "'Wheels are not enabled' message sent by Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC006",
+  "name": "MOVE command cannot be completed by Buddy",
+  "steps": [
+    {
+      "operation": "Simulate MOVE not completed",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "'Move not completed' message sent by Buddy"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC007",
+  "name": "No execution feedback from Buddy after MOVE command",
+  "steps": [
+    {
+      "operation": "Ensure no execution feedback from Buddy",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Warning message displayed"
+      }
+    }
+  ]
+}
+```
+
+```json
+{
+  "TC_ID": "TC008",
+  "name": "Full Flow Test - Abnormal heartrate, MOVE action, and Wheel Activation",
+  "steps": [
+    {
+      "operation": "Simulate abnormal heartrate below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Heartrate below 50 bpm scenario simulated"
+      }
+    },
+    {
+      "operation": "Send MOVE command to Buddy with valid parameters",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent successfully"
+      }
+    },
+    {
+      "operation": "Receive feedback from Buddy after MOVE action",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Feedback received from Buddy"
+      }
+    },
+    {
+      "operation": "Validate Buddy's action after MOVE command",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy moved as expected and spoke 'Special attention Needed'"
+      }
+    }
+  ]
+}
+```
+```json
+{
+  "TC_ID": "TC009",
+  "name": "Attempt to rotate more than 90 degrees after heartrate check",
+  "steps": [
+    {
+      "operation": "Set heartrate below 50 bpm",
+      "target": "WIMP",
+      "expectations": {
+        "msg": "Heartrate below 50 bpm scenario simulated"
+      }
+    },
+    {
+      "operation": "Trigger MOVE command to Buddy with rotation more than 90 degrees",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "MOVE command sent with rotation greater than 90 degrees"
+      }
+    },
+    {
+      "operation": "Ensure Buddy speaks 'No Special Attention Needed'",
+      "target": "BuddyApp",
+      "expectations": {
+        "msg": "Buddy spoke 'No Special Attention Needed'"
+      }
+    }
+  ]
+}
+```
+Time Spent = 135850ms

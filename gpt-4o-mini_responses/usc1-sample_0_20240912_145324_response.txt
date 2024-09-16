@@ -1,0 +1,329 @@
+Here are the possible test cases based on the use case scenario "Fitbit Sends Data, Buddy Moves":
+
+```json
+[
+  {
+    "TC_ID": "TC001",
+    "name": "Successful heart rate reception and movement",
+    "steps": [
+      {
+        "operation": "Receive fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heart rate received successfully"
+        }
+      },
+      {
+        "operation": "Validate heartrate",
+        "target": "",
+        "inputs": {
+          "heartrate": 75
+        },
+        "expectations": {
+          "msg": "Heart rate is within normal range"
+        }
+      },
+      {
+        "operation": "Send Speak command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Normal"
+        },
+        "expectations": {
+          "msg": "Buddy speaks 'Normal'"
+        }
+      },
+      {
+        "operation": "Set mood to neutral",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Mood set to NEUTRAL"
+        }
+      },
+      {
+        "operation": "Send Move command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "Buddy starts to move"
+        }
+      },
+      {
+        "operation": "Enable Wheels",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "left": 1,
+          "right": 1
+        },
+        "expectations": {
+          "msg": "Wheels enabled"
+        }
+      },
+      {
+        "operation": "Move Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "distance": 2,
+          "speed": 0.5
+        },
+        "expectations": {
+          "msg": "Buddy moves successfully"
+        }
+      },
+      {
+        "operation": "Receive move execution feedback",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "MOVE execution feedback received"
+        }
+      },
+      {
+        "operation": "Set mood to happy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "HAPPY"
+        },
+        "expectations": {
+          "msg": "Mood set to HAPPY"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC002",
+    "name": "Heart rate out of bounds reception",
+    "steps": [
+      {
+        "operation": "Receive fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "heartrate": 130
+        },
+        "expectations": {
+          "msg": "Heart rate data received"
+        }
+      },
+      {
+        "operation": "Validate heartrate",
+        "target": "",
+        "inputs": {
+          "heartrate": 130
+        },
+        "expectations": {
+          "msg": "Heart rate not in the normal range"
+        }
+      },
+      {
+        "operation": "Rotate Buddy",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "angle": 90,
+          "speed": 50
+        },
+        "expectations": {
+          "msg": "Buddy rotates successfully"
+        }
+      },
+      {
+        "operation": "Receive rotate execution feedback",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "ROTATE execution feedback received"
+        }
+      },
+      {
+        "operation": "Set mood to neutral",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Mood set to NEUTRAL"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC003",
+    "name": "No heart rate data received",
+    "steps": [
+      {
+        "operation": "Receive no fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {},
+        "expectations": {
+          "msg": "No heart rate data received"
+        }
+      },
+      {
+        "operation": "Send Rotate command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "angle": 45,
+          "speed": 40
+        },
+        "expectations": {
+          "msg": "Buddy rotates successfully"
+        }
+      },
+      {
+        "operation": "Receive rotate execution feedback",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "ROTATE execution feedback received"
+        }
+      },
+      {
+        "operation": "Set mood to neutral",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Mood set to NEUTRAL"
+        }
+      }
+    ]
+  },
+  {
+    "TC_ID": "TC004",
+    "name": "Wheels not enabled handling",
+    "steps": [
+      {
+        "operation": "Receive fitbit data",
+        "target": {
+          "protocol": "HTTP",
+          "method": "POST",
+          "name": "Fitbit"
+        },
+        "inputs": {
+          "heartrate": 80
+        },
+        "expectations": {
+          "msg": "Heart rate received successfully"
+        }
+      },
+      {
+        "operation": "Validate heartrate",
+        "target": "",
+        "inputs": {
+          "heartrate": 80
+        },
+        "expectations": {
+          "msg": "Heart rate is within normal range"
+        }
+      },
+      {
+        "operation": "Send Speak command",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "message": "Normal"
+        },
+        "expectations": {
+          "msg": "Buddy speaks 'Normal'"
+        }
+      },
+      {
+        "operation": "Set mood to neutral",
+        "target": {
+          "protocol": "Websocket",
+          "method": "send",
+          "name": "Buddy"
+        },
+        "inputs": {
+          "mood": "NEUTRAL"
+        },
+        "expectations": {
+          "msg": "Mood set to NEUTRAL"
+        }
+      },
+      {
+        "operation": "Check wheels status",
+        "target": "",
+        "inputs": {},
+        "expectations": {
+          "msg": "Wheels not enabled warning"
+        }
+      }
+    ]
+  }
+]
+```
+
+### Explanation:
+
+1. **TC001**: This test case verifies the successful execution of the primary flow where the heart rate is normal, and Buddy moves with the specified speed and distance.
+2. **TC002**: This test case checks the handling of heart rate data that is out of the normal range and ensures that Buddy responds with a rotation instead of movement.
+3. **TC003**: This verifies the response when no heart rate data is received from the Fitbit, which should prompt Buddy to rotate instead of moving.
+4. **TC004**: This checks the scenario where the wheels are not enabled before attempting to move or rotate, ensuring an appropriate warning message is displayed.
+
+These test cases comprehensively cover the flows outlined in the original use case scenario, validating expected behaviors and outcomes for different conditions.
+Time Spent = 13651ms

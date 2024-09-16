@@ -1,0 +1,257 @@
+Below, I have generated test cases based on the provided use case specification by covering all possible scenarios.
+
+### Test Case 1: Fitbit Sends Data and Buddy Moves Normally
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Fitbit Sends Data and Buddy Moves Normally",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heartrate",
+      "target": "",
+      "inputs": {
+        "heartrate": 75
+      },
+      "expectations": {
+        "msg": "Heartrate is between 60 and 100 bpm"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": "",
+      "inputs": {
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": "",
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Receive Speak feedback from Buddy",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy sends 'Speak Action Completed' feedback"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": "",
+      "inputs": {
+        "distance": 10,
+        "speed": 5
+      },
+      "expectations": {
+        "msg": "Buddy starts moving with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Set EnableWheels",
+      "target": "",
+      "inputs": {
+        "leftWheel": 1,
+        "rightWheel": 1
+      },
+      "expectations": {
+        "msg": "Enable wheels for movement"
+      }
+    },
+    {
+      "operation": "Move Buddy",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy is moving"
+      }
+    },
+    {
+      "operation": "Send MOVE execution feedback to WIMP",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy sends 'MOVE execution feedback' to WIMP"
+      }
+    },
+    {
+      "operation": "Receive MOVE execution feedback from Buddy",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "WIMP receives 'MOVE execution feedback' from Buddy"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": "",
+      "inputs": {
+        "mood": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to HAPPY"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 2: No Heartrate Data from Fitbit
+```json
+{
+  "TC_ID": "TC002",
+  "name": "No Heartrate Data from Fitbit",
+  "steps": [
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "data": "bpm"
+      },
+      "expectations": {
+        "msg": "No heartrate data"
+      }
+    },
+    {
+      "operation": "Send Rotate command to Buddy",
+      "target": "",
+      "inputs": {
+        "angle": 90,
+        "rotationSpeed": 5
+      },
+      "expectations": {
+        "msg": "Buddy starts rotating with specified angle and speed"
+      }
+    },
+    {
+      "operation": "Set EnableWheels",
+      "target": "",
+      "inputs": {
+        "leftWheel": 1,
+        "rightWheel": 1
+      },
+      "expectations": {
+        "msg": "Enable wheels for rotation"
+      }
+    },
+    {
+      "operation": "Rotate Buddy",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy is rotating"
+      }
+    },
+    {
+      "operation": "Send Rotate execution feedback to WIMP",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy sends 'Rotate execution feedback' to WIMP"
+      }
+    },
+    {
+      "operation": "Receive Rotate execution feedback from Buddy",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "WIMP receives 'Rotate execution feedback' from Buddy"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": "",
+      "inputs": {
+        "mood": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy’s mood is set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "",
+      "inputs": {
+        "message": "No heartrate data"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'No heartrate data'"
+      }
+    },
+    {
+      "operation": "Send Speak Action Completed feedback",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Buddy sends 'Speak Action Completed' feedback to WIMP"
+      }
+    }
+  ]
+}
+```
+
+### Test Case 3: EnableWheels Not Set Properly
+```json
+{
+  "TC_ID": "TC003",
+  "name": "EnableWheels Not Set Properly",
+  "steps": [
+    {
+      "operation": "Validate EnableWheels",
+      "target": "",
+      "inputs": {
+        "leftWheel": 0,
+        "rightWheel": 0
+      },
+      "expectations": {
+        "msg": "EnableWheels are not 1"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": "",
+      "inputs": {},
+      "expectations": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": "",
+      "inputs": {
+        "mood": "TIRED"
+      },
+      "expectations": {
+        "msg": "Buddy's mood is set to TIRED"
+      }
+    }
+  ]
+}
+```
+Time Spent = 25570ms

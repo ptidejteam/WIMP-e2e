@@ -1,0 +1,131 @@
+Certainly, below are the structured test cases based on the given use case scenario which incorporates all specified normal flow, bounded alternative flow, specific alternative flow, and their respective postconditions.
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Normal Heart Rate Data Processing",
+  "steps": [
+    {
+      "operation": "Receive heart rate data from Fitbit",
+      "target": "Fitbit",
+      "inputs": {
+        "heart_rate": 75
+      },
+      "expectations": {
+        "msg": "Heart rate data received successfully"
+      }
+    },
+    {
+      "operation": "Validating heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "heart_rate": 75
+      },
+      "expectations": {
+        "msg": "Heart rate is within normal range"
+      }
+    },
+    {
+      "operation": "WIMP sends SPEAK command to Buddy",
+      "target": "Buddy",
+      "inputs": {
+        "message": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy receives SPEAK command successfully"
+      }
+    },
+    {
+      "operation": "Buddy speaks",
+      "target": "Buddy",
+      "inputs": {
+        "text": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "WIMP sends MOVE command to Buddy",
+      "target": "Buddy",
+      "inputs": {
+        "distance": 2,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy receives MOVE command successfully"
+      }
+    },
+    {
+      "operation": "Buddy moves with specified parameters",
+      "target": "Buddy",
+      "inputs": {
+        "distance": 2,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Move execution feedback received: WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+},
+{
+  "TC_ID": "TC002",
+  "name": "Missing Heart Rate Data Processing",
+  "steps": [
+    {
+      "operation": "Receive heart rate data from Fitbit",
+      "target": "Fitbit",
+      "inputs": {
+        "heart_rate": null
+      },
+      "expectations": {
+        "msg": "No heart rate data received"
+      }
+    },
+    {
+      "operation": "WIMP sends ROTATE command to Buddy when no heart rate data",
+      "target": "Buddy",
+      "inputs": {
+        "angle": 90,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy receives ROTATE command successfully"
+      }
+    },
+    {
+      "operation": "Buddy rotates as specified",
+      "target": "Buddy",
+      "inputs": {
+        "angle": 90,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Rotate execution feedback received: WHEEL_MOVE_FINISHED"
+      }
+    }
+  ]
+},
+{
+  "TC_ID": "TC003",
+  "name": "Error Handling for Disabled Wheels",
+  "steps": [
+    {
+      "operation": "WIMP attempts to send MOVE command with disabled wheels",
+      "target": "Buddy",
+      "inputs": {
+        "distance": 2,
+        "speed": 0.3
+      },
+      "expectations": {
+        "msg": "Error message displayed: Wheels not enabled"
+      }
+    }
+  ]
+}
+```
+
+These test cases incorporate all important scenarios based on the structured use case provided. Each test case follows the specification templates and expected postconditions, covering the flow from the input to expected outcomes, including handling of heart rate data, movement commands, and checking for system faults such as disabled wheel operations.
+Time Spent = 62064ms

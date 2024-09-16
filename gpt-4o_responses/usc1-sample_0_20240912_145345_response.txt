@@ -1,0 +1,389 @@
+Sure, here are detailed test cases based on the provided use case scenario:
+
+### Test Cases for "Fitbit Sends Data, Buddy Moves"
+
+#### Test Case: TC001 - Normal Flow: Heartrate in Range
+
+```json
+{
+  "TC_ID":"TC001",
+  "name":"Normal Flow: Heartrate in Range",
+  "steps":[
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heartrate",
+      "target": "",
+      "inputs": {
+        "heartrate": 75
+      },
+      "expectations": {
+        "range": "60-100",
+        "result": "Valid"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Normal",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks Normal"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send move command to Buddy",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1.0,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves"
+      }
+    },
+    {
+      "operation": "Set EnableWheels",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "EnableWheels set to 1"
+      }
+    },
+    {
+      "operation": "Receive move execution feedback",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to HAPPY",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "HAPPY"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to HAPPY"
+      }
+    }
+  ],
+  "postcondition": {
+    "WIMP": "receives 'WHEEL_MOVE_FINISHED' notification",
+    "Buddy": "mood set to HAPPY"
+  }
+}
+```
+
+#### Test Case: TC002 - Bounded Alternative Flow: No Heartrate Data
+
+```json
+{
+  "TC_ID":"TC002",
+  "name":"Bounded Alternative Flow: No Heartrate Data",
+  "steps":[
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "No Heartrate Data"
+      }
+    },
+    {
+      "operation": "Send rotate command to Buddy",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": 180,
+        "speed": 50
+      },
+      "expectations": {
+        "msg": "Buddy rotates"
+      }
+    },
+    {
+      "operation": "Set EnableWheels",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "EnableWheels set to 1"
+      }
+    },
+    {
+      "operation": "Receive rotate execution feedback",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {},
+      "expectations": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    }
+  ],
+  "postcondition": {
+    "Buddy": "mood set to NEUTRAL",
+    "WIMP": "received 'WHEEL_MOVE_FINISHED'",
+    "Buddy spoke": "'No heartrate data' and sent 'Speak Action Completed' back to WIMP"
+  }
+}
+```
+
+#### Test Case: TC003 - Specific Alternative Flow: Wheels Not Enabled
+
+```json
+{
+  "TC_ID":"TC003",
+  "name":"Specific Alternative Flow: Wheels Not Enabled",
+  "steps":[
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heartrate",
+      "target": "",
+      "inputs": {
+        "heartrate": 75
+      },
+      "expectations": {
+        "range": "60-100",
+        "result": "Valid"
+      }
+    },
+    {
+      "operation": "Send move command to Buddy without enabling wheels",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1.0,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Move command failed: Wheels not enabled"
+      }
+    },
+    {
+      "operation": "Display warning message",
+      "target": {
+        "name": "WIMP"
+      },
+      "inputs": {
+        "message": "Wheels not enabled"
+      },
+      "expectations": {
+        "msg": "Warning displayed: Wheels not enabled"
+      }
+    }
+  ],
+  "postcondition": {
+    "WIMP": "displays 'Wheels not enabled' warning message"
+  }
+}
+```
+
+#### Test Case: TC004 - Basic Flow: Heartrate Below Range
+
+```json
+{
+  "TC_ID":"TC004",
+  "name":"Basic Flow: Heartrate Below Range",
+  "steps":[
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heartrate",
+      "target": "",
+      "inputs": {
+        "heartrate": 50
+      },
+      "expectations": {
+        "range": "60-100",
+        "result": "Invalid"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Heartrate Low",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks Heartrate Low"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    }
+  ],
+  "postcondition": {
+    "Buddy": "mood set to NEUTRAL"
+  }
+}
+```
+
+#### Test Case: TC005 - Basic Flow: Heartrate Above Range
+
+```json
+{
+  "TC_ID":"TC005",
+  "name":"Basic Flow: Heartrate Above Range",
+  "steps":[
+    {
+      "operation": "Get fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "bpm"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heartrate",
+      "target": "",
+      "inputs": {
+        "heartrate": 110
+      },
+      "expectations": {
+        "range": "60-100",
+        "result": "Invalid"
+      }
+    },
+    {
+      "operation": "Send speak command to Buddy",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "text": "Heartrate High",
+        "expression": "SPEAK_NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy speaks Heartrate High"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "expression": "NEUTRAL"
+      },
+      "expectations": {
+        "msg": "Buddy mood set to NEUTRAL"
+      }
+    }
+  ],
+  "postcondition": {
+        "Buddy": "mood set to NEUTRAL"
+  }
+}
+```
+
+This set of test cases cover the main flow, bounded alternative flow, and specific alternative flow as outlined in the use case scenario, along with additional cases for invalid heartrate values.
+Time Spent = 34926ms

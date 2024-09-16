@@ -1,0 +1,455 @@
+```json
+[
+  {
+      "TC_ID": "TC001",
+      "name": "Move Buddy successfully when heart rate is above 100 bpm",
+      "steps": [
+          {
+              "operation": "Request heart rate data",
+              "target": {
+                  "protocol": "HTTP",
+                  "method": "GET",
+                  "name": "Fitbit"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Receive heart rate data from Fitbit"
+              }
+          },
+          {
+              "operation": "Validate heart rate data",
+              "target": "",
+              "inputs": {
+                  "datatype": "bpm"
+              },
+              "expectations": {
+                  "msg": "Heart rate data is valid"
+              }
+          },
+          {
+              "operation": "Activate heart rate monitor",
+              "target": {
+                  "protocol": "HTTP",
+                  "method": "POST",
+                  "name": "Fitbit"
+              },
+              "inputs": {
+                  "action": "activateHeartMonitor"
+              },
+              "expectations": {
+                  "msg": "Heart rate monitor activated"
+              }
+          },
+          {
+              "operation": "Receive heart rate data",
+              "target": {
+                  "protocol": "HTTP",
+                  "method": "GET",
+                  "name": "Fitbit"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Heart rate data received"
+              }
+          },
+          {
+              "operation": "Check heart rate above 100",
+              "target": "",
+              "inputs": {
+                  "heartRate": 110
+              },
+              "expectations": {
+                  "msg": "Heart rate is above 100"
+              }
+          },
+          {
+              "operation": "Send MOVE command",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "distance": 2.5,
+                  "speed": 0.2
+              },
+              "expectations": {
+                  "msg": "Move command sent"
+              }
+          },
+          {
+              "operation": "Enable wheels",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "left": 1,
+                  "right": 1
+              },
+              "expectations": {
+                  "msg": "Wheels enabled"
+              }
+          },
+          {
+              "operation": "Move Buddy",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "distance": 2.5,
+                  "speed": 0.2
+              },
+              "expectations": {
+                  "msg": "WHEEL_MOVE_FINISHED"
+              }
+          },
+          {
+              "operation": "Set Buddy face to SCARED",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "expression": "SCARED",
+                  "speed": 0.5
+              },
+              "expectations": {
+                  "msg": "Face set to SCARED"
+              }
+          },
+          {
+              "operation": "Buddy speaks",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "text": "attention is required",
+                  "expression": "SPEAK_NEUTRAL"
+              },
+              "expectations": {
+                  "msg": "Speech delivered"
+              }
+          },
+          {
+              "operation": "Send execution feedback",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "status": "WHEEL_MOVE_FINISHED"
+              },
+              "expectations": {
+                  "msg": "Execution feedback sent"
+              }
+          },
+          {
+              "operation": "Receive execution feedback",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "receive",
+                  "name": "WIMP"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Execution feedback received"
+              }
+          }
+      ]
+  },
+  {
+      "TC_ID": "TC002",
+      "name": "Handle no heart rate data received",
+      "steps": [
+          {
+              "operation": "Request heart rate data",
+              "target": {
+                  "protocol": "HTTP",
+                  "method": "GET",
+                  "name": "Fitbit"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Receive heart rate data from Fitbit"
+              }
+          },
+          {
+              "operation": "No heart rate data",
+              "target": "",
+              "inputs": {},
+              "expectations": {
+                  "msg": "No heart rate data received"
+              }
+          },
+          {
+              "operation": "Send SPEAK command to Buddy",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "text": "No heart rate data",
+                  "expression": "SPEAK_NEUTRAL"
+              },
+              "expectations": {
+                  "msg": "Speech delivered"
+              }
+          },
+          {
+              "operation": "Receive SPEAK action completion feedback",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "receive",
+                  "name": "WIMP"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Speak Action Completed"
+              }
+          }
+      ],
+      "postconditions": {
+          "Buddy": {
+              "spoken": "No heart rate data"
+          },
+          "WIMP": {
+              "received": "Speak Action Completed"
+          }
+      }
+  },
+  {
+      "TC_ID": "TC003",
+      "name": "Handle heart rate not above 100 bpm or less than 50 bpm",
+      "steps": [
+          {
+              "operation": "Request heart rate data",
+              "target": {
+                  "protocol": "HTTP",
+                  "method": "GET",
+                  "name": "Fitbit"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Receive heart rate data from Fitbit"
+              }
+          },
+          {
+              "operation": "Receive heart rate data",
+              "target": {
+                  "protocol": "HTTP",
+                  "method": "GET",
+                  "name": "Fitbit"
+              },
+              "inputs": {},
+              "expectations": {
+                  "msg": "Heart rate data received"
+              }
+          },
+          {
+              "operation": "Check heart rate not above 100 or less than 50",
+              "target": "",
+              "inputs": {
+                  "heartRate": 90
+              },
+              "expectations": {
+                  "msg": "Heart rate not above 100"
+              }
+          },
+          {
+              "operation": "Send SPEAK command to Buddy",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "text": "No Special Attention Needed",
+                  "expression": "SPEAK_HAPPY"
+              },
+              "expectations": {
+                  "msg": "Speech delivered"
+              }
+          },
+          {
+              "operation": "Set Buddy face to HAPPY",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "expression": "HAPPY",
+                  "speed": 0.5
+              },
+              "expectations": {
+                  "msg": "Face set to HAPPY"
+              }
+          },
+          {
+              "operation": "Enable wheels",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "left": 1,
+                  "right": 1
+              },
+              "expectations": {
+                  "msg": "Wheels enabled"
+              }
+          },
+          {
+              "operation": "Rotate Buddy 180 degrees",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "speed": 50,
+                  "angle": 180
+              },
+              "expectations": {
+                  "msg": "WHEEL_MOVE_FINISHED"
+              }
+          },
+          {
+              "operation": "Buddy speaks",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "text": "No Special Attention Needed",
+                  "expression": "SPEAK_HAPPY"
+              },
+              "expectations": {
+                  "msg": "Speech delivered"
+              }
+          },
+          {
+              "operation": "Send execution feedback",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "status": "WHEEL_MOVE_FINISHED"
+              },
+              "expectations": {
+                  "msg": "Execution feedback sent"
+              }
+          }
+      ],
+      "postconditions": {
+          "Buddy": {
+              "mood": "HAPPY",
+              "spoken": "No Special Attention Needed",
+              "rotated": "180 degrees"
+          },
+          "WIMP": {
+              "received": "WHEEL_MOVE_FINISHED"
+          }
+      }
+  },
+  {
+      "TC_ID": "TC004",
+      "name": "Handle no feedback from Buddy on execution",
+      "steps": [
+          {
+              "operation": "No feedback received from Buddy",
+              "target": "",
+              "inputs": {},
+              "expectations": {
+                  "msg": "No feedback received"
+              }
+          },
+          {
+              "operation": "Display warning message",
+              "target": "WIMP",
+              "inputs": {},
+              "expectations": {
+                  "msg": "Warning message displayed"
+              }
+          }
+      ],
+      "postconditions": {
+          "WIMP": {
+              "display": "Warning message"
+          }
+      }
+  },
+  {
+      "TC_ID": "TC005",
+      "name": "Handle wheels not enabled",
+      "steps": [
+          {
+              "operation": "Send ENABLE WHEELS command",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "left": 1,
+                  "right": 1
+              },
+              "expectations": {
+                  "msg": "Wheels not enabled"
+              }
+          },
+          {
+              "operation": "Buddy speaks",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "text": "Wheels are not enabled",
+                  "expression": "SPEAK_NEUTRAL"
+              },
+              "expectations": {
+                  "msg": "Speech delivered"
+              }
+          },
+          {
+              "operation": "Send NOK to WIMP",
+              "target": {
+                  "protocol": "WebSocket",
+                  "method": "send",
+                  "name": "Buddy"
+              },
+              "inputs": {
+                  "status": "NOK"
+              },
+              "expectations": {
+                  "msg": "NOK sent to WIMP"
+              }
+          }
+      ],
+      "postconditions": {
+          "Buddy": {
+              "spoken": "Wheels are not enabled"
+          },
+          "WIMP": {
+              "received": "NOK"
+          }
+      }
+  }
+]
+```
+Time Spent = 52503ms

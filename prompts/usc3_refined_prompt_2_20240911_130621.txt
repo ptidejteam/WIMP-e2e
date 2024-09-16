@@ -1,0 +1,222 @@
+You are a skilled Developer tasked with generating comprehensive test cases based on the provided use case scenario.
+
+**Objective:** Meticulously follow the given specifications and create detailed test cases that align with the provided use case scenario.
+
+**Instructions:** Your response should include all possible test cases covering normal flows, bounded alternative flows, specific alternative flows, and postconditions.
+
+**Structure:**
+
+1. **Use Case:** Abnormal heart rate (tachycardia), Move action is required
+
+    **Precondition:**
+    - BuddyApp is running
+    - FitbitApp is running
+    - Connections have been initialized
+    
+    **Basic Flow:**
+    1. The WIMP requests heart rate data from Fitbit
+    2. The WIMP waits until it receives heart rate data
+    3. The FitbitApp checks the type of requested data
+    4. FitbitApp validates that the requested data is heart rate data
+    5. The FitbitApp activates the heart monitor sensor
+    6. The FitbitApp senses heart rate data
+    7. The FitbitApp sends heart rate data to WIMP
+    8. The WIMP receives heart rate data from Fitbit
+    9. The WIMP validates that the heart rate is above 100 bpm
+    10. The WIMP sends a MOVE command to Buddy with a distance above 2.0 m and a speed less than 0.3 m/s
+    11. The WIMP waits until it receives feedback from Buddy
+    12. The Buddy activates both wheels by setting enableWheels to TRUE
+    13. The Buddy moves the given distance and speaks "attention is required" when finished moving
+    14. The Buddy's face is set to SCARED mood
+    15. The BuddyApp sends execution feedback status to WIMP
+    16. The WIMP receives execution feedback from Buddy
+
+    **Postcondition:**
+    - Buddy's face mood has changed to SCARED.
+    - Buddy has spoken "attention is required" and sent "WHEEL_MOVE_FINISHED" status message to WIMP.
+
+2. **Bounded Alternative Flow (RFS 4-8):**
+    1. IF no heart rate data is received by WIMP THEN
+    2. WIMP sends SPEAK command to Buddy with "No heart rate data" message
+    3. ABORT
+    4. END IF
+
+    **Postcondition:**
+    - Buddy has spoken "No heart rate data" and sent "Speak Action Completed" back to WIMP.
+
+3. **Specific Alternative Flows:**
+    - **RFS 9:**
+        1. IF heart rate data is not above 100 bpm OR less than 50 bpm THEN
+        2. WIMP sends SPEAK command to Buddy with "No Special attention Needed" message
+        3. Buddy's face setMood is set to HAPPY
+        4. The Buddy activates both wheels by setting enableWheels to TRUE
+        5. Buddy rotates 180 degrees clockwise
+        6. Buddy speaks "No Special Attention Needed"
+        7. ABORT
+        8. END IF
+
+        **Postcondition:**
+        - Buddy's face has changed.
+        - Buddy has rotated 180 degrees and spoken "No Special Attention Needed".
+        - Buddy sent "WHEEL_MOVE_FINISHED" execution status TO WIMP.
+
+    - **RFS 11:**
+        1. IF WIMP receives no feedback from Buddy THEN
+        2. WIMP displays warning message
+        3. ABORT
+        4. END IF
+
+        **Postcondition:**
+        - WIMP displays the warning message.
+
+    - **RFS 12:**
+        1. IF wheels cannot be activated THEN
+        2. Buddy speaks "Wheels are not enabled" message
+        3. ABORT
+        4. END IF
+
+        **Postcondition:**
+        - Buddy has spoken "Wheels are not enabled" and sent "NOK" TO WIMP.
+
+    - **RFS 16:**
+        1. IF WIMP receives no execution feedback from Buddy THEN
+        2. WIMP displays warning message
+        3. ABORT
+        4. END IF
+
+        **Postcondition:**
+        - WIMP displays the warning message. No action is observed.
+
+**Additional Information:** 
+- **Inputs for Buddy action:**
+
+    - **Rotate:**
+        - `void USB.rotateBuddy(Speed, Angle, RspCallback)`
+          - Purpose: rotate the robot at a given angle and speed
+          - Params:
+            - Speed (float): Speed of rotation in deg/s around its vertical axis, between -100°/s and 100°/s (min. absolute speed: 30°/s)
+            - Angle (float, optional): Angle of rotation in degrees, between –360° and 360°
+            - RspCallback (IUsbCommandRsp): Return
+              - "OK" when started
+              - "WHEEL_MOVE_FINISHED" when the move is finished
+              - "NOK" when failed
+
+    - **Move:**
+        - `void USB.moveBuddy(Speed, Distance, RspCallback)`
+          - Purpose: move the robot straight at a defined speed and distance
+          - Params:
+            - Speed (float): Speed in m/s, between 0.05m/s to 0.7m/s
+            - Distance (float, optional): Distance to reach in meters
+            - RspCallback (IUsbCommandRsp): Return
+              - "OK" when launched
+              - "WHEEL_MOVE_FINISHED" when the move is finished
+              - "NOK" when failed
+
+          **Condition:** You have to enable wheels before using rotate and move functions.
+
+    - **Enable Wheels:**
+        - EnableWheels
+          - Left (int): enable left wheel (0: Off, 1: On)
+          - Right (int): enable right wheel (0: Off, 1: On)
+          - RspCallback (IUsbCommandRsp): Return
+            - "OK" when launched
+            - "NOK" when failed
+
+    - **Speak:**
+        - `void Speech.startSpeaking(iText, iExpression, iCallback)`
+          - Purpose: say provided text and make a special mouth movement
+          - Params:
+            - iText (string): text to speak
+            - IExpression (LabialExpression)
+              - SPEAK_ANGRY
+              - NO FACE
+              - SPEAK HAPPY
+              - SPEAK NEUTRAL
+
+    - **Mood:**
+        - `void UI.setMood(iExpression, iSpeed, IUIFaceAnimationCallback iCallback)`
+          - Purpose: give Buddy different facial expressions and set the LEDs
+          - Params:
+            - iExpression (FacialExpression)
+              - NONE
+              - NEUTRAL
+              - GRUMPY
+              - HAPPY
+              - ANGRY
+              - LISTENING
+              - LOVE
+              - SAD
+              - SCARED
+              - SICK
+              - SURPRISED
+              - THINKING
+              - TIRED
+            - iSpeed (double, optional): value from 0.0 to 1.0 (0% to 100%)
+            - iCallback (optional): called at the end of the instruction for success/failure
+
+Please provide the possible test cases based on the use case scenario outlined above. Ensure your test cases are structured like the sample format below:
+
+```json
+{
+  "TC_ID": "TC001",
+  "name": "Move Buddy successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "HTTP",
+        "method": "POST",
+        "name": "Fitbit"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive heart rate data from Fitbit"
+      }
+    },
+    {
+      "operation": "Determine Buddy action",
+      "target": "",
+      "inputs": {
+        "data": 110
+      },
+      "expectations": {
+        "msg": "Heart rate is abnormal, trigger MOVE action"
+      }
+    },
+    {
+      "operation": "Enable Wheels",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "left": 1,
+        "right": 1
+      },
+      "expectations": {
+        "msg": "Wheels enabled successfully"
+      }
+    },
+    {
+      "operation": "Call move function",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 2.5,
+        "speed": 0.2
+      },
+      "expectations": {
+        "msg": "Buddy moved successfully"
+      }
+    }
+  ]
+}
+```
+
+**Note:** Ensure that the test cases cover all specified normal, bounded alternative, specific alternative flows, and postconditions in detail.

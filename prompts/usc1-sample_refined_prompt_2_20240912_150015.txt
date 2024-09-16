@@ -1,0 +1,244 @@
+You are a skilled Developer tasked with generating comprehensive test cases based on the use case scenario provided.
+
+Your objective is to meticulously follow the specifications and outline all possible test cases that align with the provided use case scenario. Ensure that the test cases cover all normal flows, bounded alternative flows, and specific alternative flows, including all preconditions and postconditions.
+
+## Use Case Scenario: Fitbit Sends Data, Buddy Moves
+
+### Preconditions:
+- BuddyApp is running
+- FitbitApp is running
+- Connections have been initialized
+
+### Basic Flow:
+1. The WIMP receives heart rate data from Fitbit
+2. The WIMP validates that heart rate is between 60 and 100 bpm
+3. The WIMP sends SPEAK command to Buddy with the "Normal" message
+4. Buddy's mood is set to NEUTRAL
+5. Buddy speaks "Normal"
+6. Buddy sends SPEAK feedback to WIMP
+7. The WIMP sends MOVE command to Buddy with distance and speed parameters.
+8. Buddy sets EnableWheels to 1 for both Left and Right Wheels
+9. Buddy moves with specified distance and speed.
+10. Buddy sends MOVE execution feedback to WIMP
+11. WIMP receives MOVE execution feedback from Buddy
+12. Buddy's mood is set to HAPPY
+
+### Postcondition:
+- WIMP receives “WHEEL_MOVE_FINISHED” notification status
+- Buddy's mood is set to HAPPY
+
+### Bounded Alternative Flow:
+1. IF WIMP receives no heart rate data from Fitbit THEN
+   - WIMP sends Rotate command to Buddy with angle and rotation speed
+   - Buddy sets EnableWheels to 1 for both left and right wheels
+   - Buddy rotates with specified angle and speed
+   - Buddy sends ROTATE execution feedback to WIMP
+   - WIMP receives "WHEEL_MOVE_FINISHED" feedback from Buddy
+   - Buddy's mood is set to NEUTRAL
+
+### Postcondition:
+- Mood is set to NEUTRAL
+- Buddy has spoken "No heart rate data" and sent "Speak Action Completed" back to WIMP
+
+### Specific Alternative Flow:
+1. IF EnableWheels is not set to 1 THEN
+   - WIMP displays "Wheels not enabled" warning message.
+
+### Postcondition:
+- WIMP displays "Wheels not enabled" warning message
+
+## Additional Information:
+
+### Inputs for Buddy Actions:
+
+1. **Rotate**
+   - Method: `void USB.rotateBuddy(Speed, Angle, RspCallback)`
+   - Params:
+     - `Speed (float)`: Rotation speed of the robot in deg/s around its vertical axis, between -100°/s and 100°/s (min. absolute speed: 30°/s)
+     - `Angle[optional] (float)`: Rotation angle in degrees, between –360° and 360°
+     - `RspCallback (IUsbCommadRsp)`: Response callback with statuses:
+       - “OK” when started
+       - “WHEEL_MOVE_FINISHED” when the move is finished
+       - "NOK” when failed
+
+2. **Move**
+   - Method: `void USB.moveBuddy(Speed, Distance, RspCallback)`
+   - Params:
+     - `Speed (float)`: Speed of the robot in m/s (+ for forward, - for backward), between 0.05m/s to 0.7m/s
+     - `Distance[optional] (float)`: Distance to reach in meters.
+     - `RspCallback (IUsbCommadRsp)`: Response callback with statuses:
+       - “OK” when launch
+       - “WHEEL_MOVE_FINISHED” when the move is finished
+       - "NOK” when failed
+
+3. **Enable Wheels**
+   - Method: `EnableWheels`
+   - Params:
+     - `Left (int)`: Enable left wheel (0: Off, 1: On)
+     - `Right (int)`: Enable right wheel (0: Off, 1: On)
+     - `RspCallback (IUsbCommadRsp)`: Response callback with statuses:
+       - “OK” when launch
+       - "NOK” when failed
+
+4. **Speak**
+   - Method: `void Speech.startSpeaking(iText, iExpression, iCallback)`
+   - Params:
+     - `iText (string)`: Text to speak
+     - `IExpression (LabialExpression)`
+       - SPEAK_ANGRY
+       - NO FACE
+       - SPEAK HAPPY
+       - SPEAK NEUTRAL
+
+5. **Mood**
+   - Method: `void UI.setMood(iExpression, iSpeed, IUIFaceAnimationCallback iCallback)`
+   - Params:
+     - `iExpression (FacialExpression)`
+       - NONE, NEUTRAL, GRUMPY, HAPPY, ANGRY, LISTENING, LOVE, SAD, SCARED, SICK, SURPRISED, THINKING, TIRED
+     - `iSpeed[optional] (double)`: Speed from 0.0 to 1.0 (0% to 100%)
+     - `iCallback[optional]`: Called at the end of the instruction in case of success/failure
+
+## Test Case Structure:
+
+Please provide possible test cases based on the use case scenario outlined above. Ensure your test cases are structured like the following sample and detail every step with expected outcomes:
+
+```json
+{
+  "TC_ID":"TC001",
+  "name": "Receive Fitbit Data, Move Buddy Successfully",
+  "steps": [
+    {
+      "operation": "Get Fitbit data",
+      "target": {
+        "protocol": "FitbitApp",
+        "method": "ReceiveData"
+      },
+      "inputs": {
+        "datatype": "heart_rate"
+      },
+      "expectations": {
+        "msg": "Receive Fitbit Data"
+      }
+    },
+    {
+      "operation": "Validate heart rate data",
+      "target": "WIMP",
+      "inputs": {
+        "data": 80
+      },
+      "expectations": {
+        "msg": "Heart rate is valid"
+      }
+    },
+    {
+      "operation": "Send Speak command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "SPEAK",
+        "message": "Normal"
+      },
+      "expectations": {
+        "msg": "Buddy speaks 'Normal'"
+      }
+    },
+    {
+      "operation": "Set Buddy's mood to NEUTRAL",
+      "target": "Buddy",
+      "inputs": {
+        "mood": "NEUTRAL",
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy's mood set to NEUTRAL"
+      }
+    },
+    {
+      "operation": "Send Move command to Buddy",
+      "target": {
+        "protocol": "BuddyApp",
+        "method": "SendCommand"
+      },
+      "inputs": {
+        "command": "MOVE",
+        "distance": 1,
+        "speed": 0.5
+      },
+      "expectations": {
+        "msg": "Buddy moves with specified distance and speed"
+      }
+    },
+    {
+      "operation": "Receive Move execution feedback from Buddy",
+      "target": {
+        "protocol": "WIMP",
+        "method": "ReceiveFeedback"
+      },
+      "inputs": {
+        "action": "MOVE"
+      },
+      "expectations": {
+        "msg": "WIMP receives MOVE execution feedback"
+      }
+    }
+  ]
+}
+```
+
+### Test Cases:
+
+1. **Valid Heart Rate Data Flow**
+   - **TC_ID**: TC001
+     - **Name**: Receive Fitbit Data, Move Buddy Successfully
+     - **Step 1 (Get Fitbit data)**:
+       - **Target**: FitbitApp
+       - **Inputs**: datatype: heart_rate
+       - **Expectations**: Receive Fitbit Data
+     - **Step 2 (Validate heart rate data)**:
+       - **Target**: WIMP
+       - **Inputs**: data: 80 bpm
+       - **Expectations**: Heart rate is valid
+     - **Step 3 (Send Speak command to Buddy)**:
+       - **Target**: BuddyApp
+       - **Inputs**: command: SPEAK, message: "Normal"
+       - **Expectations**: Buddy speaks 'Normal'
+     - **Step 4 (Set Buddy's mood to NEUTRAL)**:
+       - **Target**: Buddy
+       - **Inputs**: mood: NEUTRAL, speed: 0.5
+       - **Expectations**: Buddy's mood set to NEUTRAL
+     - **Step 5 (Send Move command to Buddy)**:
+       - **Target**: BuddyApp
+       - **Inputs**: command: MOVE, distance: 1, speed: 0.5
+       - **Expectations**: Buddy moves with specified distance and speed
+     - **Step 6 (Receive Move execution feedback from Buddy)**:
+       - **Target**: WIMP
+       - **Inputs**: action: MOVE
+       - **Expectations**: WIMP receives MOVE execution feedback
+
+2. **No Heart Rate Data Flow**
+   - **TC_ID**: TC002
+     - **Name**: Receive No Fitbit Data, Rotate Buddy
+     - **Step 1 (Get no Fitbit data)**:
+       - **Target**: FitbitApp
+       - **Inputs**: datatype: heart_rate
+       - **Expectations**: No Fitbit Data
+     - **Step 2 (Send Rotate command to Buddy)**:
+       - **Target**: BuddyApp
+       - **Inputs**: command: ROTATE, angle: 90, speed: 0.5
+       - **Expectations**: Buddy rotates with specified angle and speed
+     - **Step 3 (Receive Rotate execution feedback from Buddy)**:
+       - **Target**: WIMP
+       - **Inputs**: action: ROTATE
+       - **Expectations**: WIMP receives WHEEL_MOVE_FINISHED feedback
+     - **Postcondition**: Buddy's mood set to NEUTRAL, Buddy has spoken "No heart rate data" and sent "Speak Action Completed" to WIMP
+
+3. **Wheels Not Enabled Flow**
+   - **TC_ID**: TC003
+     - **Name**: Wheels Not Enabled Warning
+     - **Step 1 (Check EnableWheels status)**:
+       - **Target**: WIMP
+       - **Inputs**: EnableWheels: 0
+       - **Expectations**: Displays "Wheels not enabled" warning message
+     - **Postcondition**: WIMP displays "Wheels not enabled" warning message
