@@ -17,7 +17,7 @@ public class Main {
         // File path where the prompt is stored
         String[] files = new String[]{"usc1-sample.txt"};  // Update with the correct file path
         String[] models = new String[]{"gpt-4o-mini", "gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"};
-        String apiKey = "sk-e63IzFtX0i3Ll6mnwsjHQEK06j24Fw--GT1vE29W1cT3BlbkFJWvFftkDoDy-3bIS6hKrGeNXXiUafaCQRU8Mm2zkGYA"; // Use a valid API key
+        String apiKey = "put_your_own_key"; // Use a valid API key
 
         // Number of iterations
         int maxIterations = 1;
