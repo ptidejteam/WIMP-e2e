@@ -1,7 +1,3 @@
-Here’s the updated README with a section for contributions included:
-
----
-
 # Introduction to WIMP E2E
 
 **WIMP** stands for **Where Is My Professor**. It is an IoT-based system designed to allow students to track the real-time availability of their professors using data collected from various IoT devices. This system leverages sensors, cameras, buddy robots, and smartwatches to ascertain the professors' locations within university buildings and provide relevant information. By analyzing the collected data, WIMP can automatically inform students about their professors' availability.
@@ -45,6 +41,3 @@ Contributions to the WIMP project are welcome! If you would like to contribute, 
 
 By contributing to this project, you help enhance its capabilities and support its development. Thank you for your interest!
 
----
-
-Feel free to ask for any further modifications or additional information!
