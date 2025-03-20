@@ -2,7 +2,7 @@
 
 **WIMP** stands for **Where Is My Professor**. It is an IoT-based system designed to allow students to track the real-time availability of their professors using data collected from various IoT devices. This system leverages sensors, cameras, buddy robots, and smartwatches to ascertain the professors' locations within university buildings and provide relevant information. By analyzing the collected data, WIMP can automatically inform students about their professors' availability.
 
-The WIMP project originated in various branches, each dedicated to specific components and functionalities. This modular approach enhances development efficiency and collaboration.
+The WIMP project has various branches, each dedicated to specific components and functionalities. This modular approach enhances development efficiency and collaboration. **To view specific code, you must select the corresponding branch**. The **main** branch contains only readme file.
 
 ## Devices (WIMP-Devices)
 
