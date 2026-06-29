@@ -1,0 +1,105 @@
+{
+  "TC_ID": "GT_TC002",
+  "name": "No heartrate data, rotate Buddy",
+  "steps": [
+    {
+      "operation": "receiveHeartRate",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "heartrate": null
+      },
+      "postcondition": {
+        "msg": "No heartrate data"
+      }
+    },
+    {
+      "operation": "rotate",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": "<specified_angle>",
+        "speed": "<specified_rotation_speed>"
+      },
+      "postcondition": {
+        "msg": "OK"
+      }
+    },
+    {
+      "operation": "enableWheels",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "leftWheel": 1,
+        "rightWheel": 1
+      },
+      "postcondition": {
+        "msg": "OK"
+      }
+    },
+    {
+      "operation": "rotate",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "angle": "<specified_angle>",
+        "speed": "<specified_rotation_speed>"
+      },
+      "postcondition": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "sendRotateFeedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "status": "WHEEL_MOVE_FINISHED"
+      },
+      "postcondition": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "receiveRotateFeedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "status": "WHEEL_MOVE_FINISHED"
+      },
+      "postcondition": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "setMood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "FacialExpression.NEUTRAL"
+      },
+	"postcondition": {
+	  "Buddy": {
+		"mood": "FacialExpression.NEUTRAL",
+		"spokenMessage": "No heartrate data"
+	  },
+	  "WIMP-App": {
+		"receivedFeedback": "Speak Action Completed"
+	 }
+   }
+}

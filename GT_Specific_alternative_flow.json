@@ -1,0 +1,146 @@
+{
+  "TC_ID": "GT_TC003",
+  "name": "Normal heartrate, wheels not enabled",
+  "preconditions": {
+    "BuddyApp": "running",
+    "FitbitApp": "running",
+    "connections": "initialised"
+  },
+  "steps": [
+    {
+      "operation": "receiveHeartRate",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "heartrate": "80 bpm"
+      },
+      "postcondition": {
+        "msg": "Heartrate received"
+      }
+    },
+    {
+      "operation": "validateHeartRate",
+      "target": {
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "heartrate": "80 bpm"
+      },
+      "postcondition": {
+        "msg": "Valid heartrate"
+      }
+    },
+    {
+      "operation": "speak",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "postcondition": {
+        "msg": "OK"
+      }
+    },
+    {
+      "operation": "setMood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "FacialExpression.NEUTRAL"
+      },
+      "postcondition": {
+        "msg": "NEUTRAL"
+      }
+    },
+    {
+      "operation": "speak",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "postcondition": {
+        "msg": "SPEAK_FINISHED"
+      }
+    },
+    {
+      "operation": "sendSpeakFeedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "status": "SPEAK_FINISHED"
+      },
+      "postcondition": {
+        "msg": "SPEAK_FINISHED"
+      }
+    },
+    {
+      "operation": "move",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": "<specified_distance>",
+        "speed": "<specified_speed>"
+      },
+      "postcondition": {
+        "msg": "MOVE_COMMAND_SENT"
+      }
+    },
+    {
+      "operation": "enableWheels",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "leftWheel": 1,
+        "rightWheel": 1
+      },
+      "postcondition": {
+        "msg": "Error: Wheels not enabled"
+      }
+    },
+    {
+      "operation": "displayMessage",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Wheels not enabled"
+      },
+      "postcondition": {
+        "msg": "Wheels not enabled"
+      }
+    },
+    {
+      "operation": "setMood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "FacialExpression.TIRED"
+      },
+      "postcondition": {
+        "msg": "TIRED"
+      }
+    }
+  ],
+  "postcondition": {
+    "Buddy": {
+      "mood": "FacialExpression.TIRED"
+    }
+  }
+}

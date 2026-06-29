@@ -1,0 +1,168 @@
+{
+  "TC_ID": "GT_TC001",
+  "name": "Normal heartrate, speak and move command",
+  "steps": [
+    {
+      "operation": "receiveHeartRate",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "heartrate": "80 bpm"
+      },
+      "postcondition": {
+        "msg": "Heartrate received"
+      }
+    },
+    {
+      "operation": "validateHeartRate",
+      "target": {
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "heartrate": "80 bpm"
+      },
+      "postcondition": {
+        "msg": "Valid heartrate"
+      }
+    },
+    {
+      "operation": "speak",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "postcondition": {
+        "msg": "OK"
+      }
+    },
+    {
+      "operation": "setMood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "FacialExpression.NEUTRAL"
+      },
+      "postcondition": {
+        "msg": "OK"
+      }
+    },
+    {
+      "operation": "speak",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "message": "Normal"
+      },
+      "postcondition": {
+        "msg": "SPEAK_FINISHED"
+      }
+    },
+    {
+      "operation": "sendSpeakFeedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "status": "SPEAK_FINISHED"
+      },
+      "postcondition": {
+        "msg": "SPEAK_FINISHED"
+      }
+    },
+    {
+      "operation": "move",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1.0,
+        "speed": 0.5
+      },
+      "postcondition": {
+        "msg": "OK"
+      }
+    },
+    {
+      "operation": "enableWheels",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "leftWheel": 1,
+        "rightWheel": 1
+      },
+      "postcondition": {
+        "msg": "Wheels enabled"
+      }
+    },
+    {
+      "operation": "move",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "distance": 1.0,
+        "speed": 0.5
+      },
+      "postcondition": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "sendMoveFeedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "send",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "status": "WHEEL_MOVE_FINISHED"
+      },
+      "postcondition": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "receiveMoveFeedback",
+      "target": {
+        "protocol": "Websocket",
+        "method": "receive",
+        "name": "WIMP-App"
+      },
+      "inputs": {
+        "status": "WHEEL_MOVE_FINISHED"
+      },
+      "postcondition": {
+        "msg": "WHEEL_MOVE_FINISHED"
+      }
+    },
+    {
+      "operation": "setMood",
+      "target": {
+        "name": "Buddy"
+      },
+      "inputs": {
+        "mood": "FacialExpression.HAPPY"
+      },
+      "postcondition": {
+		"Buddy": {
+         "msg": "HAPPY",
+		 "notification_status":"WHEEL_MOVE_FINISHED"
+		}
+      }
+    }
+  ]
+}
